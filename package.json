@@ -1,0 +1,25 @@
+{
+  "name": "maitake-madness",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "A gnome and mushroom themed browser game using the p5.js library",
+  "main": "game.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stmcdonald-vt/maitake-madness.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/stmcdonald-vt/maitake-madness/issues"
+  },
+  "homepage": "https://github.com/stmcdonald-vt/maitake-madness#readme",
+  "devDependencies": {
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "rollup": "^4.1.4"
+  }
+}

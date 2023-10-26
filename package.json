@@ -5,7 +5,9 @@
   "description": "A gnome and mushroom themed browser game using the p5.js library",
   "main": "game.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npx rollup -c rollup.config.js",
+    "watch": "npm run build -- -w"
   },
   "repository": {
     "type": "git",

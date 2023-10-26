@@ -1,3 +1,4 @@
+import InputManager from "./input/inputManager";
 import MenuManager from "./menu/menuManager";
 
 /**
@@ -6,7 +7,8 @@ import MenuManager from "./menu/menuManager";
 export default class Game {
     constructor(p5) {
         this.p5 = p5;
-        this.menuManager = new MenuManager(p5);
+        this.inputManager = new InputManager(this);
+        this.menuManager = new MenuManager(this);
         this.initializeConfig();
     }
 
@@ -20,6 +22,5 @@ export default class Game {
             DIMENSION_MULTIPLIER: 1,
             ANOTHER_VALUE: 2
         }
-        this.p5.square(300, 300, 20);
     }
 }

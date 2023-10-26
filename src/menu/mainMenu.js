@@ -1,5 +1,5 @@
 import Menu from './menu';
-import PickerMenuItem from './pickerMenuItem';
+import DifficultyMenuItem from './menuItems/difficultyMenuItem';
 
 class MainMenu extends Menu {
 
@@ -9,11 +9,12 @@ class MainMenu extends Menu {
      * @param {p5.Vector} topLeft - top left constraint of menu area
      * @param {p5.Vector} bottomRight - bottom right constraint of menu area
      */
-    constructor(p5, topLeft, bottomRight) {
-        super(p5);
-        this.p5 = p5;
+    constructor(game, topLeft) {
+        super(game.p5);
+        this.p5 = game.p5;
         this.items = [
-            new PickerMenuItem(p5, ['Hello', 'World', 'Friend'], p5.createVector(200, 200))
+            new DifficultyMenuItem(game, game.p5.createVector(topLeft.x, topLeft.y)),
+            // new PickerMenuItem(game, ['WASD', "Arrow Keys"], game.p5.createVector(topLeft.x, topLeft.y + 60))
         ]
     }
 

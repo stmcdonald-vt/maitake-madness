@@ -7,14 +7,15 @@ import OptionsMenu from "./optionsMenu"
 class MenuManager {
     /**
      * 
-     * @param {*} p5 - Instance of p5 to use for p5 functions
+     * @param {*} game - Game instance
      */
-    constructor(p5) {
-        this.p5 = p5;
+    constructor(game) {
+        this.p5 = game.p5;
         this.menus = [
-            new MainMenu(p5),
-            new OptionsMenu(p5)
+            new MainMenu(game, this.p5.createVector(50, 200)),
+            new OptionsMenu(game)
         ]
+        this.config = game.config;
         this.currentMenuIndex = 0;
     }
 

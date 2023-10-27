@@ -10,11 +10,11 @@ let sketch = function(p) {
         game.inputManager.onClick();
     }
 
-    p.keyPressed = function() {
+    p.keyPressed = function(keyCode) {
         game.inputManager.keyMap[keyCode] = true;
     }
     
-    p.keyReleased = function() {
+    p.keyReleased = function(keyCode) {
         game.inputManager.keyMap[keyCode] = false;
     }
     /**

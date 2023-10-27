@@ -1,25 +1,19 @@
 import Menu from './menu';
-import DifficultyMenuItem from './menuItems/difficultyMenuItem';
+import MainNavigationMenuItem from './menuItems/mainNavigationMenuItem';
 
 class MainMenu extends Menu {
 
     /**
      * 
      * @param {*} p5 - p5 instance
-     * @param {p5.Vector} topLeft - top left constraint of menu area
-     * @param {p5.Vector} bottomRight - bottom right constraint of menu area
      */
-    constructor(game, topLeft) {
+    constructor(game) {
         super(game.p5);
         this.p5 = game.p5;
+        this.position = this.p5.createVector(125, 300)
         this.items = [
-            new DifficultyMenuItem(game, game.p5.createVector(topLeft.x, topLeft.y)),
-            // new PickerMenuItem(game, ['WASD', "Arrow Keys"], game.p5.createVector(topLeft.x, topLeft.y + 60))
+            new MainNavigationMenuItem(game, this.position)
         ]
-    }
-
-    display() {
-        this.items.forEach(item => item.display());
     }
 }
 export default MainMenu;

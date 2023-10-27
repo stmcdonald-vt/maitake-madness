@@ -1,6 +1,6 @@
 import PickerMenuItem from "./pickerMenuItem";
 
-class DifficultyMenuItem extends PickerMenuItem {
+class ControlMenuItem extends PickerMenuItem {
     constructor(game, position) {
         super(game);
         this.game = game;
@@ -8,13 +8,12 @@ class DifficultyMenuItem extends PickerMenuItem {
         this.selectedIndex = 0;
         this.position = position;
         this.items = [
-            {text: 'Easy', func: () => game.config.DIFFICULTY = 0},
-            {text: 'Medium', func: () => game.config.DIFFICULTY = 1},
-            {text: 'Hard', func: () => game.config.DIFFICULTY = 2}
+            {text: 'WASD', func: () => game.config.DIFFICULTY = 0},
+            {text: 'Arrows', func: () => game.config.DIFFICULTY = 1},
         ];
-        this.label = "Difficulty"
+        this.label = "Controls";
         this.initializePositions();
         this.registerClickListeners();
     }
 }
-export default DifficultyMenuItem;
+export default ControlMenuItem;

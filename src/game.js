@@ -19,8 +19,10 @@ export default class Game {
     // Configurable values, some can be changed in options.
     initializeConfig() {
         this.config = {
+            GAME_STATE: 0, // 0: Main menu, 1: Options Menu, 2: Playing Game
             DIMENSION_MULTIPLIER: 1,
-            ANOTHER_VALUE: 2
+            DIFFICULTY: 1,
+            MOVEMENT_SCHEME: 0,
         }
     }
 }

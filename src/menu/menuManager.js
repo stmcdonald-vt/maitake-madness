@@ -11,8 +11,9 @@ class MenuManager {
      */
     constructor(game) {
         this.p5 = game.p5;
+        this.game = game;
         this.menus = [
-            new MainMenu(game, this.p5.createVector(50, 200)),
+            new MainMenu(game),
             new OptionsMenu(game)
         ]
         this.config = game.config;

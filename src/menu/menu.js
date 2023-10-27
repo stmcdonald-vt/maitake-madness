@@ -5,5 +5,9 @@ class Menu {
     constructor() {
         
     }
+
+    display() {
+        this.items.forEach(item => item.display());
+    }
 }
 export default Menu

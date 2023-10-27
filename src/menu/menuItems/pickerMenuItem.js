@@ -45,7 +45,9 @@ class PickerMenuItem extends MenuItem {
 
     display() {
         this.p5.push();
+        
         if (this.label) {
+            this.p5.fill('white');
             this.p5.text(this.label, this.position.x, this.position.y);
         
         }

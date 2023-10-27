@@ -1,5 +1,6 @@
 import Menu from './menu';
 import MainNavigationMenuItem from './menuItems/mainNavigationMenuItem';
+import Title from './title';
 
 class MainMenu extends Menu {
 
@@ -10,9 +11,11 @@ class MainMenu extends Menu {
     constructor(game) {
         super(game.p5);
         this.p5 = game.p5;
-        this.position = this.p5.createVector(125, 300)
+        const buttonPosition = this.p5.createVector(125, 200);
+        const titlePosition = this.p5.createVector(200, 100);
         this.items = [
-            new MainNavigationMenuItem(game, this.position)
+            new MainNavigationMenuItem(game, buttonPosition),
+            new Title(game, titlePosition)
         ]
     }
 }

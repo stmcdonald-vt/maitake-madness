@@ -1,6 +1,11 @@
 import PickerMenuItem from "./pickerMenuItem";
 
 class ControlMenuItem extends PickerMenuItem {
+    /**
+     * 
+     * @param {Game} game 
+     * @param {*} position 
+     */
     constructor(game, position) {
         super(game);
         this.game = game;
@@ -8,8 +13,8 @@ class ControlMenuItem extends PickerMenuItem {
         this.selectedIndex = 0;
         this.position = position;
         this.items = [
-            {text: 'WASD', func: () => game.config.DIFFICULTY = 0},
-            {text: 'Arrows', func: () => game.config.DIFFICULTY = 1},
+            {text: 'WASD', func: () => game.config.MOVEMENT_SCHEME = 0},
+            {text: 'Arrows', func: () => game.config.MOVEMENT_SCHEME = 1},
         ];
         this.label = "Controls";
         this.initializePositions();

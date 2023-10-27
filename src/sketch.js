@@ -4,7 +4,8 @@ import Game from "./game.js"
 
 /** @type {p5} */
 let sketch = function(p) {
-    var game;
+    let game;
+    let startScreenImage;
 
     p.mouseClicked = function() {
         game.inputManager.onClick();
@@ -16,6 +17,10 @@ let sketch = function(p) {
     
     p.keyReleased = function(keyCode) {
         game.inputManager.keyMap[keyCode] = false;
+    }
+
+    p.preload = function() {
+        startScreenImage = p.loadImage('../assets/background.jpg')
     }
     /**
      * Setup function.
@@ -31,7 +36,7 @@ let sketch = function(p) {
      * @param {p5} p - The p5 instance.
      */
     p.draw = function() {
-        p.background(220);
+        p.background(startScreenImage);
         game.update();
     };
   };

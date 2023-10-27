@@ -14,8 +14,8 @@ class OptionsMenu extends Menu {
         super(game.p5);
         this.p5 = game.p5;
 
-        const optionsPosition = this.p5.createVector(20, 300);
-        const tutorialPosition = this.p5.createVector(20, 100);
+        const optionsPosition = this.p5.createVector(20, 200);
+        const tutorialPosition = this.p5.createVector(20, 75);
 
         // Back button setup
         const backButtonPosition = this.p5.createVector(20, 20);
@@ -37,7 +37,7 @@ class OptionsMenu extends Menu {
             new DifficultyMenuItem(game, game.p5.createVector(optionsPosition.x, optionsPosition.y)),
             new ControlMenuItem(game, game.p5.createVector(optionsPosition.x, optionsPosition.y + 50)),
             new Button(game, backButtonPosition, backButtonAction, backButtonHeight, backButtonWidth, undefined, backButtonDisplay),
-            new Tutorial(game, tutorialPosition, 300, 200)
+            new Tutorial(game, tutorialPosition, 350, 200)
         ]
     }
 }

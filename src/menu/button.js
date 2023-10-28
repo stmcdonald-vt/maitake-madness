@@ -1,14 +1,16 @@
 import Game from "../game";
 
+// Generic button that can be used by any component to render a button and register a click function.
+// Currently only supports rectangular shaped hitboxes
 class Button {
     /**
      * 
      * @param {Game} game 
-     * @param {*} position 
-     * @param {*} actionFunction 
-     * @param {*} height 
-     * @param {*} width 
-     * @param {*} text 
+     * @param {p5.Vector} position 
+     * @param {function} actionFunction 
+     * @param {number} height 
+     * @param {number} width 
+     * @param {string} text 
      * @param {*} renderFunction 
      */
     constructor(game, position, actionFunction, height, width, text=undefined, renderFunction=undefined) {
@@ -18,7 +20,7 @@ class Button {
         this.actionFunction = actionFunction;
         this.height = height;
         this.width = width;
-        this.text = text;
+        this.text = text; // Planned to be used in the defaultDisplay. Menu Items may use this component later.
         this.display = renderFunction || this.defaultDisplay;
         this.registerClickListener();
     }
@@ -37,7 +39,7 @@ class Button {
     }
 
     defaultDisplay() {
-        // Render a rectangle with a button
+        // Currently not implemented as it is only being used with a provided renderFunction
     }
 }
 export default Button;

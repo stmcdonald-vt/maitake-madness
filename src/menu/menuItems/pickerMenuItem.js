@@ -1,13 +1,18 @@
-import MenuItem from "./menuItem";
+import Game from "../../game";
 
-class PickerMenuItem extends MenuItem {
-    constructor(game, position, selectedIndex=0) {
-        super(game);
+// Represents an entry in a menu that provide multiple buttons to choose from
+class PickerMenuItem {
+    /**
+     * @param {Game} game 
+     * @param {p5.Vector} position 
+     * @param {number} selectedIndex 
+     */
+    constructor(game, position, selectedIndex=0, toggleable=true) {
         this.p5 = game.p5;
         this.position = position;
         this.selectedIndex = selectedIndex;
         this.buttonHeight = 30;
-        this.toggleable = true;
+        this.toggleable = toggleable; // Turns the buttons into radio-like buttons
     }
 
     get buttonWidth() {
@@ -44,19 +49,17 @@ class PickerMenuItem extends MenuItem {
     }
 
     display() {
-        this.p5.push();
-        
-        if (this.label) {
+        this.p5.push();      
+        if (this.label) { // Draw the section label
             this.p5.fill('white');
             this.p5.text(this.label, this.position.x, this.position.y);
-        
         }
         this.items.forEach((item) => {
             let backgroundColor = this.primaryColor || this.p5.color('gray');
             if (this.toggleable && item === this.items[this.selectedIndex]) {
-                backgroundColor = this.p5.color('white');
+                backgroundColor = this.p5.color('white'); // style the selected button differently
             }
-
+            // Draw the buttons
             this.p5.push();
             this.p5.fill(backgroundColor);
             this.p5.rectMode(this.p5.CENTER);

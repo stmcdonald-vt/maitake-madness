@@ -5,11 +5,12 @@ import MenuManager from "./menu/menuManager";
  * Game object
  */
 export default class Game {
-    constructor(p5) {
+    constructor(p5, assets) {
         this.p5 = p5;
+        this.assets = assets;
+        this.initializeState();
         this.inputManager = new InputManager(this);
         this.menuManager = new MenuManager(this);
-        this.initializeConfig();
     }
 
     update() {
@@ -17,8 +18,8 @@ export default class Game {
     }
 
     // Configurable values, some can be changed in options.
-    initializeConfig() {
-        this.config = {
+    initializeState() {
+        this.state = {
             GAME_STATE: 0, // 0: Main menu, 1: Options Menu, 2: Playing Game
             DIMENSION_MULTIPLIER: 1,
             DIFFICULTY: 1,

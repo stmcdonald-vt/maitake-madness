@@ -16,7 +16,6 @@ class MenuManager {
             new MainMenu(game),
             new OptionsMenu(game)
         ]
-        this.config = game.config;
         this.currentMenuIndex = 0;
     }
 

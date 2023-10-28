@@ -1,10 +1,10 @@
 import Game from "./game.js"
 
 // Use instance mode for p5. This works better with Rollup and ES6 modules. https://p5js.org/reference/#/p5/p5
-
-/** @type {p5} */
 let sketch = function(p) {
-    var game;
+    let game;
+    let startScreenImage;
+    let assets
 
     p.mouseClicked = function() {
         game.inputManager.onClick();
@@ -17,21 +17,33 @@ let sketch = function(p) {
     p.keyReleased = function(keyCode) {
         game.inputManager.keyMap[keyCode] = false;
     }
-    /**
-     * Setup function.
-     * @param {p5} p - The p5 instance.
-     */
+
+    // Pre-load assets
+    p.preload = function() {
+        assets = {
+            startScreenImage: p.loadImage('assets/background.jpg'),
+            gnome: {
+                front: p.loadImage('assets/gnome_forward.png'),
+                side: p.loadImage('assets/gnome_side.png'),
+                back: p.loadImage('assets/gnome_back.png')
+            },
+            morel: p.loadImage('assets/morel_small.png'),
+            button: p.loadImage('assets/buttonshroom.png'),
+            chanterelle: p.loadImage('assets/chanterelle.png'),
+            fonts: {
+                oldForest: p.loadFont('assets/TheOldForest.ttf')
+            }
+        }
+    }
+
+    // Create game and assign assets
     p.setup = function() {
         p.createCanvas(400, 400);
-        game = new Game(p);
+        game = new Game(p, assets);
     };
-  
-    /**
-     * Draw function.
-     * @param {p5} p - The p5 instance.
-     */
+ 
     p.draw = function() {
-        p.background(220);
+        p.background(assets.startScreenImage);
         game.update();
     };
   };

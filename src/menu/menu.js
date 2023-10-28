@@ -1,5 +1,5 @@
 /**
- * Generic menu class to hold and format menuItems.
+ * Generic menu class to hold and format menuItems. Currently only displays, but is extensible.
  */
 class Menu {
     constructor() {

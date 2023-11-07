@@ -18,6 +18,10 @@ class MainMenu extends Menu {
         ]
     }
 
+    reset() {
+        this.items[0].registerClickListeners();
+    }
+
     display() {
         super.display();
         // Also display author text which doesn't warrant a component

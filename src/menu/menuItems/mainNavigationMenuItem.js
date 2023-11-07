@@ -13,7 +13,7 @@ class MainNavigationMenuItem extends PickerMenuItem {
         this.textColor = gp5.color('white');
         this.items = [
             {text: 'Start', func: () => game.state.GAME_STATE = 1},
-            {text: 'Options', func: () => game.menuManager.currentMenuIndex = 1},
+            {text: 'Options', func: () => {game.menuManager.setMenu(1)}},
         ];
         this.initializePositions();
         this.registerClickListeners();

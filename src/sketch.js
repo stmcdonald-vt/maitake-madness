@@ -48,7 +48,6 @@ let sketch = function(p) {
     };
  
     p.draw = function() {
-        console.log(game.state.GAME_STATE)
         switch(game.state.GAME_STATE) {
             case 0:
                 p.background(assets.startScreenImage);
@@ -65,3 +64,8 @@ let sketch = function(p) {
 
 const gp5 = new p5(sketch);
 export default gp5;
+
+export const constants = {
+    FOURTH_PI: gp5.HALF_PI / 2,
+    THREE_FOURTHS_PI: (gp5.HALF_PI / 2) * 3
+}

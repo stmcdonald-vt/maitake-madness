@@ -19,10 +19,10 @@ class Button {
         this.width = width;
         this.text = text; // Planned to be used in the defaultDisplay. Menu Items may use this component later.
         this.display = renderFunction || this.defaultDisplay;
-        this.registerClickListener();
+        this.registerClickListeners();
     }
 
-    registerClickListener() {
+    registerClickListeners() {
         game.inputManager.registerClickFunction(() => {
             if (game.inputManager.mouseInsideBounds(
                 this.position.x,

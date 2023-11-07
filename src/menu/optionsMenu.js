@@ -19,7 +19,7 @@ class OptionsMenu extends Menu {
         const backButtonPosition = gp5.createVector(20, 20);
         const backButtonHeight = 30;
         const backButtonWidth = 30;
-        const backButtonAction = () => game.menuManager.currentMenuIndex = 0; // This will get registered with the inputManager
+        const backButtonAction = () => game.menuManager.setMenu(0);
 
         const backButtonDisplay = () => {
             gp5.push();
@@ -38,6 +38,10 @@ class OptionsMenu extends Menu {
             new Tutorial(tutorialPosition, 350, 110),
             new GnomeChaseAnimation(animationPosition)
         ]
+    }
+
+    reset() {
+        this.items.slice(0,3).forEach(item => item.registerClickListeners());
     }
 }
 export default OptionsMenu;

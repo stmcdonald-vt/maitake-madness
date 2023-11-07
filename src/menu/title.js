@@ -1,27 +1,26 @@
-import Game from "../game";
+import p5 from "p5";
+import game from "../game";
+import gp5 from "../sketch";
 
 // Title text
 class Title {
     /**
-     * @param {Game} game 
      * @param {p5.Vector} position 
      */
-    constructor(game, position) {
-        this.p5 = game.p5;
-        this.game = game;
+    constructor(position) {
         this.position = position;
         this.text = "Maitake Madness"
     }
 
     display() {
-        this.p5.push();
-        this.p5.textSize(48);
-        this.p5.textAlign(this.p5.CENTER);
-        this.p5.textWrap(this.p5.WORD);
-        this.p5.textFont(this.game.assets.fonts.oldForest)
-        this.p5.fill('white')
-        this.p5.text(this.text, this.position.x, this.position.y);
-        this.p5.pop();
+        gp5.push();
+        gp5.textSize(48);
+        gp5.textAlign(gp5.CENTER);
+        gp5.textWrap(gp5.WORD);
+        gp5.textFont(game.assets.fonts.oldForest)
+        gp5.fill('white')
+        gp5.text(this.text, this.position.x, this.position.y);
+        gp5.pop();
     }
 }
 

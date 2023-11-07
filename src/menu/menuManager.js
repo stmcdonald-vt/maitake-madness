@@ -1,20 +1,13 @@
 import MainMenu from "./mainMenu"
 import OptionsMenu from "./optionsMenu"
-
 /**
  * Instantiate and manage all of the menus
  */
 class MenuManager {
-    /**
-     * 
-     * @param {*} game - Game instance
-     */
-    constructor(game) {
-        this.p5 = game.p5;
-        this.game = game;
+    constructor() {
         this.menus = [
-            new MainMenu(game),
-            new OptionsMenu(game)
+            new MainMenu(),
+            new OptionsMenu()
         ]
         this.currentMenuIndex = 0;
     }

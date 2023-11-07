@@ -1,15 +1,12 @@
 import PickerMenuItem from "./pickerMenuItem";
-
+import game from "../../game";
 // Picker for the different control schemes
 class ControlMenuItem extends PickerMenuItem {
     /**
-     * @param {Game} game 
      * @param {p5.Vector} position 
      */
-    constructor(game, position) {
-        super(game);
-        this.game = game;
-        this.p5 = game.p5;
+    constructor(position) {
+        super();
         this.selectedIndex = 0;
         this.position = position;
         this.items = [

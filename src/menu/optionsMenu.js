@@ -1,45 +1,42 @@
-import Game from '../game';
+import game from '../game';
 import GnomeChaseAnimation from './animations/gnomeChaseAnimation';
 import Button from './button';
 import Menu from './menu';
 import ControlMenuItem from './menuItems/controlMenuItem';
 import DifficultyMenuItem from './menuItems/difficultyMenuItem';
 import Tutorial from './tutorial';
+import gp5 from '../sketch';
 
 class OptionsMenu extends Menu {
-    /**
-     * @param {Game} game 
-     */
-    constructor(game) {
-        super(game.p5);
-        this.p5 = game.p5;
+    constructor() {
+        super();
 
-        const optionsPosition = this.p5.createVector(20, 200);
-        const tutorialPosition = this.p5.createVector(20, 75);
-        const animationPosition = this.p5.createVector(0, 300);
+        const optionsPosition = gp5.createVector(20, 200);
+        const tutorialPosition = gp5.createVector(20, 75);
+        const animationPosition = gp5.createVector(0, 300);
 
         // Back button setup
-        const backButtonPosition = this.p5.createVector(20, 20);
+        const backButtonPosition = gp5.createVector(20, 20);
         const backButtonHeight = 30;
         const backButtonWidth = 30;
         const backButtonAction = () => game.menuManager.currentMenuIndex = 0; // This will get registered with the inputManager
 
         const backButtonDisplay = () => {
-            this.p5.push();
-            this.p5.noStroke();
-            this.p5.fill('white');
-            this.p5.translate(backButtonPosition.x + backButtonWidth / 2, backButtonPosition.y + backButtonHeight / 2);
-            this.p5.triangle(-15, 0, 0, 7, 0, -7);
-            this.p5.rect(0, -3, 10, 6)
-            this.p5.pop();
+            gp5.push();
+            gp5.noStroke();
+            gp5.fill('white');
+            gp5.translate(backButtonPosition.x + backButtonWidth / 2, backButtonPosition.y + backButtonHeight / 2);
+            gp5.triangle(-15, 0, 0, 7, 0, -7);
+            gp5.rect(0, -3, 10, 6)
+            gp5.pop();
         };
 
         this.items = [
-            new DifficultyMenuItem(game, game.p5.createVector(optionsPosition.x, optionsPosition.y)),
-            new ControlMenuItem(game, game.p5.createVector(optionsPosition.x, optionsPosition.y + 50)),
-            new Button(game, backButtonPosition, backButtonAction, backButtonHeight, backButtonWidth, undefined, backButtonDisplay),
-            new Tutorial(game, tutorialPosition, 350, 110),
-            new GnomeChaseAnimation(game, animationPosition)
+            new DifficultyMenuItem(game.p5.createVector(optionsPosition.x, optionsPosition.y)),
+            new ControlMenuItem(game.p5.createVector(optionsPosition.x, optionsPosition.y + 50)),
+            new Button(backButtonPosition, backButtonAction, backButtonHeight, backButtonWidth, undefined, backButtonDisplay),
+            new Tutorial(tutorialPosition, 350, 110),
+            new GnomeChaseAnimation(animationPosition)
         ]
     }
 }

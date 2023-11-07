@@ -1,11 +1,11 @@
 import game from "../game";
-import Character from "./character";
+import Actor from "./Actor";
 import gp5 from "../sketch";
 
 /**
  * A Morel. Has no morals.
  */
-class Morel extends Character {
+class MorelActor extends Actor {
     /**
      * 
      * @param {p5.Vector} position 
@@ -21,4 +21,4 @@ class Morel extends Character {
         gp5.pop();
     }
 }
-export default Morel;
+export default MorelActor;

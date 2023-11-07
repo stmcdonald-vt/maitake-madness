@@ -1,7 +1,7 @@
-import Gnome from '../../entities/gnome';
-import Chanterelle from '../../entities/chanterelle';
-import ButtonMushroom from '../../entities/buttonMushroom';
-import Morel from '../../entities/morel';
+import GnomeActor from '../../actors/gnomeActor';
+import ChanterelleActor from '../../actors/chanterelleActor';
+import ButtonMushroomActor from '../../actors/buttonMushroomActor';
+import MorelActor from '../../actors/morelActor';
 import game from '../../game';
 import gp5 from '../../sketch';
 
@@ -13,10 +13,10 @@ class GnomeChaseAnimation {
     constructor( position) {
         this.position = position;
         this.forward = true;
-        this.button = new ButtonMushroom(gp5.createVector(this.position.x, this.position.y));
-        this.chanterelle = new Chanterelle(gp5.createVector(this.position.x -50, this.position.y));
-        this.morel = new Morel(gp5.createVector(this.position.x -100, this.position.y));
-        this.gnome = new Gnome(gp5.createVector(this.position.x - 200, this.position.y));
+        this.button = new ButtonMushroomActor(gp5.createVector(this.position.x, this.position.y));
+        this.chanterelle = new ChanterelleActor(gp5.createVector(this.position.x -50, this.position.y));
+        this.morel = new MorelActor(gp5.createVector(this.position.x -100, this.position.y));
+        this.gnome = new GnomeActor(gp5.createVector(this.position.x - 200, this.position.y));
 
         this.actors = [
             this.gnome,

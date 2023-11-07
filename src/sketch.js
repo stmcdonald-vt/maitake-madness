@@ -48,7 +48,17 @@ let sketch = function(p) {
     };
  
     p.draw = function() {
-        p.background(assets.startScreenImage);
+        console.log(game.state.GAME_STATE)
+        switch(game.state.GAME_STATE) {
+            case 0:
+                p.background(assets.startScreenImage);
+                break;
+            case 1:
+                p.background('green');
+                break;
+            default:
+                p.background('gray');
+        }
         game.update();
     };
   };

@@ -1,22 +1,20 @@
-import Character from "./character";
 import game from "../game";
+import Actor from "./Actor";
 import gp5 from "../sketch";
-/**
- * Gnome class to represent Gerome.
- */
-class Gnome extends Character{
+// A chanterelle. Fancy.
+class ChanterelleActor extends Actor {
     /**
      * 
      * @param {p5.Vector} position 
      */
     constructor(position) {
-        super(position, game.assets.gnome.side);
+        super(position, game.assets.chanterelle);
     }
 
     draw() {
         gp5.push();
         gp5.translate(this.position.x, this.position.y);
-        if (this.velocity.x < 0) { 
+        if (this.velocity.x > 0) { // Eyes are toward left, so the flip logic is reverse compared to gnome
             gp5.scale(-1,1);
             gp5.image(this.image, -this.image.width, 0);
         } else {
@@ -25,4 +23,4 @@ class Gnome extends Character{
         gp5.pop();
     }
 }
-export default Gnome;
+export default ChanterelleActor;

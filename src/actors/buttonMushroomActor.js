@@ -1,8 +1,8 @@
-import Character from "./character";
+import Actor from "./Actor";
 import game from "../game";
 import gp5 from "../sketch";
 // Button mushroom. He feels nothing but emptiness.
-class ButtonMushroom extends Character {
+class ButtonMushroomActor extends Actor {
     /**
      * @param {p5.Vector} position 
      */
@@ -22,4 +22,4 @@ class ButtonMushroom extends Character {
         gp5.pop();
     }
 }
-export default ButtonMushroom;
+export default ButtonMushroomActor;

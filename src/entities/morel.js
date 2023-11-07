@@ -8,7 +8,6 @@ import gp5 from "../sketch";
 class Morel extends Character {
     /**
      * 
-     * @param {Game} game 
      * @param {p5.Vector} position 
      */
     constructor(position) {

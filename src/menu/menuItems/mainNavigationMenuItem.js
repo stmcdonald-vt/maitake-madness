@@ -5,7 +5,6 @@ import gp5 from "../../sketch";
 // Navigation to options or start game.
 class MainNavigationMenuItem extends PickerMenuItem {
     /**
-     * @param {Game} game 
      * @param {p5.Vector} position 
      */
     constructor(position) {

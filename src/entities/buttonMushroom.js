@@ -4,7 +4,6 @@ import gp5 from "../sketch";
 // Button mushroom. He feels nothing but emptiness.
 class ButtonMushroom extends Character {
     /**
-     * @param {Game} game 
      * @param {p5.Vector} position 
      */
     constructor(position) {

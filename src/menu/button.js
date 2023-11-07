@@ -5,7 +5,6 @@ import game from "../game";
 class Button {
     /**
      * 
-     * @param {Game} game 
      * @param {p5.Vector} position 
      * @param {function} actionFunction 
      * @param {number} height 

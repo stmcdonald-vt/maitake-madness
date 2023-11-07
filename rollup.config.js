@@ -1,5 +1,7 @@
 // rollup.config.js
+import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
+
 
 export default {
   input: 'src/sketch.js',
@@ -8,5 +10,5 @@ export default {
     format: 'iife',
   },
   preserveEntrySignatures: 'exports-only',
-  plugins: [resolve()],
+  plugins: [resolve(), commonjs()],
 };

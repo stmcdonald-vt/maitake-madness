@@ -1,15 +1,13 @@
 import PickerMenuItem from "./pickerMenuItem";
+import game from "../../game"
 
 // Picker for difficulty
 class DifficultyMenuItem extends PickerMenuItem {
     /**
-     * @param {Game} game 
      * @param {p5.Vector} position 
      */
-    constructor(game, position) {
-        super(game, position, game.state.DIFFICULTY);
-        this.game = game;
-        this.p5 = game.p5;
+    constructor(position) {
+        super(position, game.state.DIFFICULTY);
         this.items = [
             {text: 'Easy', func: () => game.state.DIFFICULTY = 0},
             {text: 'Medium', func: () => game.state.DIFFICULTY = 1},

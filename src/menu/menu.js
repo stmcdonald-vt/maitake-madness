@@ -2,8 +2,7 @@
  * Generic menu class to hold and format menuItems. Currently only displays, but is extensible.
  */
 class Menu {
-    constructor() {
-        
+    constructor() { 
     }
 
     display() {

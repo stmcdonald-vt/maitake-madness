@@ -1,22 +1,21 @@
-import Game from "../game";
+import game from "../game";
+import p5 from "p5";
+import gp5 from "../sketch";
 
 // Generic character class. Handles shared physics. Currently WIP, will be improved in actual game.
 // Need to extend for top down or have different one for animation side views.
 class Character {
     /**
-     * @param {Game} game 
      * @param {p5.Vector} position 
      * @param {p5.Image} image 
      */
-    constructor(game, position, image) {
-        this.p5 = game.p5;
-        this.game = game;
+    constructor(position, image) {
         this.image = image || undefined;
-        this.initialPosition = this.p5.createVector(position.x, position.y); // serves as the "ground"
+        this.initialPosition = gp5.createVector(position.x, position.y); // serves as the "ground"
         this.position = position;
-        this.velocity = this.p5.createVector(0, 0);
-        this.gravity = this.p5.createVector(0, .3);
-        this.acceleration = this.p5.createVector(0, 0);
+        this.velocity = gp5.createVector(0, 0);
+        this.gravity = gp5.createVector(0, .3);
+        this.acceleration = gp5.createVector(0, 0);
         this.isJumping = false;
     }
 
@@ -26,7 +25,7 @@ class Character {
 
     jump(amount) {
         if (!this.isJumping) {
-            this.applyForce(this.p5.createVector(0, -amount));
+            this.applyForce(gp5.createVector(0, -amount));
             this.isJumping = true;
         }
     }

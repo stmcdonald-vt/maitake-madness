@@ -1,9 +1,12 @@
-import Game from "./game.js"
+import game from "./game.js"
+import p5 from "p5";
 
 // Use instance mode for p5. This works better with Rollup and ES6 modules. https://p5js.org/reference/#/p5/p5
+/**
+ * 
+ * @param {p5} p 
+ */
 let sketch = function(p) {
-    let game;
-    let startScreenImage;
     let assets
 
     p.mouseClicked = function() {
@@ -39,7 +42,9 @@ let sketch = function(p) {
     // Create game and assign assets
     p.setup = function() {
         p.createCanvas(400, 400);
-        game = new Game(p, assets);
+        game.p5 = p;
+        game.assets = assets;
+        game.initialize();
     };
  
     p.draw = function() {
@@ -47,5 +52,6 @@ let sketch = function(p) {
         game.update();
     };
   };
-  
-  new p5(sketch);
+
+const gp5 = new p5(sketch);
+export default gp5;

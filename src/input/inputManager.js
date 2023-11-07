@@ -1,12 +1,7 @@
-import Game from "../game";
-
+import gp5 from "../sketch";
 // Handles input 
 class InputManager {
-    /**
-     * @param {Game} game 
-     */
-    constructor(game) {
-        this.p5 = game.p5;
+    constructor() {
         this.keyMap = {};
         this.clickFunctions = [];
     }
@@ -22,10 +17,10 @@ class InputManager {
 
     // Used in the functions that are registered
     mouseInsideBounds(lowX, highX, lowY, highY) {
-        return this.p5.mouseX > lowX
-            && this.p5.mouseX < highX
-            && this.p5.mouseY > lowY
-            && this.p5.mouseY < highY;
+        return gp5.mouseX > lowX
+            && gp5.mouseX < highX
+            && gp5.mouseY > lowY
+            && gp5.mouseY < highY;
     }
 
     onClick() {

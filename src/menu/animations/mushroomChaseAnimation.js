@@ -2,22 +2,21 @@ import Gnome from '../../entities/gnome';
 import Chanterelle from '../../entities/chanterelle';
 import ButtonMushroom from '../../entities/buttonMushroom';
 import Morel from '../../entities/morel';
+import gp5 from '../../sketch';
+import p5 from 'p5';
 
 class MushroomChaseAnimation {
     /**
      * 
-     * @param {Game} game 
      * @param {p5.Vector} position 
      */
-    constructor(game, position) {
-        this.game = game;
-        this.p5 = game.p5;
+    constructor(position) {
         this.position = position;
         this.forward = true;
-        this.gnome = new Gnome(game, this.p5.createVector(this.position.x, this.position.y));
-        this.button = new ButtonMushroom(game, this.p5.createVector(this.position.x - 100, this.position.y));
-        this.chanterelle = new Chanterelle(game, this.p5.createVector(this.position.x - 150, this.position.y));
-        this.morel = new Morel(game, this.p5.createVector(this.position.x - 200, this.position.y));
+        this.gnome = new Gnome(gp5.createVector(this.position.x, this.position.y));
+        this.button = new ButtonMushroom(gp5.createVector(this.position.x - 100, this.position.y));
+        this.chanterelle = new Chanterelle(gp5.createVector(this.position.x - 150, this.position.y));
+        this.morel = new Morel(gp5.createVector(this.position.x - 200, this.position.y));
 
         this.actors = [
             this.gnome,
@@ -31,7 +30,7 @@ class MushroomChaseAnimation {
 
     setReverse() { // Need to rearrange the order and move them the other direction. 
         const startPoint = 450;
-        const speed = this.p5.random(-6, -1);
+        const speed = gp5.random(-6, -1);
         this.gnome.setXPosition(startPoint);
         this.gnome.setXVelocity(speed);
         this.button.setXPosition(startPoint + 100);
@@ -45,7 +44,7 @@ class MushroomChaseAnimation {
 
     setForward() {
         const startPoint = -50;
-        const speed = this.p5.random(1, 6);
+        const speed = gp5.random(1, 6);
         this.gnome.setXPosition(startPoint);
         this.gnome.setXVelocity(speed);
         this.button.setXPosition(startPoint - 100);

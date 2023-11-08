@@ -369,6 +369,262 @@
 	    }
 	}
 
+	class Bullet {
+	    constructor(x, y, heading, speed=6) {
+	        console.log(x, y);
+	        this.position = gp5$1.createVector(x, y);
+	        this.velocity = gp5$1.createVector(speed, 0);
+	        this.velocity.setHeading(heading);
+	    }
+
+	    update() {
+	        this.position.add(this.velocity);
+	    }
+
+	    draw() {
+	        gp5$1.push();
+	        gp5$1.translate(this.position.x, this.position.y);
+	        gp5$1.fill('black');
+	        gp5$1.circle(0, 0, 6);
+	        gp5$1.pop();
+	    }
+
+	    display() {
+	        this.update();
+	        this.draw();
+	    }
+	}
+
+	class Gnome {
+	    /**
+	     * 
+	     * @param {p5.Vector} position 
+	     */
+	    constructor(position) {
+	        this.position = position;
+	        this.angle = 0;
+	        this.moveSpeed = 2;
+	        this.image = game$1.assets.gnome.front;
+	        this.gunSpacing = 40;
+	        this._topLeftVector = gp5$1.createVector(0, 0);
+	    }
+
+	    registerClickListeners() {
+	        inputManager.registerClickFunction(() => {
+	            this.shoot();
+	        });
+	    }
+
+	    get topLeft() {
+	        this._topLeftVector.set(this.position.x - this.image.width / 2, this.position.y - this.image.height / 2);
+	        return this._topLeftVector;
+	    }
+
+	    moveX(direction) {
+	        this.position.x += this.moveSpeed * direction;
+	    }
+
+	    moveY(direction) {
+	        this.position.y += this.moveSpeed * direction;
+	    }
+
+	    update() {
+	        const mouseVector = gp5$1.createVector(gp5$1.mouseX, gp5$1.mouseY);
+	        mouseVector.sub(this.position);
+	        this.angle = mouseVector.heading();
+	    }
+
+	    angleBetween(a, b) {
+	        return this.angle >= a && this.angle < b;
+	    }
+
+	    drawDirectionalSprite() {
+	        if (this.angleBetween(-constants.FOURTH_PI,constants.FOURTH_PI)) {
+	            this.image = game$1.assets.gnome.side;
+	            gp5$1.image(this.image, 0, 0);
+	        } else if (this.angleBetween(constants.FOURTH_PI, constants.THREE_FOURTHS_PI)){
+	            this.image = game$1.assets.gnome.front;
+	            gp5$1.image(this.image, 0, 0);
+	        } else if(this.angleBetween(-constants.THREE_FOURTHS_PI, -constants.FOURTH_PI)) {
+	            this.image = game$1.assets.gnome.back;
+	            gp5$1.image(this.image, 0, 0);
+	        } else {
+	            gp5$1.push();
+	            gp5$1.scale(-1,1); // flip horizontally
+	            const image = game$1.assets.gnome.side;
+	            gp5$1.image(image, 0, 0);
+	            gp5$1.pop();
+	        }
+	    }
+
+	    shoot() {
+	        console.log(this.position.x + this.gunSpacing * gp5$1.cos(this.angle));
+	        entityManager$1.addProjectile(new Bullet(this.position.x + (this.gunSpacing * gp5$1.cos(this.angle)), this.position.y + (this.gunSpacing * gp5$1.sin(this.angle)), this.angle));
+	        console.log(entityManager$1.projectiles);
+	    }
+
+	    draw() {
+	        gp5$1.push();
+	        gp5$1.imageMode(gp5$1.CENTER);
+	        gp5$1.stroke('black');
+	        gp5$1.noFill();
+	        // gp5.rect(this.topLeft.x, this.topLeft.y, this.image.width, this.image.height)
+	        gp5$1.translate(this.position.x, this.position.y);
+	        this.drawDirectionalSprite();
+
+	        // gp5.translate(this.halfWidth, this.halfHeight);
+	        gp5$1.circle(0, 0, 5);
+	        gp5$1.rotate(this.angle);
+	        gp5$1.fill('black');
+	        gp5$1.rect(this.gunSpacing, 0, 15, 4);
+	        gp5$1.pop();
+	    }
+
+	    display() {
+	        this.update();
+	        this.draw();
+	    }
+	}
+
+	class ChaseState {
+	    constructor(enemy) {
+	        this.enemy = enemy;
+	        this.player = entityManager$1.gnome;
+	        this.step = gp5$1.createVector(0, 0);
+	    }
+
+	    execute() {
+	        this.step.set(this.player.position.x - this.enemy.position.x, this.player.position.y - this.enemy.position.y);
+	        this.step.normalize();
+	        this.enemy.velocity = this.step;
+	        this.enemy.changeState();
+	    }
+	}
+
+	class ShootState {
+	    constructor(enemy) {
+	        this.enemy = enemy;
+	        this.player = entityManager$1.gnome;
+	        this.step = gp5$1.createVector(0, 0);
+	    }
+
+	    execute() {
+	        this.enemy.velocity.set(0, 0);
+	        this.step.set(this.player.position.x - this.enemy.position.x, this.player.position.y - this.enemy.position.y);
+	        this.enemy.shootAngle = this.step.heading();
+	        this.enemy.shoot();
+	        this.enemy.changeState();
+	    }
+	}
+
+	// Button mushroom. He feels nothing but emptiness.
+	class MorelMushroom {
+	    /**
+	     * @param {p5.Vector} position 
+	     */
+	    constructor(position) {
+	        this.position = position;
+	        this.velocity = gp5$1.createVector(0, 0);
+	        this.image = game$1.assets.morel;
+	        this.image.loadPixels();
+	        this.states = [new ChaseState(this), new ShootState(this)];
+	        this.currentState = 0;
+	        this.angle = 0;
+	        this.shootAngle;
+	        this._topLeftVector = gp5$1.createVector(0, 0);
+	    }
+
+	    get topLeft() {
+	        this._topLeftVector.set(this.position.x - this.image.width / 2, this.position.y - this.image.height / 2);
+	        return this._topLeftVector;
+	    }
+
+	    shoot() {
+	        entityManager$1.addProjectile(new Bullet(this.position.x, this.position.y, this.shootAngle));
+	    }
+
+	    changeState() {
+	        switch (this.currentState) {
+	            case 0:
+	                if (entityManager$1.distanceToPlayer(this) < 200) {
+	                    this.currentState = 1;
+	                }
+	                break;
+	            case 1:
+	                if (entityManager$1.distanceToPlayer(this) > 200) {
+	                    this.currentState = 0;
+	                }
+	        }
+	    }
+
+	    update() {
+	        this.states[this.currentState].execute();
+	        this.position.add(this.velocity);
+	    }
+
+	    draw() {
+	        gp5$1.push();
+	        gp5$1.noFill();
+	        // gp5.rect(this.topLeft.x, this.topLeft.y, this.image.width, this.image.height)
+	        gp5$1.imageMode(gp5$1.CENTER);
+	        gp5$1.translate(this.position.x, this.position.y);
+	        // gp5.scale(.75, .75);
+	        gp5$1.image(this.image, 0, 0);
+	        gp5$1.pop();
+	    }
+
+	    display() {
+	        this.update();
+	        this.draw();
+	    }
+	}
+
+	// Handles input 
+	const entityManager = {
+	    initialize: function() {
+	        this.gnome = new Gnome(gp5$1.createVector(200, 200));
+	        this.mushrooms = [
+	            // new ButtonMushroom(gp5.createVector(100, 100)),
+	            new MorelMushroom(gp5$1.createVector(300, 100))
+	        ];
+	        this.projectiles = [];
+	    },
+
+	    isInbounds: function(entity) {
+	        return entity.position.x > 0
+	            && entity.position.x < gp5$1.width
+	            && entity.position.y > 0
+	            && entity.position.y < gp5$1.height
+	    },
+
+	    cleanupProjectiles: function() {
+	        this.projectiles = this.projectiles.filter(p => this.isInbounds(p));
+	    },
+
+	    addProjectile: function(proj) {
+	        this.projectiles.push(proj);
+	    },
+
+	    setupGame: function() {
+	        this.gnome.registerClickListeners();
+	    },
+
+	    distanceToPlayer: function(entity) {
+	        return gp5$1.dist(this.gnome.position.x, this.gnome.position.y, entity.position.x, entity.position.y);
+	    },
+	    update: function() {
+	        this.mushrooms.forEach(mushroom => mushroom.display());
+	        this.gnome.display();
+	        this.projectiles.forEach(projectile => projectile.display());
+
+	        if (gp5$1.frameCount % 120 === 0) {
+	            this.cleanupProjectiles();
+	        }
+	    }
+	};
+
+	var entityManager$1 = entityManager;
+
 	// Navigation to options or start game.
 	class MainNavigationMenuItem extends PickerMenuItem {
 	    /**
@@ -379,7 +635,11 @@
 	        this.primaryColor = gp5$1.color('green');
 	        this.textColor = gp5$1.color('white');
 	        this.items = [
-	            {text: 'Start', func: () => game$1.state.GAME_STATE = 1},
+	            {text: 'Start', func: () => {
+	                inputManager.clearClickFunctions();
+	                entityManager$1.setupGame();
+	                game$1.state.GAME_STATE = 1;
+	            }},
 	            {text: 'Options', func: () => {game$1.menuManager.setMenu(1);}},
 	        ];
 	        this.initializePositions();
@@ -667,199 +927,6 @@
 	        this.menus[this.currentMenuIndex].display();
 	    }
 	}
-
-	class Gnome {
-	    /**
-	     * 
-	     * @param {p5.Vector} position 
-	     */
-	    constructor(position) {
-	        this.position = position;
-	        this.angle = 0;
-	        this.moveSpeed = 2;
-	        this.image = game$1.assets.gnome.front;
-	        this._topLeftVector = gp5$1.createVector(0, 0);
-	    }
-
-	    get topLeft() {
-	        this._topLeftVector.set(this.position.x - this.image.width / 2, this.position.y - this.image.height / 2);
-	        return this._topLeftVector;
-	    }
-
-	    moveX(direction) {
-	        this.position.x += this.moveSpeed * direction;
-	    }
-
-	    moveY(direction) {
-	        this.position.y += this.moveSpeed * direction;
-	    }
-
-	    update() {
-	        const mouseVector = gp5$1.createVector(gp5$1.mouseX, gp5$1.mouseY);
-	        mouseVector.sub(this.position);
-	        this.angle = mouseVector.heading();
-	    }
-
-	    angleBetween(a, b) {
-	        return this.angle >= a && this.angle < b;
-	    }
-
-	    drawDirectionalSprite() {
-	        if (this.angleBetween(-constants.FOURTH_PI,constants.FOURTH_PI)) {
-	            this.image = game$1.assets.gnome.side;
-	            gp5$1.image(this.image, 0, 0);
-	        } else if (this.angleBetween(constants.FOURTH_PI, constants.THREE_FOURTHS_PI)){
-	            this.image = game$1.assets.gnome.front;
-	            gp5$1.image(this.image, 0, 0);
-	        } else if(this.angleBetween(-constants.THREE_FOURTHS_PI, -constants.FOURTH_PI)) {
-	            this.image = game$1.assets.gnome.back;
-	            gp5$1.image(this.image, 0, 0);
-	        } else {
-	            gp5$1.push();
-	            gp5$1.scale(-1,1); // flip horizontally
-	            const image = game$1.assets.gnome.side;
-	            gp5$1.image(image, 0, 0);
-	            gp5$1.pop();
-	        }
-	    }
-
-	    draw() {
-	        gp5$1.push();
-	        gp5$1.imageMode(gp5$1.CENTER);
-	        gp5$1.stroke('black');
-	        gp5$1.noFill();
-	        // gp5.rect(this.topLeft.x, this.topLeft.y, this.image.width, this.image.height)
-	        gp5$1.translate(this.position.x, this.position.y);
-	        this.drawDirectionalSprite();
-
-	        // gp5.translate(this.halfWidth, this.halfHeight);
-	        gp5$1.circle(0, 0, 5);
-	        gp5$1.rotate(this.angle);
-	        gp5$1.fill('black');
-	        gp5$1.rect(40, 0, 15, 4);
-	        gp5$1.pop();
-	    }
-
-	    display() {
-	        this.update();
-	        this.draw();
-	    }
-	}
-
-	class ChaseState {
-	    constructor(enemy) {
-	        this.enemy = enemy;
-	        this.player = entityManager$1.gnome;
-	        this.step = gp5$1.createVector(0, 0);
-	    }
-
-	    execute() {
-	        this.step.set(this.player.position.x - this.enemy.position.x, this.player.position.y - this.enemy.position.y);
-	        this.step.normalize();
-	        this.enemy.velocity = this.step;
-	        this.enemy.changeState();
-	    }
-	}
-
-	class ShootState {
-	    constructor(enemy) {
-	        this.enemy = enemy;
-	        this.player = entityManager$1.gnome;
-	        this.step = gp5$1.createVector(0, 0);
-	    }
-
-	    execute() {
-	        this.enemy.velocity.set(0, 0);
-	        this.step.set(this.player.position.x - this.enemy.position.x, this.player.position.y - this.enemy.position.y);
-	        this.enemy.shootAngle = this.step;
-	        this.enemy.shoot();
-	        this.enemy.changeState();
-	    }
-	}
-
-	// Button mushroom. He feels nothing but emptiness.
-	class MorelMushroom {
-	    /**
-	     * @param {p5.Vector} position 
-	     */
-	    constructor(position) {
-	        this.position = position;
-	        this.velocity = gp5$1.createVector(0, 0);
-	        this.image = game$1.assets.morel;
-	        this.image.loadPixels();
-	        this.states = [new ChaseState(this), new ShootState(this)];
-	        this.currentState = 0;
-	        this.angle = 0;
-	        this.shootAngle;
-	        this._topLeftVector = gp5$1.createVector(0, 0);
-	    }
-
-	    get topLeft() {
-	        this._topLeftVector.set(this.position.x - this.image.width / 2, this.position.y - this.image.height / 2);
-	        return this._topLeftVector;
-	    }
-
-	    shoot() {
-
-	    }
-
-	    changeState() {
-	        switch (this.currentState) {
-	            case 0:
-	                if (entityManager$1.distanceToPlayer(this) < 200) {
-	                    this.currentState = 1;
-	                }
-	                break;
-	            case 1:
-	                if (entityManager$1.distanceToPlayer(this) > 200) {
-	                    this.currentState = 0;
-	                }
-	        }
-	    }
-
-	    update() {
-	        this.states[this.currentState].execute();
-	        this.position.add(this.velocity);
-	    }
-
-	    draw() {
-	        gp5$1.push();
-	        gp5$1.noFill();
-	        // gp5.rect(this.topLeft.x, this.topLeft.y, this.image.width, this.image.height)
-	        gp5$1.imageMode(gp5$1.CENTER);
-	        gp5$1.translate(this.position.x, this.position.y);
-	        // gp5.scale(.75, .75);
-	        gp5$1.image(this.image, 0, 0);
-	        gp5$1.pop();
-	    }
-
-	    display() {
-	        this.update();
-	        this.draw();
-	    }
-	}
-
-	// Handles input 
-	const entityManager = {
-	    initialize: function() {
-	        this.gnome = new Gnome(gp5$1.createVector(200, 200));
-	        this.mushrooms = [
-	            // new ButtonMushroom(gp5.createVector(100, 100)),
-	            new MorelMushroom(gp5$1.createVector(300, 100))
-	        ];
-	    },
-
-	    distanceToPlayer: function(entity) {
-	        return gp5$1.dist(this.gnome.position.x, this.gnome.position.y, entity.position.x, entity.position.y);
-	    },
-	    update: function() {
-	        this.mushrooms.forEach(mushroom => mushroom.display());
-	        this.gnome.display();
-
-	    }
-	};
-
-	var entityManager$1 = entityManager;
 
 	const game = {
 	    initialize: function () {

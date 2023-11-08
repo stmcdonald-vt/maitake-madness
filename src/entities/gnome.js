@@ -2,6 +2,9 @@ import p5 from 'p5';
 import gp5 from '../sketch';
 import { constants } from '../sketch';
 import game from '../game';
+import entityManager from '../managers/entityManager';
+import Bullet from './bullet';
+import inputManager from '../input/inputManager';
 
 export default class Gnome {
     /**
@@ -13,7 +16,14 @@ export default class Gnome {
         this.angle = 0;
         this.moveSpeed = 2;
         this.image = game.assets.gnome.front;
+        this.gunSpacing = 40;
         this._topLeftVector = gp5.createVector(0, 0);
+    }
+
+    registerClickListeners() {
+        inputManager.registerClickFunction(() => {
+            this.shoot();
+        })
     }
 
     get topLeft() {
@@ -58,6 +68,10 @@ export default class Gnome {
         }
     }
 
+    shoot() {
+        entityManager.addProjectile(new Bullet(this.position.x + (this.gunSpacing * gp5.cos(this.angle)), this.position.y + (this.gunSpacing * gp5.sin(this.angle)), this.angle));
+    }
+
     draw() {
         gp5.push();
         gp5.imageMode(gp5.CENTER);
@@ -71,7 +85,7 @@ export default class Gnome {
         gp5.circle(0, 0, 5)
         gp5.rotate(this.angle);
         gp5.fill('black');
-        gp5.rect(40, 0, 15, 4);
+        gp5.rect(this.gunSpacing, 0, 15, 4);
         gp5.pop();
     }
 

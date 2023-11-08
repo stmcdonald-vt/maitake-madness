@@ -16,7 +16,7 @@ class Tutorial {
     }
 
     get tutorialText() {
-        return `As Gerome the Gnome, you are tasked with protecting gnomish relics from fungal aggressors. You will have plenty of weaponry at your disposal. You will use ${game.state.MOVEMENT_SCHEME ? 'the ARROW KEYS' : 'WASD'} to control Gerome. You will use your mouse to aim and left click to shoot your weapon.`
+        return `As Gerome the Gnome, you are tasked with protecting gnomish relics from fungal aggressors. You will have plenty of weaponry at your disposal. You will use ${game.state.MOVEMENT_SCHEME ? 'the ARROW KEYS' : 'WASD'} to control Gerome. You will use your mouse to aim and left click to shoot your weapon. It is highly recommended to use a mouse for aiming rather than a laptop touchpad.`
     }
 
     display() {
@@ -24,7 +24,7 @@ class Tutorial {
         gp5.noStroke();
         gp5.fill('rgba(0,0,0,0.4)'); // Transparent square behind for readability
         gp5.rect(this.position.x -5, this.position.y - 5, this.width, this.height)
-        gp5.textSize(14);
+        gp5.textSize(20);
         gp5.textWrap(gp5.WORD);
         gp5.fill('white');
         gp5.text(this.tutorialText, this.position.x, this.position.y, this.width, this.height);

@@ -12,7 +12,7 @@ class PickerMenuItem {
     constructor(position, selectedIndex=0, toggleable=true) {
         this.position = position;
         this.selectedIndex = selectedIndex;
-        this.buttonHeight = 30;
+        this.buttonHeight = 50;
         this.toggleable = toggleable; // Turns the buttons into radio-like buttons
     }
 

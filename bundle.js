@@ -194,7 +194,7 @@
 	    }
 
 	    setReverse() { // Need to rearrange the order and move them the other direction. 
-	        const startPoint = 450;
+	        const startPoint = gp5$1.width + 50;
 	        const speed = gp5$1.random(-6, -1);
 	        this.gnome.setXPosition(startPoint);
 	        this.gnome.setXVelocity(speed);
@@ -222,7 +222,7 @@
 	    }
 
 	    display() {
-	        if (this.forward && this.morel.position.x > 400) {
+	        if (this.forward && this.morel.position.x > gp5$1.width) {
 	            this.setReverse();
 	        } else if (!this.forward && this.morel.position.x < -30) {
 	            this.setForward();
@@ -307,7 +307,7 @@
 	    constructor(position, selectedIndex=0, toggleable=true) {
 	        this.position = position;
 	        this.selectedIndex = selectedIndex;
-	        this.buttonHeight = 30;
+	        this.buttonHeight = 50;
 	        this.toggleable = toggleable; // Turns the buttons into radio-like buttons
 	    }
 
@@ -399,7 +399,7 @@
 
 	    display() {
 	        gp5$1.push();
-	        gp5$1.textSize(48);
+	        gp5$1.textSize(gp5$1.width / 10);
 	        gp5$1.textAlign(gp5$1.CENTER);
 	        gp5$1.textWrap(gp5$1.WORD);
 	        gp5$1.textFont(game$1.assets.fonts.oldForest);
@@ -412,9 +412,9 @@
 	class MainMenu extends Menu {
 	    constructor() {
 	        super();
-	        const buttonPosition = gp5$1.createVector(125, 200);
-	        const titlePosition = gp5$1.createVector(200, 100);
-	        const animationPosition = gp5$1.createVector(0, 300);
+	        const buttonPosition = gp5$1.createVector(gp5$1.width * .4, gp5$1.height / 3);
+	        const titlePosition = gp5$1.createVector(gp5$1.width / 2, gp5$1.height / 4);
+	        const animationPosition = gp5$1.createVector(0, gp5$1.height * 0.8);
 	        this.items = [
 	            new MainNavigationMenuItem(buttonPosition),
 	            new Title(titlePosition),
@@ -431,7 +431,7 @@
 	        // Also display author text which doesn't warrant a component
 	        gp5$1.push();
 	        gp5$1.fill('white');
-	        gp5$1.text('Built by: Sean McDonald', 0, 390);
+	        gp5$1.text('Built by: Sean McDonald', 0, gp5$1.height * 0.95);
 	        gp5$1.pop();
 	    }
 	}
@@ -460,7 +460,7 @@
 	    }
 
 	    setReverse() { // Need to rearrange the order and move them the other direction. 
-	        const startPoint = 450;
+	        const startPoint = gp5$1.width + 50;
 	        const speed = gp5$1.random(-6, -1);
 	        this.button.setXPosition(startPoint);
 	        this.button.setXVelocity(speed);
@@ -488,7 +488,7 @@
 	    }
 
 	    display() {
-	        if (this.forward && this.gnome.position.x > 400) {
+	        if (this.forward && this.gnome.position.x > gp5$1.width) {
 	            this.setReverse();
 	        } else if (!this.forward && this.gnome.position.x < -30) {
 	            this.setForward();
@@ -591,7 +591,7 @@
 	    }
 
 	    get tutorialText() {
-	        return `As Gerome the Gnome, you are tasked with protecting gnomish relics from fungal aggressors. You will have plenty of weaponry at your disposal. You will use ${game$1.state.MOVEMENT_SCHEME ? 'the ARROW KEYS' : 'WASD'} to control Gerome. You will use your mouse to aim and left click to shoot your weapon.`
+	        return `As Gerome the Gnome, you are tasked with protecting gnomish relics from fungal aggressors. You will have plenty of weaponry at your disposal. You will use ${game$1.state.MOVEMENT_SCHEME ? 'the ARROW KEYS' : 'WASD'} to control Gerome. You will use your mouse to aim and left click to shoot your weapon. It is highly recommended to use a mouse for aiming rather than a laptop touchpad.`
 	    }
 
 	    display() {
@@ -599,7 +599,7 @@
 	        gp5$1.noStroke();
 	        gp5$1.fill('rgba(0,0,0,0.4)'); // Transparent square behind for readability
 	        gp5$1.rect(this.position.x -5, this.position.y - 5, this.width, this.height);
-	        gp5$1.textSize(14);
+	        gp5$1.textSize(20);
 	        gp5$1.textWrap(gp5$1.WORD);
 	        gp5$1.fill('white');
 	        gp5$1.text(this.tutorialText, this.position.x, this.position.y, this.width, this.height);
@@ -611,9 +611,9 @@
 	    constructor() {
 	        super();
 
-	        const optionsPosition = gp5$1.createVector(20, 200);
-	        const tutorialPosition = gp5$1.createVector(20, 75);
-	        const animationPosition = gp5$1.createVector(0, 300);
+	        const optionsPosition = gp5$1.createVector(20, gp5$1.height * 0.5);
+	        const tutorialPosition = gp5$1.createVector(gp5$1.width * 0.05, gp5$1.height * 0.1);
+	        const animationPosition = gp5$1.createVector(0, gp5$1.height * 0.8);
 
 	        // Back button setup
 	        const backButtonPosition = gp5$1.createVector(20, 20);
@@ -633,9 +633,9 @@
 
 	        this.items = [
 	            new DifficultyMenuItem(game$1.p5.createVector(optionsPosition.x, optionsPosition.y)),
-	            new ControlMenuItem(game$1.p5.createVector(optionsPosition.x, optionsPosition.y + 50)),
+	            new ControlMenuItem(game$1.p5.createVector(optionsPosition.x, optionsPosition.y + 100)),
 	            new Button(backButtonPosition, backButtonAction, backButtonHeight, backButtonWidth, undefined, backButtonDisplay),
-	            new Tutorial(tutorialPosition, 350, 110),
+	            new Tutorial(tutorialPosition, gp5$1.width * 0.9, gp5$1.height * 0.3),
 	            new GnomeChaseAnimation(animationPosition)
 	        ];
 	    }
@@ -675,20 +675,15 @@
 	     */
 	    constructor(position) {
 	        this.position = position;
-	        this.width = game$1.assets.gnome.front.width;
-	        this.halfWidth = this.width / 2;
-	        this.height = game$1.assets.gnome.front.height;
-	        this.halfHeight = this.height / 2;
 	        this.angle = 0;
 	        this.moveSpeed = 2;
+	        this.image = game$1.assets.gnome.front;
+	        this._topLeftVector = gp5$1.createVector(0, 0);
 	    }
 
-	    get topLeftX() {
-	        return this.position.x - this.halfWidth;
-	    }
-
-	    get topLeftY() {
-	        return this.position.y - this.halfHeight;
+	    get topLeft() {
+	        this._topLeftVector.set(this.position.x - this.image.width / 2, this.position.y - this.image.height / 2);
+	        return this._topLeftVector;
 	    }
 
 	    moveX(direction) {
@@ -711,11 +706,14 @@
 
 	    drawDirectionalSprite() {
 	        if (this.angleBetween(-constants.FOURTH_PI,constants.FOURTH_PI)) {
-	            gp5$1.image(game$1.assets.gnome.side, 0, 0);
+	            this.image = game$1.assets.gnome.side;
+	            gp5$1.image(this.image, 0, 0);
 	        } else if (this.angleBetween(constants.FOURTH_PI, constants.THREE_FOURTHS_PI)){
-	            gp5$1.image(game$1.assets.gnome.front, 0, 0);
+	            this.image = game$1.assets.gnome.front;
+	            gp5$1.image(this.image, 0, 0);
 	        } else if(this.angleBetween(-constants.THREE_FOURTHS_PI, -constants.FOURTH_PI)) {
-	            gp5$1.image(game$1.assets.gnome.back, 0, 0);
+	            this.image = game$1.assets.gnome.back;
+	            gp5$1.image(this.image, 0, 0);
 	        } else {
 	            gp5$1.push();
 	            gp5$1.scale(-1,1); // flip horizontally
@@ -730,7 +728,7 @@
 	        gp5$1.imageMode(gp5$1.CENTER);
 	        gp5$1.stroke('black');
 	        gp5$1.noFill();
-	        gp5$1.rect(this.topLeftX, this.topLeftY, this.width, this.height);
+	        // gp5.rect(this.topLeft.x, this.topLeft.y, this.image.width, this.image.height)
 	        gp5$1.translate(this.position.x, this.position.y);
 	        this.drawDirectionalSprite();
 
@@ -763,81 +761,6 @@
 	    }
 	}
 
-	class ChargeState {
-	    constructor(enemy) {
-	        this.enemy = enemy;
-	        this.player = entityManager$1.gnome;
-	        this.step = gp5$1.createVector(0, 0);
-	    }
-
-	    setAngle() {
-	        this.step.set(this.player.position.x - this.enemy.position.x, this.player.position.y - this.enemy.position.y);
-	        this.step.normalize();
-	        this.step.mult(5);
-	        this.enemy.velocity = this.step;
-	        return this.step.heading();
-	    }
-
-	    execute() {
-	        this.enemy.changeState();
-	    }
-	}
-
-	// Button mushroom. He feels nothing but emptiness.
-	class ButtonMushroom {
-	    /**
-	     * @param {p5.Vector} position 
-	     */
-	    constructor(position) {
-	        this.position = position;
-	        this.velocity = gp5$1.createVector(0, 0);
-	        this.image = game$1.assets.button;
-	        this.states = [new ChaseState(this), new ChargeState(this)];
-	        this.currentState = 0;
-	        this.angle = 0;
-	    }
-
-	    changeState() {
-	        switch (this.currentState) {
-	            case 0:
-	                if (entityManager$1.distanceToPlayer(this) < 100) {
-	                    this.angle = this.states[1].setAngle();
-	                    this.currentState = 1;
-	                }
-	                break;
-	            case 1:
-	                if (entityManager$1.distanceToPlayer(this) > 150) {
-	                    this.currentState = 0;
-	                }
-	        }
-	    }
-
-	    update() {
-	        console.log(this.currentState);
-	        this.states[this.currentState].execute();
-	        this.position.add(this.velocity);
-	    }
-
-	    draw() {
-	        gp5$1.push();
-	        gp5$1.imageMode(gp5$1.CENTER);
-	        gp5$1.translate(this.position.x, this.position.y);
-	        if (this.currentState === 1) {
-	            gp5$1.rotate(this.angle + gp5$1.HALF_PI);
-	        }
-	        gp5$1.scale(.5, .5);
-	        gp5$1.image(this.image, 0, 0);
-	        gp5$1.pop();
-	    }
-
-
-
-	    display() {
-	        this.update();
-	        this.draw();
-	    }
-	}
-
 	class ShootState {
 	    constructor(enemy) {
 	        this.enemy = enemy;
@@ -863,10 +786,17 @@
 	        this.position = position;
 	        this.velocity = gp5$1.createVector(0, 0);
 	        this.image = game$1.assets.morel;
+	        this.image.loadPixels();
 	        this.states = [new ChaseState(this), new ShootState(this)];
 	        this.currentState = 0;
 	        this.angle = 0;
 	        this.shootAngle;
+	        this._topLeftVector = gp5$1.createVector(0, 0);
+	    }
+
+	    get topLeft() {
+	        this._topLeftVector.set(this.position.x - this.image.width / 2, this.position.y - this.image.height / 2);
+	        return this._topLeftVector;
 	    }
 
 	    shoot() {
@@ -894,9 +824,11 @@
 
 	    draw() {
 	        gp5$1.push();
+	        gp5$1.noFill();
+	        // gp5.rect(this.topLeft.x, this.topLeft.y, this.image.width, this.image.height)
 	        gp5$1.imageMode(gp5$1.CENTER);
 	        gp5$1.translate(this.position.x, this.position.y);
-	        gp5$1.scale(.75, .75);
+	        // gp5.scale(.75, .75);
 	        gp5$1.image(this.image, 0, 0);
 	        gp5$1.pop();
 	    }
@@ -912,7 +844,8 @@
 	    initialize: function() {
 	        this.gnome = new Gnome(gp5$1.createVector(200, 200));
 	        this.mushrooms = [
-	            new ButtonMushroom(gp5$1.createVector(100, 100)), new MorelMushroom(gp5$1.createVector(300, 100))
+	            // new ButtonMushroom(gp5.createVector(100, 100)),
+	            new MorelMushroom(gp5$1.createVector(300, 100))
 	        ];
 	    },
 
@@ -920,8 +853,9 @@
 	        return gp5$1.dist(this.gnome.position.x, this.gnome.position.y, entity.position.x, entity.position.y);
 	    },
 	    update: function() {
-	        this.gnome.display();
 	        this.mushrooms.forEach(mushroom => mushroom.display());
+	        this.gnome.display();
+
 	    }
 	};
 
@@ -992,8 +926,17 @@
 
 	    // Create game and assign assets
 	    p.setup = function() {
-	        p.createCanvas(400, 400);
+	        p.createCanvas(800, 800);
+	        p.textSize(p.width / 32); // default text size
+
 	        game$1.p5 = p;
+	        [
+	            ...Object.values(assets.gnome),
+	            assets.morel,
+	            // ...Object.values(assets.morel),
+	            // ...Object.values(assets.button),
+	            // ...Object.values(assets.chanterelle)
+	        ].forEach(img => img.loadPixels());
 	        game$1.assets = assets;
 	        game$1.initialize();
 	        entityManager$1.initialize();

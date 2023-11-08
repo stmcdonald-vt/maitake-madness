@@ -3,6 +3,7 @@ import gp5, { constants } from "../sketch";
 import ChaseState from "./mushroomFSM/chaseState";
 import entityManager from "../managers/entityManager";
 import ShootState from "./mushroomFSM/shootState";
+import CollisionDetector from "../managers/collisionDetector";
 // Button mushroom. He feels nothing but emptiness.
 class MorelMushroom {
     /**
@@ -12,10 +13,17 @@ class MorelMushroom {
         this.position = position;
         this.velocity = gp5.createVector(0, 0)
         this.image = game.assets.morel;
+        this.image.loadPixels();
         this.states = [new ChaseState(this), new ShootState(this)];
         this.currentState = 0;
         this.angle = 0;
-        this.shootAngle
+        this.shootAngle;
+        this._topLeftVector = gp5.createVector(0, 0);
+    }
+
+    get topLeft() {
+        this._topLeftVector.set(this.position.x - this.image.width / 2, this.position.y - this.image.height / 2);
+        return this._topLeftVector;
     }
 
     shoot() {
@@ -43,9 +51,11 @@ class MorelMushroom {
 
     draw() {
         gp5.push();
+        gp5.noFill();
+        // gp5.rect(this.topLeft.x, this.topLeft.y, this.image.width, this.image.height)
         gp5.imageMode(gp5.CENTER);
         gp5.translate(this.position.x, this.position.y);
-        gp5.scale(.75, .75);
+        // gp5.scale(.75, .75);
         gp5.image(this.image, 0, 0);
         gp5.pop();
     }

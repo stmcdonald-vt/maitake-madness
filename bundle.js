@@ -813,6 +813,7 @@
 	    }
 
 	    update() {
+	        console.log(this.currentState);
 	        this.states[this.currentState].execute();
 	        this.position.add(this.velocity);
 	    }
@@ -837,12 +838,81 @@
 	    }
 	}
 
+	class ShootState {
+	    constructor(enemy) {
+	        this.enemy = enemy;
+	        this.player = entityManager$1.gnome;
+	        this.step = gp5$1.createVector(0, 0);
+	    }
+
+	    execute() {
+	        this.enemy.velocity.set(0, 0);
+	        this.step.set(this.player.position.x - this.enemy.position.x, this.player.position.y - this.enemy.position.y);
+	        this.enemy.shootAngle = this.step;
+	        this.enemy.shoot();
+	        this.enemy.changeState();
+	    }
+	}
+
+	// Button mushroom. He feels nothing but emptiness.
+	class MorelMushroom {
+	    /**
+	     * @param {p5.Vector} position 
+	     */
+	    constructor(position) {
+	        this.position = position;
+	        this.velocity = gp5$1.createVector(0, 0);
+	        this.image = game$1.assets.morel;
+	        this.states = [new ChaseState(this), new ShootState(this)];
+	        this.currentState = 0;
+	        this.angle = 0;
+	        this.shootAngle;
+	    }
+
+	    shoot() {
+
+	    }
+
+	    changeState() {
+	        switch (this.currentState) {
+	            case 0:
+	                if (entityManager$1.distanceToPlayer(this) < 200) {
+	                    this.currentState = 1;
+	                }
+	                break;
+	            case 1:
+	                if (entityManager$1.distanceToPlayer(this) > 200) {
+	                    this.currentState = 0;
+	                }
+	        }
+	    }
+
+	    update() {
+	        this.states[this.currentState].execute();
+	        this.position.add(this.velocity);
+	    }
+
+	    draw() {
+	        gp5$1.push();
+	        gp5$1.imageMode(gp5$1.CENTER);
+	        gp5$1.translate(this.position.x, this.position.y);
+	        gp5$1.scale(.75, .75);
+	        gp5$1.image(this.image, 0, 0);
+	        gp5$1.pop();
+	    }
+
+	    display() {
+	        this.update();
+	        this.draw();
+	    }
+	}
+
 	// Handles input 
 	const entityManager = {
 	    initialize: function() {
 	        this.gnome = new Gnome(gp5$1.createVector(200, 200));
 	        this.mushrooms = [
-	            new ButtonMushroom(gp5$1.createVector(100, 100)),
+	            new ButtonMushroom(gp5$1.createVector(100, 100)), new MorelMushroom(gp5$1.createVector(300, 100))
 	        ];
 	    },
 

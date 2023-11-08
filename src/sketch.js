@@ -2,6 +2,7 @@ import game from "./game.js"
 import p5 from "p5";
 import inputManager from "./input/inputManager.js";
 import entityManager from "./managers/entityManager.js";
+import tilemapManager from "./managers/tilemapManager.js";
 
 // Use instance mode for p5. This works better with Rollup and ES6 modules. https://p5js.org/reference/#/p5/p5
 /**
@@ -37,6 +38,18 @@ let sketch = function(p) {
             chanterelle: p.loadImage('assets/chanterelle.png'),
             fonts: {
                 oldForest: p.loadFont('assets/TheOldForest.ttf')
+            },
+            tiles: {
+                plainGrass: p.loadImage('assets/tiles/plain_grass.png'),
+                plainDirt: p.loadImage('assets/tiles/plain_dirt.png'),
+                dirtLeftGrass: p.loadImage('assets/tiles/dirt_left.png'),
+                dirtRightGrass: p.loadImage('assets/tiles/dirt_right.png'),
+                dirtTopGrass: p.loadImage('assets/tiles/dirt_top.png'),
+                dirtBottomGrass: p.loadImage('assets/tiles/dirt_bottom.png'),
+                dirtTopLeftGrass: p.loadImage('assets/tiles/dirt_top_left.png'),
+                dirtTopRightGrass: p.loadImage('assets/tiles/dirt_top_right.png'),
+                dirtBottomLeftGrass: p.loadImage('assets/tiles/dirt_bottom_left.png'),
+                dirtBottomRightGrass: p.loadImage('assets/tiles/dirt_bottom_right.png'),
             }
         };
     }
@@ -66,7 +79,7 @@ let sketch = function(p) {
                 p.background(assets.startScreenImage);
                 break;
             case 1:
-                p.background('green');
+                tilemapManager.display();
                 break;
             default:
                 p.background('gray');
@@ -80,5 +93,6 @@ export default gp5;
 
 export const constants = {
     FOURTH_PI: gp5.HALF_PI / 2,
-    THREE_FOURTHS_PI: (gp5.HALF_PI / 2) * 3
+    THREE_FOURTHS_PI: (gp5.HALF_PI / 2) * 3,
+    TILEMAP_BLOCK_SIZE: 32,
 }

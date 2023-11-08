@@ -22,6 +22,7 @@ const game = {
         DIMENSION_MULTIPLIER: 1,
         DIFFICULTY: 1,
         MOVEMENT_SCHEME: 0,
+        LEVEL: 0        
     },
 }
 

@@ -10,7 +10,28 @@ export default class Gnome {
      */
     constructor(position) {
         this.position = position;
+        this.width = game.assets.gnome.front.width;
+        this.halfWidth = this.width / 2;
+        this.height = game.assets.gnome.front.height;
+        this.halfHeight = this.height / 2;
         this.angle = 0;
+        this.moveSpeed = 2;
+    }
+
+    get topLeftX() {
+        return this.position.x - this.halfWidth;
+    }
+
+    get topLeftY() {
+        return this.position.y - this.halfHeight;
+    }
+
+    moveX(direction) {
+        this.position.x += this.moveSpeed * direction;
+    }
+
+    moveY(direction) {
+        this.position.y += this.moveSpeed * direction;
     }
 
     update() {
@@ -31,22 +52,33 @@ export default class Gnome {
         } else if(this.angleBetween(-constants.THREE_FOURTHS_PI, -constants.FOURTH_PI)) {
             gp5.image(game.assets.gnome.back, 0, 0);
         } else {
+            gp5.push();
             gp5.scale(-1,1); // flip horizontally
             const image = game.assets.gnome.side
-            gp5.image(image, -image.width, 0);
+            gp5.image(image, 0, 0);
+            gp5.pop();
         }
     }
 
     draw() {
         gp5.push();
+        gp5.imageMode(gp5.CENTER);
+        gp5.stroke('black')
+        gp5.noFill();
+        gp5.rect(this.topLeftX, this.topLeftY, this.width, this.height)
         gp5.translate(this.position.x, this.position.y);
         this.drawDirectionalSprite();
+
+        // gp5.translate(this.halfWidth, this.halfHeight);
+        gp5.circle(0, 0, 5)
+        gp5.rotate(this.angle);
+        gp5.fill('black');
+        gp5.rect(40, 0, 15, 4);
         gp5.pop();
     }
 
     display() {
         this.update();
         this.draw();
-        console.log(this.angle)
     }
 }

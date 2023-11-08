@@ -1,5 +1,7 @@
 import game from "./game.js"
 import p5 from "p5";
+import inputManager from "./input/inputManager.js";
+import entityManager from "./managers/entityManager.js";
 
 // Use instance mode for p5. This works better with Rollup and ES6 modules. https://p5js.org/reference/#/p5/p5
 /**
@@ -10,15 +12,15 @@ let sketch = function(p) {
     let assets
 
     p.mouseClicked = function() {
-        game.inputManager.onClick();
+        inputManager.onClick();
     }
 
-    p.keyPressed = function(keyCode) {
-        game.inputManager.keyMap[keyCode] = true;
+    p.keyPressed = function(event) {
+        inputManager.keyMap[event.keyCode] = true;
     }
     
-    p.keyReleased = function(keyCode) {
-        game.inputManager.keyMap[keyCode] = false;
+    p.keyReleased = function(event) {
+        inputManager.keyMap[event.keyCode] = false;
     }
 
     // Pre-load assets
@@ -45,6 +47,8 @@ let sketch = function(p) {
         game.p5 = p;
         game.assets = assets;
         game.initialize();
+        entityManager.initialize();
+        inputManager.setPlayer(entityManager.gnome);
     };
  
     p.draw = function() {

@@ -1,12 +1,10 @@
-import InputManager from "./input/inputManager";
-import EntityManager from "./managers/entityManager";
 import MenuManager from "./menu/menuManager";
+import entityManager from "./managers/entityManager";
+import inputManager from "./input/inputManager";
 
 const game = {
     initialize: function () {
-        this.inputManager = new InputManager();
         this.menuManager = new MenuManager();
-        this.entityManager = new EntityManager();
     },
     update: function() {
         switch (this.state.GAME_STATE) {
@@ -14,7 +12,8 @@ const game = {
                 this.menuManager.display();
                 break;
             case 1:
-                this.entityManager.update();
+                entityManager.update();
+                inputManager.processInputs();
                 break;
         }
     },

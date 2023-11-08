@@ -1,5 +1,5 @@
 import game from "../game";
-
+import inputManager from "../input/inputManager";
 // Generic button that can be used by any component to render a button and register a click function.
 // Currently only supports rectangular shaped hitboxes
 class Button {
@@ -23,8 +23,8 @@ class Button {
     }
 
     registerClickListeners() {
-        game.inputManager.registerClickFunction(() => {
-            if (game.inputManager.mouseInsideBounds(
+        inputManager.registerClickFunction(() => {
+            if (inputManager.mouseInsideBounds(
                 this.position.x,
                 this.position.x + this.width,
                 this.position.y,

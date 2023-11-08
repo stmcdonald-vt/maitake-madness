@@ -1,6 +1,7 @@
 import MainMenu from "./mainMenu"
 import OptionsMenu from "./optionsMenu"
 import game from "../game"
+import inputManager from "../input/inputManager"
 /**
  * Instantiate and manage all of the menus
  */
@@ -14,7 +15,7 @@ class MenuManager {
     }
 
     setMenu(value) {
-        game.inputManager.clearClickFunctions();
+        inputManager.clearClickFunctions();
         this.currentMenuIndex = value;
         this.menus[this.currentMenuIndex].reset();
     }

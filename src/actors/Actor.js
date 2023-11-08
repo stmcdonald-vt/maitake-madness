@@ -4,7 +4,7 @@ import gp5 from "../sketch";
 
 // Generic character class. Handles shared physics. Currently WIP, will be improved in actual game.
 // Need to extend for top down or have different one for animation side views.
-class Character {
+class Actor {
     /**
      * @param {p5.Vector} position 
      * @param {p5.Image} image 
@@ -59,4 +59,4 @@ class Character {
         this.draw();
     }
 }
-export default Character;
+export default Actor;

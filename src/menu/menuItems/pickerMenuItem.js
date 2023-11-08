@@ -1,6 +1,7 @@
 import game from "../../game";
 import p5 from "p5";
 import gp5 from "../../sketch";
+import inputManager from "../../input/inputManager";
 
 // Represents an entry in a menu that provide multiple buttons to choose from
 class PickerMenuItem {
@@ -34,8 +35,8 @@ class PickerMenuItem {
         const halfWidth = this.buttonWidth / 2;
         const halfHeight = this.buttonHeight / 2;
         this.items.forEach((item, idx) => {
-            game.inputManager.registerClickFunction(() => {
-                if (game.inputManager.mouseInsideBounds(
+            inputManager.registerClickFunction(() => {
+                if (inputManager.mouseInsideBounds(
                     item.position.x - halfWidth,
                     item.position.x + halfWidth,
                     item.position.y - halfHeight,

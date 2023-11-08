@@ -4,6 +4,7 @@ import ChaseState from "./mushroomFSM/chaseState";
 import entityManager from "../managers/entityManager";
 import ShootState from "./mushroomFSM/shootState";
 import CollisionDetector from "../managers/collisionDetector";
+import Bullet from "./bullet";
 // Button mushroom. He feels nothing but emptiness.
 class MorelMushroom {
     /**
@@ -27,7 +28,7 @@ class MorelMushroom {
     }
 
     shoot() {
-
+        entityManager.addProjectile(new Bullet(this.position.x, this.position.y, this.shootAngle));
     }
 
     changeState() {

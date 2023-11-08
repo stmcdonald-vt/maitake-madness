@@ -10,7 +10,7 @@ export default class ShootState {
     execute() {
         this.enemy.velocity.set(0, 0);
         this.step.set(this.player.position.x - this.enemy.position.x, this.player.position.y - this.enemy.position.y);
-        this.enemy.shootAngle = this.step;
+        this.enemy.shootAngle = this.step.heading();
         this.enemy.shoot();
         this.enemy.changeState();
     }

@@ -10,20 +10,15 @@ export default class Gnome {
      */
     constructor(position) {
         this.position = position;
-        this.width = game.assets.gnome.front.width;
-        this.halfWidth = this.width / 2;
-        this.height = game.assets.gnome.front.height;
-        this.halfHeight = this.height / 2;
         this.angle = 0;
         this.moveSpeed = 2;
+        this.image = game.assets.gnome.front;
+        this._topLeftVector = gp5.createVector(0, 0);
     }
 
-    get topLeftX() {
-        return this.position.x - this.halfWidth;
-    }
-
-    get topLeftY() {
-        return this.position.y - this.halfHeight;
+    get topLeft() {
+        this._topLeftVector.set(this.position.x - this.image.width / 2, this.position.y - this.image.height / 2);
+        return this._topLeftVector;
     }
 
     moveX(direction) {
@@ -46,11 +41,14 @@ export default class Gnome {
 
     drawDirectionalSprite() {
         if (this.angleBetween(-constants.FOURTH_PI,constants.FOURTH_PI)) {
-            gp5.image(game.assets.gnome.side, 0, 0);
+            this.image = game.assets.gnome.side
+            gp5.image(this.image, 0, 0);
         } else if (this.angleBetween(constants.FOURTH_PI, constants.THREE_FOURTHS_PI)){
-            gp5.image(game.assets.gnome.front, 0, 0);
+            this.image = game.assets.gnome.front;
+            gp5.image(this.image, 0, 0);
         } else if(this.angleBetween(-constants.THREE_FOURTHS_PI, -constants.FOURTH_PI)) {
-            gp5.image(game.assets.gnome.back, 0, 0);
+            this.image = game.assets.gnome.back;
+            gp5.image(this.image, 0, 0);
         } else {
             gp5.push();
             gp5.scale(-1,1); // flip horizontally
@@ -65,7 +63,7 @@ export default class Gnome {
         gp5.imageMode(gp5.CENTER);
         gp5.stroke('black')
         gp5.noFill();
-        gp5.rect(this.topLeftX, this.topLeftY, this.width, this.height)
+        // gp5.rect(this.topLeft.x, this.topLeft.y, this.image.width, this.image.height)
         gp5.translate(this.position.x, this.position.y);
         this.drawDirectionalSprite();
 

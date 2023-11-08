@@ -33,7 +33,6 @@ class ButtonMushroom {
     }
 
     update() {
-        console.log(this.currentState);
         this.states[this.currentState].execute();
         this.position.add(this.velocity);
     }

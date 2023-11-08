@@ -29,7 +29,7 @@ class MushroomChaseAnimation {
     }
 
     setReverse() { // Need to rearrange the order and move them the other direction. 
-        const startPoint = 450;
+        const startPoint = gp5.width + 50;
         const speed = gp5.random(-6, -1);
         this.gnome.setXPosition(startPoint);
         this.gnome.setXVelocity(speed);
@@ -57,7 +57,7 @@ class MushroomChaseAnimation {
     }
 
     display() {
-        if (this.forward && this.morel.position.x > 400) {
+        if (this.forward && this.morel.position.x > gp5.width) {
             this.setReverse();
         } else if (!this.forward && this.morel.position.x < -30) {
             this.setForward();

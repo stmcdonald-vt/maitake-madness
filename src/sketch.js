@@ -38,13 +38,22 @@ let sketch = function(p) {
             fonts: {
                 oldForest: p.loadFont('assets/TheOldForest.ttf')
             }
-        }
+        };
     }
 
     // Create game and assign assets
     p.setup = function() {
-        p.createCanvas(400, 400);
+        p.createCanvas(800, 800);
+        p.textSize(p.width / 32); // default text size
+
         game.p5 = p;
+        [
+            ...Object.values(assets.gnome),
+            assets.morel,
+            // ...Object.values(assets.morel),
+            // ...Object.values(assets.button),
+            // ...Object.values(assets.chanterelle)
+        ].forEach(img => img.loadPixels());
         game.assets = assets;
         game.initialize();
         entityManager.initialize();

@@ -14,7 +14,7 @@ class Title {
 
     display() {
         gp5.push();
-        gp5.textSize(48);
+        gp5.textSize(gp5.width / 10);
         gp5.textAlign(gp5.CENTER);
         gp5.textWrap(gp5.WORD);
         gp5.textFont(game.assets.fonts.oldForest)

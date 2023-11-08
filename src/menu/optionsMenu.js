@@ -11,9 +11,9 @@ class OptionsMenu extends Menu {
     constructor() {
         super();
 
-        const optionsPosition = gp5.createVector(20, 200);
-        const tutorialPosition = gp5.createVector(20, 75);
-        const animationPosition = gp5.createVector(0, 300);
+        const optionsPosition = gp5.createVector(20, gp5.height * 0.5);
+        const tutorialPosition = gp5.createVector(gp5.width * 0.05, gp5.height * 0.1);
+        const animationPosition = gp5.createVector(0, gp5.height * 0.8);
 
         // Back button setup
         const backButtonPosition = gp5.createVector(20, 20);
@@ -33,9 +33,9 @@ class OptionsMenu extends Menu {
 
         this.items = [
             new DifficultyMenuItem(game.p5.createVector(optionsPosition.x, optionsPosition.y)),
-            new ControlMenuItem(game.p5.createVector(optionsPosition.x, optionsPosition.y + 50)),
+            new ControlMenuItem(game.p5.createVector(optionsPosition.x, optionsPosition.y + 100)),
             new Button(backButtonPosition, backButtonAction, backButtonHeight, backButtonWidth, undefined, backButtonDisplay),
-            new Tutorial(tutorialPosition, 350, 110),
+            new Tutorial(tutorialPosition, gp5.width * 0.9, gp5.height * 0.3),
             new GnomeChaseAnimation(animationPosition)
         ]
     }

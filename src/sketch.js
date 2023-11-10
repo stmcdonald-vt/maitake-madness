@@ -50,7 +50,8 @@ let sketch = function(p) {
                 dirtTopRightGrass: p.loadImage('assets/tiles/dirt_top_right.png'),
                 dirtBottomLeftGrass: p.loadImage('assets/tiles/dirt_bottom_left.png'),
                 dirtBottomRightGrass: p.loadImage('assets/tiles/dirt_bottom_right.png'),
-            }
+            },
+            bullet: p.loadImage('assets/bullet.png')
         };
     }
 
@@ -63,6 +64,7 @@ let sketch = function(p) {
         [
             ...Object.values(assets.gnome),
             assets.morel,
+            assets.bullet
             // ...Object.values(assets.morel),
             // ...Object.values(assets.button),
             // ...Object.values(assets.chanterelle)

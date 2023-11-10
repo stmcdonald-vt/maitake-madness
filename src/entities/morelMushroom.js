@@ -21,6 +21,8 @@ class MorelMushroom {
         this.shootAngle;
         this.shootCooldown = 0;
         this._topLeftVector = gp5.createVector(0, 0);
+        this.dead = false;
+        this.health = 10 * game.enemyHealthMultiplier();
     }
 
     get topLeft() {
@@ -29,7 +31,7 @@ class MorelMushroom {
     }
 
     shoot() {
-        entityManager.addProjectile(new Bullet(this.position.x, this.position.y, this.shootAngle));
+        entityManager.addMushroomProjectile(new Bullet(this.position.x, this.position.y, this.shootAngle));
     }
 
     changeState() {
@@ -64,8 +66,10 @@ class MorelMushroom {
     }
 
     display() {
-        this.update();
-        this.draw();
+        if (!this.dead) {
+            this.update();
+            this.draw();
+        }
     }
 }
 export default MorelMushroom;

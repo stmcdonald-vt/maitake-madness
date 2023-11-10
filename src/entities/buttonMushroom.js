@@ -15,6 +15,8 @@ class ButtonMushroom {
         this.states = [new ChaseState(this), new ChargeState(this)];
         this.currentState = 0;
         this.angle = 0;
+        this.health = 5;
+        this.dead = false;
     }
 
     changeState() {
@@ -52,8 +54,10 @@ class ButtonMushroom {
 
 
     display() {
-        this.update();
-        this.draw();
+        if (!this.dead) {
+            this.update();
+            this.draw();
+        }
     }
 }
 export default ButtonMushroom;

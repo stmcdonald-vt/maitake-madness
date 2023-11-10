@@ -19,6 +19,7 @@ class MorelMushroom {
         this.currentState = 0;
         this.angle = 0;
         this.shootAngle;
+        this.shootCooldown = 0;
         this._topLeftVector = gp5.createVector(0, 0);
     }
 
@@ -48,6 +49,7 @@ class MorelMushroom {
     update() {
         this.states[this.currentState].execute();
         this.position.add(this.velocity);
+        this.shootCooldown--;
     }
 
     draw() {

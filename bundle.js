@@ -371,7 +371,6 @@
 
 	class Bullet {
 	    constructor(x, y, heading, speed=6) {
-	        console.log(x, y);
 	        this.position = gp5$1.createVector(x, y);
 	        this.velocity = gp5$1.createVector(speed, 0);
 	        this.velocity.setHeading(heading);
@@ -403,7 +402,7 @@
 	    constructor(position) {
 	        this.position = position;
 	        this.angle = 0;
-	        this.moveSpeed = 2;
+	        this.moveSpeed = 3;
 	        this.image = game$1.assets.gnome.front;
 	        this.gunSpacing = 40;
 	        this._topLeftVector = gp5$1.createVector(0, 0);
@@ -458,9 +457,7 @@
 	    }
 
 	    shoot() {
-	        console.log(this.position.x + this.gunSpacing * gp5$1.cos(this.angle));
 	        entityManager$1.addProjectile(new Bullet(this.position.x + (this.gunSpacing * gp5$1.cos(this.angle)), this.position.y + (this.gunSpacing * gp5$1.sin(this.angle)), this.angle));
-	        console.log(entityManager$1.projectiles);
 	    }
 
 	    draw() {
@@ -501,6 +498,80 @@
 	    }
 	}
 
+	class ChargeState {
+	    constructor(enemy) {
+	        this.enemy = enemy;
+	        this.player = entityManager$1.gnome;
+	        this.step = gp5$1.createVector(0, 0);
+	    }
+
+	    setAngle() {
+	        this.step.set(this.player.position.x - this.enemy.position.x, this.player.position.y - this.enemy.position.y);
+	        this.step.normalize();
+	        this.step.mult(5);
+	        this.enemy.velocity = this.step;
+	        return this.step.heading();
+	    }
+
+	    execute() {
+	        this.enemy.changeState();
+	    }
+	}
+
+	// Button mushroom. He feels nothing but emptiness.
+	class ButtonMushroom {
+	    /**
+	     * @param {p5.Vector} position 
+	     */
+	    constructor(position) {
+	        this.position = position;
+	        this.velocity = gp5$1.createVector(0, 0);
+	        this.image = game$1.assets.button;
+	        this.states = [new ChaseState(this), new ChargeState(this)];
+	        this.currentState = 0;
+	        this.angle = 0;
+	    }
+
+	    changeState() {
+	        switch (this.currentState) {
+	            case 0:
+	                if (entityManager$1.distanceToPlayer(this) < 100) {
+	                    this.angle = this.states[1].setAngle();
+	                    this.currentState = 1;
+	                }
+	                break;
+	            case 1:
+	                if (entityManager$1.distanceToPlayer(this) > 150) {
+	                    this.currentState = 0;
+	                }
+	        }
+	    }
+
+	    update() {
+	        this.states[this.currentState].execute();
+	        this.position.add(this.velocity);
+	    }
+
+	    draw() {
+	        gp5$1.push();
+	        gp5$1.imageMode(gp5$1.CENTER);
+	        gp5$1.translate(this.position.x, this.position.y);
+	        if (this.currentState === 1) {
+	            gp5$1.rotate(this.angle + gp5$1.HALF_PI);
+	        }
+	        gp5$1.scale(.5, .5);
+	        gp5$1.image(this.image, 0, 0);
+	        gp5$1.pop();
+	    }
+
+
+
+	    display() {
+	        this.update();
+	        this.draw();
+	    }
+	}
+
 	class ShootState {
 	    constructor(enemy) {
 	        this.enemy = enemy;
@@ -509,10 +580,14 @@
 	    }
 
 	    execute() {
-	        this.enemy.velocity.set(0, 0);
-	        this.step.set(this.player.position.x - this.enemy.position.x, this.player.position.y - this.enemy.position.y);
-	        this.enemy.shootAngle = this.step.heading();
-	        this.enemy.shoot();
+	        if (this.enemy.shootCooldown <= 0) {
+	            this.enemy.velocity.set(0, 0);
+	            this.step.set(this.player.position.x - this.enemy.position.x, this.player.position.y - this.enemy.position.y);
+	            this.enemy.shootAngle = this.step.heading();
+	            this.enemy.shoot();
+	            this.enemy.shootCooldown = 40;
+	        }
+
 	        this.enemy.changeState();
 	    }
 	}
@@ -531,6 +606,7 @@
 	        this.currentState = 0;
 	        this.angle = 0;
 	        this.shootAngle;
+	        this.shootCooldown = 0;
 	        this._topLeftVector = gp5$1.createVector(0, 0);
 	    }
 
@@ -560,6 +636,7 @@
 	    update() {
 	        this.states[this.currentState].execute();
 	        this.position.add(this.velocity);
+	        this.shootCooldown--;
 	    }
 
 	    draw() {
@@ -584,7 +661,7 @@
 	    initialize: function() {
 	        this.gnome = new Gnome(gp5$1.createVector(200, 200));
 	        this.mushrooms = [
-	            // new ButtonMushroom(gp5.createVector(100, 100)),
+	            new ButtonMushroom(gp5$1.createVector(100, 100)),
 	            new MorelMushroom(gp5$1.createVector(300, 100))
 	        ];
 	        this.projectiles = [];

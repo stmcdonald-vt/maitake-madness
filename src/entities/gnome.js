@@ -18,7 +18,6 @@ export default class Gnome {
         this.angle = 0;
         this.moveSpeed = 3;
         this.image = game.assets.gnome.front;
-        this.gunSpacing = 60;
         this.health = 20;
         this._topLeftVector = gp5.createVector(0, 0);
         this.weapons = [new Pistol(), new Shotgun()];
@@ -73,8 +72,12 @@ export default class Gnome {
         if (this.angleBetween(-gp5.PI, -gp5.HALF_PI) || this.angleBetween(gp5.HALF_PI, gp5.PI)) {
             gp5.scale(1,-1); // flip horizontally
         }
-        gp5.image(this.weapons[this.currentWeapon].image, this.gunSpacing, 0);
+        gp5.image(this.gun.image, this.gun.spacing, 0);
         gp5.pop();
+    }
+
+    get gun() {
+        return this.weapons[this.currentWeapon];
     }
 
     nextWeapon() {
@@ -82,7 +85,7 @@ export default class Gnome {
     }
 
     shoot() {
-        this.weapons[this.currentWeapon].shoot(this.position, this.angle, this.gunSpacing);
+        this.weapons[this.currentWeapon].shoot(this.position, this.angle);
         // entityManager.addGnomeProjectile(new Bullet(this.position.x + (this.gunSpacing * gp5.cos(this.angle)), this.position.y + (this.gunSpacing * gp5.sin(this.angle)), this.angle));
     }
 

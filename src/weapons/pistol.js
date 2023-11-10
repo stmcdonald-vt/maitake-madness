@@ -1,14 +1,17 @@
 import game from "../game";
-import entityManager from "../managers/entityManager";
-import Bullet from "../entities/bullet";
+import Gun from "./gun";
 import gp5 from "../sketch";
 
-export default class Pistol {
+export default class Pistol extends Gun {
     constructor() {
-        this.image = game.assets.pistol;
-    }
-
-    shoot(position, angle, spacing) {
-        entityManager.addGnomeProjectile(new Bullet(position.x + (spacing * gp5.cos(angle)), position.y + (spacing * gp5.sin(angle)), angle));
+        const spread = 0;
+        const pellets = 1;
+        const spacing = 30;
+        const range = 400;
+        const damage = 2;
+        const decay = 0.02;
+        const image = game.assets.pistol;
+        const cooldown = 20;
+        super(spread, pellets, spacing, range, damage, decay, image, cooldown);
     }
 }

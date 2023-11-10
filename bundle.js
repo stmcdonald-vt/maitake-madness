@@ -411,35 +411,63 @@
 	    }
 	}
 
-	class Pistol {
-	    constructor() {
-	        this.image = game$1.assets.pistol;
+	class Gun {
+	    constructor(spread, pellets, spacing, range, damage, decay, image, cooldown, speed=undefined) {
+	        this.spread = spread;
+	        this.pellets = pellets;
+	        this.spacing = spacing;
+	        this.range = range;
+	        this.damage = damage;
+	        this.decay = decay;
+	        this.image = image;
+	        this.cooldown = cooldown;
+	        this.speed = speed;
+	        this.halfSpread = this.spread / 2;
+	        this.halfWidth = this.image.width / 2;
+	        this.increment = this.spread / this.pellets;
+	        this.lastShotFrame = 0;
 	    }
 
-	    shoot(position, angle, spacing) {
-	        entityManager$1.addGnomeProjectile(new Bullet(position.x + (spacing * gp5$1.cos(angle)), position.y + (spacing * gp5$1.sin(angle)), angle));
+	    shoot(position, angle) {
+	        if (gp5$1.frameCount - this.lastShotFrame < this.cooldown) {
+	            return;
+	        }
+	        const lowerBound = angle - this.halfSpread;
+	        const startX = position.x + ((this.spacing + this.halfWidth) * gp5$1.cos(angle));
+	        const startY = position.y + ((this.spacing + this.halfWidth) * gp5$1.sin(angle));
+	        for (let i = 0; i < this.pellets; i++) {
+	            const pelletAngle = lowerBound + this.increment * i;
+	            entityManager$1.addGnomeProjectile(new Bullet(startX, startY, pelletAngle, this.speed, this.range, this.damage, this.decay));
+	        }
+	        this.lastShotFrame = gp5$1.frameCount;
 	    }
 	}
 
-	class Shotgun {
+	class Pistol extends Gun {
 	    constructor() {
-	        this.image = game$1.assets.shotgun;
-	        this.spread = gp5$1.HALF_PI; // in radians
-	        this.halfSpread = this.spread / 2;
-	        this.halfWidth = this.image.width / 2;
-	        this.pellets = 5; // Number of
-	        this.increment = this.spread / this.pellets;
+	        const spread = 0;
+	        const pellets = 1;
+	        const spacing = 30;
+	        const range = 400;
+	        const damage = 2;
+	        const decay = 0.02;
+	        const image = game$1.assets.pistol;
+	        const cooldown = 20;
+	        super(spread, pellets, spacing, range, damage, decay, image, cooldown);
 	    }
+	}
 
-	    shoot(position, angle, spacing) {
-	        const lowerBound = angle - this.halfSpread;
-	        const spreadStartX = position.x + ((spacing + this.halfWidth) * gp5$1.cos(angle));
-	        const spreadStartY = position.y + ((spacing + this.halfWidth) * gp5$1.sin(angle));
-	        // const upperBound = angle + this.halfSpread;
-	        for (let i = 0; i < this.pellets; i++) {
-	            const pelletAngle = lowerBound + this.increment * i;
-	            entityManager$1.addGnomeProjectile(new Bullet(spreadStartX, spreadStartY, pelletAngle, undefined, 100, 4, 0.1));
-	        }
+	class Shotgun extends Gun {
+	    constructor() {
+	        const spread = gp5$1.HALF_PI;
+	        const pellets = 5;
+	        const spacing = 60;
+	        const range = 100;
+	        const damage = 4;
+	        const decay = 0.1;
+	        const image = game$1.assets.shotgun;
+	        const cooldown = 45;
+	        super(spread, pellets, spacing, range, damage, decay, image, cooldown);
 	    }
 	}
 
@@ -453,7 +481,6 @@
 	        this.angle = 0;
 	        this.moveSpeed = 3;
 	        this.image = game$1.assets.gnome.front;
-	        this.gunSpacing = 60;
 	        this.health = 20;
 	        this._topLeftVector = gp5$1.createVector(0, 0);
 	        this.weapons = [new Pistol(), new Shotgun()];
@@ -508,8 +535,12 @@
 	        if (this.angleBetween(-gp5$1.PI, -gp5$1.HALF_PI) || this.angleBetween(gp5$1.HALF_PI, gp5$1.PI)) {
 	            gp5$1.scale(1,-1); // flip horizontally
 	        }
-	        gp5$1.image(this.weapons[this.currentWeapon].image, this.gunSpacing, 0);
+	        gp5$1.image(this.gun.image, this.gun.spacing, 0);
 	        gp5$1.pop();
+	    }
+
+	    get gun() {
+	        return this.weapons[this.currentWeapon];
 	    }
 
 	    nextWeapon() {
@@ -517,7 +548,7 @@
 	    }
 
 	    shoot() {
-	        this.weapons[this.currentWeapon].shoot(this.position, this.angle, this.gunSpacing);
+	        this.weapons[this.currentWeapon].shoot(this.position, this.angle);
 	        // entityManager.addGnomeProjectile(new Bullet(this.position.x + (this.gunSpacing * gp5.cos(this.angle)), this.position.y + (this.gunSpacing * gp5.sin(this.angle)), this.angle));
 	    }
 

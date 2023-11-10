@@ -33,18 +33,21 @@ const inputManager = {
         if (!gp5.keyIsPressed) {
             return;
         }
-
-        if (this.keyMap[68]) { // D arrow moves player right
+        if (this.keyMap[68]?.pressed) { // D arrow moves player right
             this.player.moveX(1);
         }
-        if (this.keyMap[65]) { // A moves player left
+        if (this.keyMap[65]?.pressed) { // A moves player left
             this.player.moveX(-1);
         }
-        if (this.keyMap[87]) { // W moves player left
+        if (this.keyMap[87]?.pressed) { // W moves player left
             this.player.moveY(-1);
         }
-        if (this.keyMap[83]) { // S arrow moves player down
+        if (this.keyMap[83]?.pressed) { // S arrow moves player down
             this.player.moveY(1);
+        }
+        if (this.keyMap[81]?.pressed && !this.keyMap[81]?.triggered) { // Q to cycle weapons
+            this.player.nextWeapon();
+            this.keyMap[81].triggered = true;
         }
         if (this.keyMap[13] && game.isOver) { // Enter resets game
             setup(); 

@@ -134,7 +134,7 @@
 	     * @param {p5.Vector} position 
 	     */
 	    constructor(position) {
-	        super(position, game$1.assets.button);
+	        super(position, game$1.assets.buttonActor);
 	    }
 
 	    draw() {
@@ -279,18 +279,21 @@
 	        if (!gp5$1.keyIsPressed) {
 	            return;
 	        }
-
-	        if (this.keyMap[68]) { // D arrow moves player right
+	        if (this.keyMap[68]?.pressed) { // D arrow moves player right
 	            this.player.moveX(1);
 	        }
-	        if (this.keyMap[65]) { // A moves player left
+	        if (this.keyMap[65]?.pressed) { // A moves player left
 	            this.player.moveX(-1);
 	        }
-	        if (this.keyMap[87]) { // W moves player left
+	        if (this.keyMap[87]?.pressed) { // W moves player left
 	            this.player.moveY(-1);
 	        }
-	        if (this.keyMap[83]) { // S arrow moves player down
+	        if (this.keyMap[83]?.pressed) { // S arrow moves player down
 	            this.player.moveY(1);
+	        }
+	        if (this.keyMap[81]?.pressed && !this.keyMap[81]?.triggered) { // Q to cycle weapons
+	            this.player.nextWeapon();
+	            this.keyMap[81].triggered = true;
 	        }
 	        if (this.keyMap[13] && game$1.isOver) { // Enter resets game
 	            setup(); 
@@ -408,6 +411,38 @@
 	    }
 	}
 
+	class Pistol {
+	    constructor() {
+	        this.image = game$1.assets.pistol;
+	    }
+
+	    shoot(position, angle, spacing) {
+	        entityManager$1.addGnomeProjectile(new Bullet(position.x + (spacing * gp5$1.cos(angle)), position.y + (spacing * gp5$1.sin(angle)), angle));
+	    }
+	}
+
+	class Shotgun {
+	    constructor() {
+	        this.image = game$1.assets.shotgun;
+	        this.spread = gp5$1.HALF_PI; // in radians
+	        this.halfSpread = this.spread / 2;
+	        this.halfWidth = this.image.width / 2;
+	        this.pellets = 5; // Number of
+	        this.increment = this.spread / this.pellets;
+	    }
+
+	    shoot(position, angle, spacing) {
+	        const lowerBound = angle - this.halfSpread;
+	        const spreadStartX = position.x + ((spacing + this.halfWidth) * gp5$1.cos(angle));
+	        const spreadStartY = position.y + ((spacing + this.halfWidth) * gp5$1.sin(angle));
+	        // const upperBound = angle + this.halfSpread;
+	        for (let i = 0; i < this.pellets; i++) {
+	            const pelletAngle = lowerBound + this.increment * i;
+	            entityManager$1.addGnomeProjectile(new Bullet(spreadStartX, spreadStartY, pelletAngle, undefined, 100, 4, 0.1));
+	        }
+	    }
+	}
+
 	class Gnome {
 	    /**
 	     * 
@@ -418,9 +453,11 @@
 	        this.angle = 0;
 	        this.moveSpeed = 3;
 	        this.image = game$1.assets.gnome.front;
-	        this.gunSpacing = 40;
+	        this.gunSpacing = 60;
 	        this.health = 20;
 	        this._topLeftVector = gp5$1.createVector(0, 0);
+	        this.weapons = [new Pistol(), new Shotgun()];
+	        this.currentWeapon = 1;
 	    }
 
 	    registerClickListeners() {
@@ -452,27 +489,36 @@
 	        return this.angle >= a && this.angle < b;
 	    }
 
-	    drawDirectionalSprite() {
+	    drawDirectionalGnome() {
 	        if (this.angleBetween(-constants.FOURTH_PI,constants.FOURTH_PI)) {
-	            this.image = game$1.assets.gnome.side;
-	            gp5$1.image(this.image, 0, 0);
+	            this.image = game$1.assets.gnome.right;
 	        } else if (this.angleBetween(constants.FOURTH_PI, constants.THREE_FOURTHS_PI)){
 	            this.image = game$1.assets.gnome.front;
-	            gp5$1.image(this.image, 0, 0);
 	        } else if(this.angleBetween(-constants.THREE_FOURTHS_PI, -constants.FOURTH_PI)) {
 	            this.image = game$1.assets.gnome.back;
-	            gp5$1.image(this.image, 0, 0);
 	        } else {
-	            gp5$1.push();
-	            gp5$1.scale(-1,1); // flip horizontally
-	            const image = game$1.assets.gnome.side;
-	            gp5$1.image(image, 0, 0);
-	            gp5$1.pop();
+	            this.image = game$1.assets.gnome.left;
 	        }
+
+	        gp5$1.image(this.image, 0, 0);
+	    }
+
+	    drawDirectionalWeapon() {
+	        gp5$1.push();
+	        if (this.angleBetween(-gp5$1.PI, -gp5$1.HALF_PI) || this.angleBetween(gp5$1.HALF_PI, gp5$1.PI)) {
+	            gp5$1.scale(1,-1); // flip horizontally
+	        }
+	        gp5$1.image(this.weapons[this.currentWeapon].image, this.gunSpacing, 0);
+	        gp5$1.pop();
+	    }
+
+	    nextWeapon() {
+	        this.currentWeapon = (this.currentWeapon + 1) % this.weapons.length;
 	    }
 
 	    shoot() {
-	        entityManager$1.addGnomeProjectile(new Bullet(this.position.x + (this.gunSpacing * gp5$1.cos(this.angle)), this.position.y + (this.gunSpacing * gp5$1.sin(this.angle)), this.angle));
+	        this.weapons[this.currentWeapon].shoot(this.position, this.angle, this.gunSpacing);
+	        // entityManager.addGnomeProjectile(new Bullet(this.position.x + (this.gunSpacing * gp5.cos(this.angle)), this.position.y + (this.gunSpacing * gp5.sin(this.angle)), this.angle));
 	    }
 
 	    draw() {
@@ -482,13 +528,15 @@
 	        gp5$1.noFill();
 	        // gp5.rect(this.topLeft.x, this.topLeft.y, this.image.width, this.image.height)
 	        gp5$1.translate(this.position.x, this.position.y);
-	        this.drawDirectionalSprite();
+	        this.drawDirectionalGnome();
 
 	        // gp5.translate(this.halfWidth, this.halfHeight);
-	        gp5$1.circle(0, 0, 5);
+	        // gp5.circle(0, 0, 5)
 	        gp5$1.rotate(this.angle);
 	        gp5$1.fill('black');
-	        gp5$1.rect(this.gunSpacing, 0, 15, 4);
+	        // gp5.rect(this.gunSpacing, 0, 15, 4);
+	        // gp5.image(game.assets.pistol, this.gunSpacing, 0);
+	        this.drawDirectionalWeapon();
 	        gp5$1.pop();
 	    }
 
@@ -1348,11 +1396,11 @@
 	    };
 
 	    p.keyPressed = function(event) {
-	        inputManager.keyMap[event.keyCode] = true;
+	        inputManager.keyMap[event.keyCode] = {pressed: true};
 	    };
 	    
 	    p.keyReleased = function(event) {
-	        inputManager.keyMap[event.keyCode] = false;
+	        inputManager.keyMap[event.keyCode] = {pressed: false};
 	    };
 
 	    // Pre-load assets
@@ -1362,10 +1410,13 @@
 	            gnome: {
 	                front: p.loadImage('assets/gnome_forward.png'),
 	                side: p.loadImage('assets/gnome_side.png'),
-	                back: p.loadImage('assets/gnome_back.png')
+	                back: p.loadImage('assets/gnome_back.png'),
+	                left: p.loadImage('assets/gnome_left.png'),
+	                right: p.loadImage('assets/gnome_right.png'),
 	            },
 	            morel: p.loadImage('assets/morel_small.png'),
 	            button: p.loadImage('assets/buttonshroom.png'),
+	            buttonActor: p.loadImage('assets/buttonshroom-actor.png'),
 	            chanterelle: p.loadImage('assets/chanterelle.png'),
 	            fonts: {
 	                oldForest: p.loadFont('assets/TheOldForest.ttf')
@@ -1382,7 +1433,10 @@
 	                dirtBottomLeftGrass: p.loadImage('assets/tiles/dirt_bottom_left.png'),
 	                dirtBottomRightGrass: p.loadImage('assets/tiles/dirt_bottom_right.png'),
 	            },
-	            bullet: p.loadImage('assets/bullet.png')
+	            bullet: p.loadImage('assets/bullet.png'),
+	            shotgun: p.loadImage('assets/shotgun.png'),
+	            pistol: p.loadImage('assets/pistol.png')
+
 	        };
 	    };
 

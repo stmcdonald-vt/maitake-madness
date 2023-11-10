@@ -7,7 +7,7 @@ class ButtonMushroomActor extends Actor {
      * @param {p5.Vector} position 
      */
     constructor(position) {
-        super(position, game.assets.button);
+        super(position, game.assets.buttonActor);
     }
 
     draw() {

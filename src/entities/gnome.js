@@ -5,6 +5,8 @@ import game from '../game';
 import entityManager from '../managers/entityManager';
 import Bullet from './bullet';
 import inputManager from '../managers/inputManager';
+import Pistol from '../weapons/pistol';
+import Shotgun from '../weapons/shotgun';
 
 export default class Gnome {
     /**
@@ -16,9 +18,11 @@ export default class Gnome {
         this.angle = 0;
         this.moveSpeed = 3;
         this.image = game.assets.gnome.front;
-        this.gunSpacing = 40;
+        this.gunSpacing = 60;
         this.health = 20;
         this._topLeftVector = gp5.createVector(0, 0);
+        this.weapons = [new Pistol(), new Shotgun()];
+        this.currentWeapon = 1;
     }
 
     registerClickListeners() {
@@ -50,27 +54,36 @@ export default class Gnome {
         return this.angle >= a && this.angle < b;
     }
 
-    drawDirectionalSprite() {
+    drawDirectionalGnome() {
         if (this.angleBetween(-constants.FOURTH_PI,constants.FOURTH_PI)) {
-            this.image = game.assets.gnome.side
-            gp5.image(this.image, 0, 0);
+            this.image = game.assets.gnome.right;
         } else if (this.angleBetween(constants.FOURTH_PI, constants.THREE_FOURTHS_PI)){
             this.image = game.assets.gnome.front;
-            gp5.image(this.image, 0, 0);
         } else if(this.angleBetween(-constants.THREE_FOURTHS_PI, -constants.FOURTH_PI)) {
             this.image = game.assets.gnome.back;
-            gp5.image(this.image, 0, 0);
         } else {
-            gp5.push();
-            gp5.scale(-1,1); // flip horizontally
-            const image = game.assets.gnome.side
-            gp5.image(image, 0, 0);
-            gp5.pop();
+            this.image = game.assets.gnome.left
         }
+
+        gp5.image(this.image, 0, 0);
+    }
+
+    drawDirectionalWeapon() {
+        gp5.push();
+        if (this.angleBetween(-gp5.PI, -gp5.HALF_PI) || this.angleBetween(gp5.HALF_PI, gp5.PI)) {
+            gp5.scale(1,-1); // flip horizontally
+        }
+        gp5.image(this.weapons[this.currentWeapon].image, this.gunSpacing, 0);
+        gp5.pop();
+    }
+
+    nextWeapon() {
+        this.currentWeapon = (this.currentWeapon + 1) % this.weapons.length;
     }
 
     shoot() {
-        entityManager.addGnomeProjectile(new Bullet(this.position.x + (this.gunSpacing * gp5.cos(this.angle)), this.position.y + (this.gunSpacing * gp5.sin(this.angle)), this.angle));
+        this.weapons[this.currentWeapon].shoot(this.position, this.angle, this.gunSpacing);
+        // entityManager.addGnomeProjectile(new Bullet(this.position.x + (this.gunSpacing * gp5.cos(this.angle)), this.position.y + (this.gunSpacing * gp5.sin(this.angle)), this.angle));
     }
 
     draw() {
@@ -80,13 +93,15 @@ export default class Gnome {
         gp5.noFill();
         // gp5.rect(this.topLeft.x, this.topLeft.y, this.image.width, this.image.height)
         gp5.translate(this.position.x, this.position.y);
-        this.drawDirectionalSprite();
+        this.drawDirectionalGnome();
 
         // gp5.translate(this.halfWidth, this.halfHeight);
-        gp5.circle(0, 0, 5)
+        // gp5.circle(0, 0, 5)
         gp5.rotate(this.angle);
         gp5.fill('black');
-        gp5.rect(this.gunSpacing, 0, 15, 4);
+        // gp5.rect(this.gunSpacing, 0, 15, 4);
+        // gp5.image(game.assets.pistol, this.gunSpacing, 0);
+        this.drawDirectionalWeapon();
         gp5.pop();
     }
 

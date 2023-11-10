@@ -17,11 +17,11 @@ let sketch = function(p) {
     }
 
     p.keyPressed = function(event) {
-        inputManager.keyMap[event.keyCode] = true;
+        inputManager.keyMap[event.keyCode] = {pressed: true};
     }
     
     p.keyReleased = function(event) {
-        inputManager.keyMap[event.keyCode] = false;
+        inputManager.keyMap[event.keyCode] = {pressed: false}
     }
 
     // Pre-load assets
@@ -31,10 +31,13 @@ let sketch = function(p) {
             gnome: {
                 front: p.loadImage('assets/gnome_forward.png'),
                 side: p.loadImage('assets/gnome_side.png'),
-                back: p.loadImage('assets/gnome_back.png')
+                back: p.loadImage('assets/gnome_back.png'),
+                left: p.loadImage('assets/gnome_left.png'),
+                right: p.loadImage('assets/gnome_right.png'),
             },
             morel: p.loadImage('assets/morel_small.png'),
             button: p.loadImage('assets/buttonshroom.png'),
+            buttonActor: p.loadImage('assets/buttonshroom-actor.png'),
             chanterelle: p.loadImage('assets/chanterelle.png'),
             fonts: {
                 oldForest: p.loadFont('assets/TheOldForest.ttf')
@@ -51,7 +54,10 @@ let sketch = function(p) {
                 dirtBottomLeftGrass: p.loadImage('assets/tiles/dirt_bottom_left.png'),
                 dirtBottomRightGrass: p.loadImage('assets/tiles/dirt_bottom_right.png'),
             },
-            bullet: p.loadImage('assets/bullet.png')
+            bullet: p.loadImage('assets/bullet.png'),
+            shotgun: p.loadImage('assets/shotgun.png'),
+            pistol: p.loadImage('assets/pistol.png')
+
         };
     }
 

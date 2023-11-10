@@ -370,27 +370,41 @@
 	}
 
 	class Bullet {
-	    constructor(x, y, heading, speed=6) {
+	    constructor(x, y, heading, speed=6, distance=400, damage=2, decayPerFrame=0.01) {
 	        this.position = gp5$1.createVector(x, y);
+	        this.speed = speed;
 	        this.velocity = gp5$1.createVector(speed, 0);
 	        this.velocity.setHeading(heading);
+	        this.heading = heading;
+	        this.distance = distance;
+	        this.damage = damage;
+	        this.decayPerFrame = decayPerFrame;
+	        this.disabled = false;
+	        this.image = game$1.assets.bullet;
 	    }
 
 	    update() {
 	        this.position.add(this.velocity);
+	        this.distance -= this.speed;
+	        this.damage -= this.decayPerFrame;
+	        if (this.distance <= 0) {
+	            this.disabled = true;
+	        }
 	    }
 
 	    draw() {
 	        gp5$1.push();
 	        gp5$1.translate(this.position.x, this.position.y);
-	        gp5$1.fill('black');
-	        gp5$1.circle(0, 0, 6);
+	        gp5$1.rotate(this.heading);
+	        gp5$1.image(this.image, 0, 0);
 	        gp5$1.pop();
 	    }
 
 	    display() {
-	        this.update();
-	        this.draw();
+	        if (!this.disabled) {
+	            this.update();
+	            this.draw();
+	        }
 	    }
 	}
 
@@ -405,6 +419,7 @@
 	        this.moveSpeed = 3;
 	        this.image = game$1.assets.gnome.front;
 	        this.gunSpacing = 40;
+	        this.health = 20;
 	        this._topLeftVector = gp5$1.createVector(0, 0);
 	    }
 
@@ -457,7 +472,7 @@
 	    }
 
 	    shoot() {
-	        entityManager$1.addProjectile(new Bullet(this.position.x + (this.gunSpacing * gp5$1.cos(this.angle)), this.position.y + (this.gunSpacing * gp5$1.sin(this.angle)), this.angle));
+	        entityManager$1.addGnomeProjectile(new Bullet(this.position.x + (this.gunSpacing * gp5$1.cos(this.angle)), this.position.y + (this.gunSpacing * gp5$1.sin(this.angle)), this.angle));
 	    }
 
 	    draw() {
@@ -498,80 +513,6 @@
 	    }
 	}
 
-	class ChargeState {
-	    constructor(enemy) {
-	        this.enemy = enemy;
-	        this.player = entityManager$1.gnome;
-	        this.step = gp5$1.createVector(0, 0);
-	    }
-
-	    setAngle() {
-	        this.step.set(this.player.position.x - this.enemy.position.x, this.player.position.y - this.enemy.position.y);
-	        this.step.normalize();
-	        this.step.mult(5);
-	        this.enemy.velocity = this.step;
-	        return this.step.heading();
-	    }
-
-	    execute() {
-	        this.enemy.changeState();
-	    }
-	}
-
-	// Button mushroom. He feels nothing but emptiness.
-	class ButtonMushroom {
-	    /**
-	     * @param {p5.Vector} position 
-	     */
-	    constructor(position) {
-	        this.position = position;
-	        this.velocity = gp5$1.createVector(0, 0);
-	        this.image = game$1.assets.button;
-	        this.states = [new ChaseState(this), new ChargeState(this)];
-	        this.currentState = 0;
-	        this.angle = 0;
-	    }
-
-	    changeState() {
-	        switch (this.currentState) {
-	            case 0:
-	                if (entityManager$1.distanceToPlayer(this) < 100) {
-	                    this.angle = this.states[1].setAngle();
-	                    this.currentState = 1;
-	                }
-	                break;
-	            case 1:
-	                if (entityManager$1.distanceToPlayer(this) > 150) {
-	                    this.currentState = 0;
-	                }
-	        }
-	    }
-
-	    update() {
-	        this.states[this.currentState].execute();
-	        this.position.add(this.velocity);
-	    }
-
-	    draw() {
-	        gp5$1.push();
-	        gp5$1.imageMode(gp5$1.CENTER);
-	        gp5$1.translate(this.position.x, this.position.y);
-	        if (this.currentState === 1) {
-	            gp5$1.rotate(this.angle + gp5$1.HALF_PI);
-	        }
-	        gp5$1.scale(.5, .5);
-	        gp5$1.image(this.image, 0, 0);
-	        gp5$1.pop();
-	    }
-
-
-
-	    display() {
-	        this.update();
-	        this.draw();
-	    }
-	}
-
 	class ShootState {
 	    constructor(enemy) {
 	        this.enemy = enemy;
@@ -592,6 +533,88 @@
 	    }
 	}
 
+	class CollisionDetector {
+	    /**
+	     * 
+	     * @param {p5.Image} sprite1 
+	     * @param {*} sprite2 
+	     */
+	    static spriteCollision(position1, sprite1, position2, sprite2) {
+	        const p1x = gp5$1.round(position1.x);
+	        const p1y = gp5$1.round(position1.y);
+	        const p2x = gp5$1.round(position2.x);
+	        const p2y = gp5$1.round(position2.y);
+	        const intersection = this.rectangleIntersection(
+	            {x: p1x, y: p1y, height: sprite1.height, width: sprite1.width},
+	            {x: p2x, y: p2y, height: sprite2.height, width: sprite2.width}
+	        );
+
+	        if (intersection === null) {return false}
+	        // With the number of calculations reduced, do a pixel perfect detection. Only check the pixels in the overlap between hitboxes.
+	        // Can be expensive, use sparingly.
+	        const xEnd = intersection.x + intersection.width;
+	        const yEnd = intersection.y + intersection.height;
+
+	        // Get the pixel arrays for both images
+	        const pixels1 = sprite1.pixels;
+	        const pixels2 = sprite2.pixels;
+
+	        // Check for pixel collision within the intersection region
+	        for (let x = intersection.x; x < xEnd; x++) {
+	            for (let y = intersection.y; y < yEnd; y++) {
+	                const index1 = (x - p1x + (y - p1y) * sprite1.width) * 4;
+	                const index2 = (x - p2x + (y - p2y) * sprite2.width) * 4;
+
+	                // Check if both pixels are non-transparent (alpha > 0)
+	                if (pixels1[index1 + 3] > 250 && pixels2[index2 + 3] > 250) {
+	                    return true; // Collision detected
+	                }
+	            }
+	        }
+	        return false; // no collision detected
+	    }
+
+	    getStartPixelIndex(deltas, sprite) {
+	        if (deltas.y === 0) {
+	            return deltas.x;
+	        }
+	    }
+
+	    // pixelStartIndex()
+
+	    static rectangleIntersection(rect1, rect2) {
+	        // top left coord is the larger x-y combination
+	        const x1 = Math.max(rect1.x, rect2.x);
+	        const y1 = Math.max(rect1.y, rect2.y);
+	      
+	        // bottom right coord is the smaller x-y combination
+	        const x2 = Math.min(rect1.x + rect1.width, rect2.x + rect2.width);
+	        const y2 = Math.min(rect1.y + rect1.height, rect2.y + rect2.height);
+	      
+	        if (x1 < x2 && y1 < y2) { // indicates overlap
+	          const intersectionWidth = x2 - x1;
+	          const intersectionHeight = y2 - y1;
+	          
+	          // Return the intersection rectangle
+	          return { x: x1, y: y1, width: intersectionWidth, height: intersectionHeight};
+	        } else {
+	          // No intersection
+	          return null;
+	        }
+	      }
+
+	    static checkRectangleRectangleCollision(r1x, r1y, r1w, r1h, r2x, r2y, r2w, r2h) {
+	        // Calculate the right and bottom edges of each rectangle
+	        const r1RightEdge = r1x + r1w;
+	        const r1BottomEdge = r1y + r1h;
+	        const r2RightEdge = r2x + r2w;
+	        const r2BottomEdge = r2y + r2h;
+
+	        // Check if either rectangle is to the left, right, above, or below the other
+	        return !(r1x >= r2RightEdge || r2x >= r1RightEdge || r1y >= r2BottomEdge || r2y >= r1BottomEdge)
+	    }
+	}
+
 	// Button mushroom. He feels nothing but emptiness.
 	class MorelMushroom {
 	    /**
@@ -608,6 +631,8 @@
 	        this.shootAngle;
 	        this.shootCooldown = 0;
 	        this._topLeftVector = gp5$1.createVector(0, 0);
+	        this.dead = false;
+	        this.health = 10 * game$1.enemyHealthMultiplier();
 	    }
 
 	    get topLeft() {
@@ -616,7 +641,7 @@
 	    }
 
 	    shoot() {
-	        entityManager$1.addProjectile(new Bullet(this.position.x, this.position.y, this.shootAngle));
+	        entityManager$1.addMushroomProjectile(new Bullet(this.position.x, this.position.y, this.shootAngle));
 	    }
 
 	    changeState() {
@@ -651,8 +676,10 @@
 	    }
 
 	    display() {
-	        this.update();
-	        this.draw();
+	        if (!this.dead) {
+	            this.update();
+	            this.draw();
+	        }
 	    }
 	}
 
@@ -661,10 +688,12 @@
 	    initialize: function() {
 	        this.gnome = new Gnome(gp5$1.createVector(200, 200));
 	        this.mushrooms = [
-	            new ButtonMushroom(gp5$1.createVector(100, 100)),
-	            new MorelMushroom(gp5$1.createVector(300, 100))
+	            // new ButtonMushroom(gp5.createVector(100, 100)),
+	            new MorelMushroom(gp5$1.createVector(300, 100)),
+
 	        ];
-	        this.projectiles = [];
+	        this.gnomeProjectiles = [];
+	        this.mushroomProjectiles = [];
 	    },
 
 	    isInbounds: function(entity) {
@@ -675,11 +704,20 @@
 	    },
 
 	    cleanupProjectiles: function() {
-	        this.projectiles = this.projectiles.filter(p => this.isInbounds(p));
+	        this.gnomeProjectiles = this.gnomeProjectiles.filter(p => this.isInbounds(p) && !p.disabled);
+	        this.mushroomProjectiles = this.mushroomProjectiles.filter(p => this.isInbounds(p) && !p.disabled);
 	    },
 
-	    addProjectile: function(proj) {
-	        this.projectiles.push(proj);
+	    cleanupMushrooms: function() {
+	        this.mushrooms = this.mushrooms.filter(mushroom => !mushroom.dead);
+	    },
+
+	    addGnomeProjectile: function(proj) {
+	        this.gnomeProjectiles.push(proj);
+	    },
+
+	    addMushroomProjectile: function(proj) {
+	        this.mushroomProjectiles.push(proj);
 	    },
 
 	    setupGame: function() {
@@ -689,13 +727,39 @@
 	    distanceToPlayer: function(entity) {
 	        return gp5$1.dist(this.gnome.position.x, this.gnome.position.y, entity.position.x, entity.position.y);
 	    },
+
+	    detectCollisions: function() {
+	        this.gnomeProjectiles.forEach(projectile => {
+	            this.mushrooms.forEach(mushroom => {
+	                if (!projectile.disabled && !mushroom.dead) {
+	                    if (CollisionDetector.spriteCollision(projectile.position, projectile.image, mushroom.topLeft, mushroom.image)) {
+	                        projectile.disabled = true;
+	                        mushroom.health -= projectile.damage;
+	                        console.log(mushroom.health);
+	                        if (mushroom.health <= 0) {
+	                            mushroom.dead = true;
+	                            // game.decrementMushroomCount();
+	                        }
+	                    }
+	                }
+	            });
+	        });
+	    },
+
 	    update: function() {
 	        this.mushrooms.forEach(mushroom => mushroom.display());
 	        this.gnome.display();
-	        this.projectiles.forEach(projectile => projectile.display());
+	        this.gnomeProjectiles.forEach(projectile => projectile.display());
+	        this.mushroomProjectiles.forEach(projectile => projectile.display());
+
+	        this.detectCollisions();
 
 	        if (gp5$1.frameCount % 120 === 0) {
 	            this.cleanupProjectiles();
+	        }
+
+	        if (gp5$1.frameCount % 130 === 0) {
+	            this.cleanupMushrooms();
 	        }
 	    }
 	};
@@ -1020,6 +1084,16 @@
 	                break;
 	        }
 	    },
+	    enemyHealthMultiplier: function() {
+	        switch(this.state.DIFFICULTY) {
+	            case 0:
+	                return 0.75;
+	            case 1:
+	                return 1;
+	            case 2:
+	                return 1.25;
+	        }
+	    },
 	    state: {
 	        GAME_STATE: 0, // 0: Start screen, 1: Game
 	        DIMENSION_MULTIPLIER: 1,
@@ -1158,7 +1232,8 @@
 	                dirtTopRightGrass: p.loadImage('assets/tiles/dirt_top_right.png'),
 	                dirtBottomLeftGrass: p.loadImage('assets/tiles/dirt_bottom_left.png'),
 	                dirtBottomRightGrass: p.loadImage('assets/tiles/dirt_bottom_right.png'),
-	            }
+	            },
+	            bullet: p.loadImage('assets/bullet.png')
 	        };
 	    };
 
@@ -1171,6 +1246,7 @@
 	        [
 	            ...Object.values(assets.gnome),
 	            assets.morel,
+	            assets.bullet
 	            // ...Object.values(assets.morel),
 	            // ...Object.values(assets.button),
 	            // ...Object.values(assets.chanterelle)

@@ -17,6 +17,7 @@ export default class Gnome {
         this.moveSpeed = 3;
         this.image = game.assets.gnome.front;
         this.gunSpacing = 40;
+        this.health = 20;
         this._topLeftVector = gp5.createVector(0, 0);
     }
 
@@ -69,7 +70,7 @@ export default class Gnome {
     }
 
     shoot() {
-        entityManager.addProjectile(new Bullet(this.position.x + (this.gunSpacing * gp5.cos(this.angle)), this.position.y + (this.gunSpacing * gp5.sin(this.angle)), this.angle));
+        entityManager.addGnomeProjectile(new Bullet(this.position.x + (this.gunSpacing * gp5.cos(this.angle)), this.position.y + (this.gunSpacing * gp5.sin(this.angle)), this.angle));
     }
 
     draw() {

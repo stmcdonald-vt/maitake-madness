@@ -4,7 +4,7 @@ import { constants } from '../sketch';
 import game from '../game';
 import entityManager from '../managers/entityManager';
 import Bullet from './bullet';
-import inputManager from '../input/inputManager';
+import inputManager from '../managers/inputManager';
 
 export default class Gnome {
     /**

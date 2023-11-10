@@ -1,5 +1,5 @@
 import game from "../game";
-import inputManager from "../input/inputManager";
+import inputManager from "../managers/inputManager";
 // Generic button that can be used by any component to render a button and register a click function.
 // Currently only supports rectangular shaped hitboxes
 class Button {

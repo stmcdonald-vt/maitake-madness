@@ -370,7 +370,7 @@
 	}
 
 	class Bullet {
-	    constructor(x, y, heading, speed=6, distance=400, damage=2, decayPerFrame=0.01) {
+	    constructor(x, y, heading, speed=6, distance=400, damage=3, decayPerFrame=0.01) {
 	        this.position = gp5$1.createVector(x, y);
 	        this.speed = speed;
 	        this.velocity = gp5$1.createVector(speed, 0);
@@ -513,6 +513,88 @@
 	    }
 	}
 
+	class ChargeState {
+	    constructor(enemy) {
+	        this.enemy = enemy;
+	        this.player = entityManager$1.gnome;
+	        this.step = gp5$1.createVector(0, 0);
+	    }
+
+	    setAngle() {
+	        this.step.set(this.player.position.x - this.enemy.position.x, this.player.position.y - this.enemy.position.y);
+	        this.step.normalize();
+	        this.step.mult(5);
+	        this.enemy.velocity = this.step;
+	        return this.step.heading();
+	    }
+
+	    execute() {
+	        this.enemy.changeState();
+	    }
+	}
+
+	// Button mushroom. He feels nothing but emptiness.
+	class ButtonMushroom {
+	    /**
+	     * @param {p5.Vector} position 
+	     */
+	    constructor(position) {
+	        this.position = position;
+	        this.velocity = gp5$1.createVector(0, 0);
+	        this.image = game$1.assets.button;
+	        this.states = [new ChaseState(this), new ChargeState(this)];
+	        this.currentState = 0;
+	        this.angle = 0;
+	        this.health = 5;
+	        this.dead = false;
+	        this._topLeftVector = gp5$1.createVector(0, 0);
+	    }
+
+	    get topLeft() {
+	        this._topLeftVector.set(this.position.x - this.image.width / 2, this.position.y - this.image.height / 2);
+	        return this._topLeftVector;
+	    }
+
+	    changeState() {
+	        switch (this.currentState) {
+	            case 0:
+	                if (entityManager$1.distanceToPlayer(this) < 100) {
+	                    this.angle = this.states[1].setAngle();
+	                    this.currentState = 1;
+	                }
+	                break;
+	            case 1:
+	                if (entityManager$1.distanceToPlayer(this) > 150) {
+	                    this.currentState = 0;
+	                }
+	        }
+	    }
+
+	    update() {
+	        this.states[this.currentState].execute();
+	        this.position.add(this.velocity);
+	    }
+
+	    draw() {
+	        gp5$1.push();
+	        gp5$1.imageMode(gp5$1.CENTER);
+	        gp5$1.translate(this.position.x, this.position.y);
+	        if (this.currentState === 1) {
+	            gp5$1.rotate(this.angle + gp5$1.HALF_PI);
+	        }
+	        // gp5.scale(.5, .5)
+	        gp5$1.image(this.image, 0, 0);
+	        gp5$1.pop();
+	    }
+
+	    display() {
+	        if (!this.dead) {
+	            this.update();
+	            this.draw();
+	        }
+	    }
+	}
+
 	class ShootState {
 	    constructor(enemy) {
 	        this.enemy = enemy;
@@ -564,9 +646,9 @@
 	            for (let y = intersection.y; y < yEnd; y++) {
 	                const index1 = (x - p1x + (y - p1y) * sprite1.width) * 4;
 	                const index2 = (x - p2x + (y - p2y) * sprite2.width) * 4;
-
+	                
 	                // Check if both pixels are non-transparent (alpha > 0)
-	                if (pixels1[index1 + 3] > 250 && pixels2[index2 + 3] > 250) {
+	                if (pixels1[index1 + 3] > 0 && pixels2[index2 + 3] > 0) {
 	                    return true; // Collision detected
 	                }
 	            }
@@ -683,13 +765,62 @@
 	    }
 	}
 
+	var levels = [
+		{
+			waves: [
+				{
+					count: 4,
+					morel: [
+						[
+							0,
+							400
+						],
+						[
+							400,
+							0
+						],
+						[
+							400,
+							800
+						],
+						[
+							800,
+							400
+						]
+					]
+				},
+				{
+					count: 4,
+					button: [
+						[
+							0,
+							400
+						],
+						[
+							400,
+							0
+						],
+						[
+							400,
+							800
+						],
+						[
+							800,
+							400
+						]
+					]
+				}
+			]
+		}
+	];
+
 	// Handles input 
 	const entityManager = {
 	    initialize: function() {
 	        this.gnome = new Gnome(gp5$1.createVector(200, 200));
 	        this.mushrooms = [
 	            // new ButtonMushroom(gp5.createVector(100, 100)),
-	            new MorelMushroom(gp5$1.createVector(300, 100)),
+	            // new MorelMushroom(gp5.createVector(300, 100)),
 
 	        ];
 	        this.gnomeProjectiles = [];
@@ -710,6 +841,9 @@
 
 	    cleanupMushrooms: function() {
 	        this.mushrooms = this.mushrooms.filter(mushroom => !mushroom.dead);
+	        if (this.mushrooms.length === 0) {
+	            game$1.advanceWave();
+	        }
 	    },
 
 	    addGnomeProjectile: function(proj) {
@@ -722,6 +856,15 @@
 
 	    setupGame: function() {
 	        this.gnome.registerClickListeners();
+	        this.startWave();
+	    },
+
+	    startWave: function() {
+	        const wave = levels[game$1.state.LEVEL].waves[game$1.state.WAVE];
+
+	        wave.morel?.forEach(coord => this.mushrooms.push(new MorelMushroom(gp5$1.createVector(coord[0], coord[1]))));
+	        wave.button?.forEach(coord => this.mushrooms.push(new ButtonMushroom(gp5$1.createVector(coord[0], coord[1]))));
+
 	    },
 
 	    distanceToPlayer: function(entity) {
@@ -735,7 +878,6 @@
 	                    if (CollisionDetector.spriteCollision(projectile.position, projectile.image, mushroom.topLeft, mushroom.image)) {
 	                        projectile.disabled = true;
 	                        mushroom.health -= projectile.damage;
-	                        console.log(mushroom.health);
 	                        if (mushroom.health <= 0) {
 	                            mushroom.dead = true;
 	                            // game.decrementMushroomCount();
@@ -758,7 +900,7 @@
 	            this.cleanupProjectiles();
 	        }
 
-	        if (gp5$1.frameCount % 130 === 0) {
+	        if (gp5$1.frameCount % 30 === 0) {
 	            this.cleanupMushrooms();
 	        }
 	    }
@@ -1084,6 +1226,12 @@
 	                break;
 	        }
 	    },
+	    advanceWave: function() {
+	        if (levels[this.state.LEVEL].waves.length > this.state.WAVE + 1) {
+	            this.state.WAVE++;
+	            entityManager$1.startWave();
+	        }
+	    },
 	    enemyHealthMultiplier: function() {
 	        switch(this.state.DIFFICULTY) {
 	            case 0:
@@ -1099,7 +1247,8 @@
 	        DIMENSION_MULTIPLIER: 1,
 	        DIFFICULTY: 1,
 	        MOVEMENT_SCHEME: 0,
-	        LEVEL: 0        
+	        LEVEL: 0,
+	        WAVE: 0
 	    },
 	};
 
@@ -1246,7 +1395,9 @@
 	        [
 	            ...Object.values(assets.gnome),
 	            assets.morel,
-	            assets.bullet
+	            assets.bullet,
+	            assets.button,
+	            assets.chanterelle
 	            // ...Object.values(assets.morel),
 	            // ...Object.values(assets.button),
 	            // ...Object.values(assets.chanterelle)

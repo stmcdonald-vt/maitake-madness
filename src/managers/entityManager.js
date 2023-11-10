@@ -4,6 +4,7 @@ import ButtonMushroom from "../entities/buttonMushroom";
 import MorelMushroom from "../entities/morelMushroom";
 import collisionDetector from "./collisionDetector";
 import game from "../game";
+import levels from "../data/levels.json"
 
 // Handles input 
 const entityManager = {
@@ -11,7 +12,7 @@ const entityManager = {
         this.gnome = new Gnome(gp5.createVector(200, 200));
         this.mushrooms = [
             // new ButtonMushroom(gp5.createVector(100, 100)),
-            new MorelMushroom(gp5.createVector(300, 100)),
+            // new MorelMushroom(gp5.createVector(300, 100)),
 
         ];
         this.gnomeProjectiles = [];
@@ -32,6 +33,9 @@ const entityManager = {
 
     cleanupMushrooms: function() {
         this.mushrooms = this.mushrooms.filter(mushroom => !mushroom.dead);
+        if (this.mushrooms.length === 0) {
+            game.advanceWave();
+        }
     },
 
     addGnomeProjectile: function(proj) {
@@ -44,6 +48,15 @@ const entityManager = {
 
     setupGame: function() {
         this.gnome.registerClickListeners();
+        this.startWave();
+    },
+
+    startWave: function() {
+        const wave = levels[game.state.LEVEL].waves[game.state.WAVE];
+
+        wave.morel?.forEach(coord => this.mushrooms.push(new MorelMushroom(gp5.createVector(coord[0], coord[1]))));
+        wave.button?.forEach(coord => this.mushrooms.push(new ButtonMushroom(gp5.createVector(coord[0], coord[1]))));
+
     },
 
     distanceToPlayer: function(entity) {
@@ -57,7 +70,6 @@ const entityManager = {
                     if (collisionDetector.spriteCollision(projectile.position, projectile.image, mushroom.topLeft, mushroom.image)) {
                         projectile.disabled = true;
                         mushroom.health -= projectile.damage;
-                        console.log(mushroom.health)
                         if (mushroom.health <= 0) {
                             mushroom.dead = true;
                             // game.decrementMushroomCount();
@@ -80,7 +92,7 @@ const entityManager = {
             this.cleanupProjectiles();
         }
 
-        if (gp5.frameCount % 130 === 0) {
+        if (gp5.frameCount % 30 === 0) {
             this.cleanupMushrooms();
         }
     }

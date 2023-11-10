@@ -2,7 +2,7 @@ import gp5 from "../sketch";
 import game from "../game";
 
 export default class Bullet {
-    constructor(x, y, heading, speed=6, distance=400, damage=2, decayPerFrame=0.01) {
+    constructor(x, y, heading, speed=6, distance=400, damage=3, decayPerFrame=0.01) {
         this.position = gp5.createVector(x, y);
         this.speed = speed;
         this.velocity = gp5.createVector(speed, 0);

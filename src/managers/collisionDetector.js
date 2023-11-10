@@ -33,9 +33,9 @@ export default class CollisionDetector {
             for (let y = intersection.y; y < yEnd; y++) {
                 const index1 = (x - p1x + (y - p1y) * sprite1.width) * 4;
                 const index2 = (x - p2x + (y - p2y) * sprite2.width) * 4;
-
+                
                 // Check if both pixels are non-transparent (alpha > 0)
-                if (pixels1[index1 + 3] > 250 && pixels2[index2 + 3] > 250) {
+                if (pixels1[index1 + 3] > 0 && pixels2[index2 + 3] > 0) {
                     return true; // Collision detected
                 }
             }

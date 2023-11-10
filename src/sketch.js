@@ -1,6 +1,6 @@
 import game from "./game.js"
 import p5 from "p5";
-import inputManager from "./input/inputManager.js";
+import inputManager from "./managers/inputManager.js";
 import entityManager from "./managers/entityManager.js";
 import tilemapManager from "./managers/tilemapManager.js";
 
@@ -64,7 +64,9 @@ let sketch = function(p) {
         [
             ...Object.values(assets.gnome),
             assets.morel,
-            assets.bullet
+            assets.bullet,
+            assets.button,
+            assets.chanterelle
             // ...Object.values(assets.morel),
             // ...Object.values(assets.button),
             // ...Object.values(assets.chanterelle)

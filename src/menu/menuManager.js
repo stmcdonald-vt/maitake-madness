@@ -1,7 +1,7 @@
 import MainMenu from "./mainMenu"
 import OptionsMenu from "./optionsMenu"
 import game from "../game"
-import inputManager from "../input/inputManager"
+import inputManager from "../managers/inputManager"
 /**
  * Instantiate and manage all of the menus
  */

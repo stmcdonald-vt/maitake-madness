@@ -2,7 +2,7 @@ import game from "../../game";
 import PickerMenuItem from "./pickerMenuItem";
 import gp5 from "../../sketch";
 import entityManager from "../../managers/entityManager";
-import inputManager from "../../input/inputManager";
+import inputManager from "../../managers/inputManager";
 
 // Navigation to options or start game.
 class MainNavigationMenuItem extends PickerMenuItem {

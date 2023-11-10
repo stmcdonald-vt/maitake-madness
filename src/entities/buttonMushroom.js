@@ -17,6 +17,12 @@ class ButtonMushroom {
         this.angle = 0;
         this.health = 5;
         this.dead = false;
+        this._topLeftVector = gp5.createVector(0, 0);
+    }
+
+    get topLeft() {
+        this._topLeftVector.set(this.position.x - this.image.width / 2, this.position.y - this.image.height / 2);
+        return this._topLeftVector;
     }
 
     changeState() {
@@ -46,12 +52,10 @@ class ButtonMushroom {
         if (this.currentState === 1) {
             gp5.rotate(this.angle + gp5.HALF_PI);
         }
-        gp5.scale(.5, .5)
+        // gp5.scale(.5, .5)
         gp5.image(this.image, 0, 0);
         gp5.pop();
     }
-
-
 
     display() {
         if (!this.dead) {

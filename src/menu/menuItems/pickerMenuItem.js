@@ -1,7 +1,7 @@
 import game from "../../game";
 import p5 from "p5";
 import gp5 from "../../sketch";
-import inputManager from "../../input/inputManager";
+import inputManager from "../../managers/inputManager";
 
 // Represents an entry in a menu that provide multiple buttons to choose from
 class PickerMenuItem {

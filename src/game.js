@@ -1,6 +1,7 @@
 import MenuManager from "./menu/menuManager";
 import entityManager from "./managers/entityManager";
-import inputManager from "./input/inputManager";
+import inputManager from "./managers/inputManager";
+import levels from "./data/levels.json"
 
 const game = {
     initialize: function () {
@@ -15,6 +16,12 @@ const game = {
                 entityManager.update();
                 inputManager.processInputs();
                 break;
+        }
+    },
+    advanceWave: function() {
+        if (levels[this.state.LEVEL].waves.length > this.state.WAVE + 1) {
+            this.state.WAVE++;
+            entityManager.startWave();
         }
     },
     enemyHealthMultiplier: function() {
@@ -32,7 +39,8 @@ const game = {
         DIMENSION_MULTIPLIER: 1,
         DIFFICULTY: 1,
         MOVEMENT_SCHEME: 0,
-        LEVEL: 0        
+        LEVEL: 0,
+        WAVE: 0
     },
 }
 

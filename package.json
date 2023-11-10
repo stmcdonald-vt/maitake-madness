@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/stmcdonald-vt/maitake-madness#readme",
   "devDependencies": {
+    "@rollup/plugin-json": "^6.0.1",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "rollup": "^4.1.4"
   },

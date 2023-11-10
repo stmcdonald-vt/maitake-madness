@@ -7,7 +7,7 @@ const entityManager = {
     initialize: function() {
         this.gnome = new Gnome(gp5.createVector(200, 200));
         this.mushrooms = [
-            // new ButtonMushroom(gp5.createVector(100, 100)),
+            new ButtonMushroom(gp5.createVector(100, 100)),
             new MorelMushroom(gp5.createVector(300, 100))
         ];
         this.projectiles = [];

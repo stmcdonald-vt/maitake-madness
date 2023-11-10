@@ -14,7 +14,7 @@ export default class Gnome {
     constructor(position) {
         this.position = position;
         this.angle = 0;
-        this.moveSpeed = 2;
+        this.moveSpeed = 3;
         this.image = game.assets.gnome.front;
         this.gunSpacing = 40;
         this._topLeftVector = gp5.createVector(0, 0);

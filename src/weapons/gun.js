@@ -20,7 +20,7 @@ export default class Gun {
     }
 
     shoot(position, angle) {
-        if (gp5.frameCount - this.lastShotFrame < this.cooldown) {
+        if (gp5.frameCount - this.lastShotFrame < this.cooldown || this.ammo <= 0) {
             return;
         }
         const lowerBound = angle - this.halfSpread;
@@ -30,6 +30,7 @@ export default class Gun {
             const pelletAngle = lowerBound + this.increment * i;
             entityManager.addGnomeProjectile(new Bullet(startX, startY, pelletAngle, this.speed, this.range, this.damage, this.decay));
         }
+        this.ammo--;
         this.lastShotFrame = gp5.frameCount;
     }
 }

@@ -18,6 +18,7 @@ export default class Gnome {
         this.angle = 0;
         this.moveSpeed = 3;
         this.image = game.assets.gnome.front;
+        this.startHealth = 20;
         this.health = 20;
         this._topLeftVector = gp5.createVector(0, 0);
         this.weapons = [new Pistol(), new Shotgun()];

@@ -1,6 +1,5 @@
 import game from "../game";
 import Gun from "./gun";
-import gp5 from "../sketch";
 
 export default class Pistol extends Gun {
     constructor() {
@@ -13,5 +12,7 @@ export default class Pistol extends Gun {
         const image = game.assets.pistol;
         const cooldown = 20;
         super(spread, pellets, spacing, range, damage, decay, image, cooldown);
+        this.ammo = Infinity;
+        this.name = "Pistol";
     }
 }

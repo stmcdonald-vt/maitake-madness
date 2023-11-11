@@ -2,6 +2,7 @@ import MenuManager from "./menu/menuManager";
 import entityManager from "./managers/entityManager";
 import inputManager from "./managers/inputManager";
 import levels from "./data/levels.json"
+import hudManager from "./managers/hudManager";
 
 const game = {
     initialize: function () {
@@ -15,6 +16,7 @@ const game = {
             case 1:
                 entityManager.update();
                 inputManager.processInputs();
+                hudManager.display();
                 break;
         }
     },

@@ -512,11 +512,17 @@
 	    }
 
 	    moveX(direction) {
-	        this.position.x += this.moveSpeed * direction;
+	        const value = this.moveSpeed * direction;
+	        if (this.position.x + value < gp5$1.width && this.position.x + value > 0) { // check bounds before moving
+	            this.position.x += value;
+	        }
 	    }
 
 	    moveY(direction) {
-	        this.position.y += this.moveSpeed * direction;
+	        const value = this.moveSpeed * direction;
+	        if (this.position.y + value < gp5$1.height && this.position.y + value > 0) { // check bounds before moving
+	            this.position.y += value;
+	        }
 	    }
 
 	    update() {
@@ -650,13 +656,13 @@
 	    changeState() {
 	        switch (this.currentState) {
 	            case 0:
-	                if (entityManager$1.distanceToPlayer(this) < 100) {
+	                if (entityManager$1.distanceToPlayer(this) < 100 && entityManager$1.isInbounds(this)) {
 	                    this.angle = this.states[1].setAngle();
 	                    this.currentState = 1;
 	                }
 	                break;
 	            case 1:
-	                if (entityManager$1.distanceToPlayer(this) > 150) {
+	                if (entityManager$1.distanceToPlayer(this) > 150 || !entityManager$1.isInbounds(this)) {
 	                    this.currentState = 0;
 	                }
 	        }
@@ -821,12 +827,12 @@
 	    changeState() {
 	        switch (this.currentState) {
 	            case 0:
-	                if (entityManager$1.distanceToPlayer(this) < 200) {
-	                    this.currentState = 1;
+	                if (entityManager$1.distanceToPlayer(this) < 200 && entityManager$1.isInbounds(this)) {
+	                    this.currentState = 1; // switch to shooting when within range of player and inbounds
 	                }
 	                break;
 	            case 1:
-	                if (entityManager$1.distanceToPlayer(this) > 200) {
+	                if (entityManager$1.distanceToPlayer(this) > 200 || !entityManager$1.isInbounds(this)) {
 	                    this.currentState = 0;
 	                }
 	        }

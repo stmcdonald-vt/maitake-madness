@@ -28,13 +28,13 @@ class ButtonMushroom {
     changeState() {
         switch (this.currentState) {
             case 0:
-                if (entityManager.distanceToPlayer(this) < 100) {
+                if (entityManager.distanceToPlayer(this) < 100 && entityManager.isInbounds(this)) {
                     this.angle = this.states[1].setAngle();
                     this.currentState = 1;
                 }
                 break;
             case 1:
-                if (entityManager.distanceToPlayer(this) > 150) {
+                if (entityManager.distanceToPlayer(this) > 150 || !entityManager.isInbounds(this)) {
                     this.currentState = 0;
                 }
         }

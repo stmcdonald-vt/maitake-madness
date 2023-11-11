@@ -26,7 +26,7 @@ export default class Gnome {
     }
 
     registerClickListeners() {
-        inputManager.registerClickFunction(() => {
+        inputManager.registerClickHoldFunction(() => {
             this.shoot();
         })
     }

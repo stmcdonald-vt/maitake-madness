@@ -4,6 +4,7 @@ import game from "../game";
 const inputManager = {
     keyMap: {},
     clickFunctions: [],
+    clickHoldFunctions: [],
 
     setPlayer: function (player) {
         this.player = player;
@@ -14,8 +15,14 @@ const inputManager = {
         this.clickFunctions.push(func); 
     },
 
+    registerClickHoldFunction: function (func) {
+        // Allows any component to register functions that react to clicks
+        this.clickHoldFunctions.push(func); 
+    },
+
     clearClickFunctions: function () {
         this.clickFunctions = [];
+        this.clickHoldFunctions = [];
     },
 
     onClick: function () {
@@ -30,27 +37,27 @@ const inputManager = {
     },
 
     processInputs() {
-        if (!gp5.keyIsPressed) {
+        if (!gp5.keyIsPressed && !gp5.mouseIsPressed) {
             return;
         }
-        if (this.keyMap[68]?.pressed) { // D arrow moves player right
+        if (game.state.MOVEMENT_SCHEME === 0 ? this.keyMap[68]?.pressed : this.keyMap[39]?.pressed) { // D or arrow moves player right
             this.player.moveX(1);
         }
-        if (this.keyMap[65]?.pressed) { // A moves player left
+        if (game.state.MOVEMENT_SCHEME === 0 ? this.keyMap[65]?.pressed : this.keyMap[37]?.pressed) { // A or arrow moves player left
             this.player.moveX(-1);
         }
-        if (this.keyMap[87]?.pressed) { // W moves player left
+        if (game.state.MOVEMENT_SCHEME === 0 ? this.keyMap[87]?.pressed : this.keyMap[38]?.pressed) { // W or arrow moves player up
             this.player.moveY(-1);
         }
-        if (this.keyMap[83]?.pressed) { // S arrow moves player down
+        if (game.state.MOVEMENT_SCHEME === 0 ? this.keyMap[83]?.pressed : this.keyMap[40]?.pressed) { // S or arrow moves player down
             this.player.moveY(1);
         }
         if (this.keyMap[81]?.pressed && !this.keyMap[81]?.triggered) { // Q to cycle weapons
             this.player.nextWeapon();
             this.keyMap[81].triggered = true;
         }
-        if (this.keyMap[13] && game.isOver) { // Enter resets game
-            setup(); 
+        if (this.keyMap['click']?.pressed) { // Q to cycle weapons
+            this.clickHoldFunctions.forEach(func => func());
         }
     }
 }

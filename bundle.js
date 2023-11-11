@@ -250,6 +250,7 @@
 	const inputManager = {
 	    keyMap: {},
 	    clickFunctions: [],
+	    clickHoldFunctions: [],
 
 	    setPlayer: function (player) {
 	        this.player = player;
@@ -260,8 +261,14 @@
 	        this.clickFunctions.push(func); 
 	    },
 
+	    registerClickHoldFunction: function (func) {
+	        // Allows any component to register functions that react to clicks
+	        this.clickHoldFunctions.push(func); 
+	    },
+
 	    clearClickFunctions: function () {
 	        this.clickFunctions = [];
+	        this.clickHoldFunctions = [];
 	    },
 
 	    onClick: function () {
@@ -276,27 +283,27 @@
 	    },
 
 	    processInputs() {
-	        if (!gp5$1.keyIsPressed) {
+	        if (!gp5$1.keyIsPressed && !gp5$1.mouseIsPressed) {
 	            return;
 	        }
-	        if (this.keyMap[68]?.pressed) { // D arrow moves player right
+	        if (game$1.state.MOVEMENT_SCHEME === 0 ? this.keyMap[68]?.pressed : this.keyMap[39]?.pressed) { // D or arrow moves player right
 	            this.player.moveX(1);
 	        }
-	        if (this.keyMap[65]?.pressed) { // A moves player left
+	        if (game$1.state.MOVEMENT_SCHEME === 0 ? this.keyMap[65]?.pressed : this.keyMap[37]?.pressed) { // A or arrow moves player left
 	            this.player.moveX(-1);
 	        }
-	        if (this.keyMap[87]?.pressed) { // W moves player left
+	        if (game$1.state.MOVEMENT_SCHEME === 0 ? this.keyMap[87]?.pressed : this.keyMap[38]?.pressed) { // W or arrow moves player up
 	            this.player.moveY(-1);
 	        }
-	        if (this.keyMap[83]?.pressed) { // S arrow moves player down
+	        if (game$1.state.MOVEMENT_SCHEME === 0 ? this.keyMap[83]?.pressed : this.keyMap[40]?.pressed) { // S or arrow moves player down
 	            this.player.moveY(1);
 	        }
 	        if (this.keyMap[81]?.pressed && !this.keyMap[81]?.triggered) { // Q to cycle weapons
 	            this.player.nextWeapon();
 	            this.keyMap[81].triggered = true;
 	        }
-	        if (this.keyMap[13] && game$1.isOver) { // Enter resets game
-	            setup(); 
+	        if (this.keyMap['click']?.pressed) { // Q to cycle weapons
+	            this.clickHoldFunctions.forEach(func => func());
 	        }
 	    }
 	};
@@ -453,7 +460,7 @@
 	        const damage = 2;
 	        const decay = 0.02;
 	        const image = game$1.assets.pistol;
-	        const cooldown = 20;
+	        const cooldown = 10;
 	        super(spread, pellets, spacing, range, damage, decay, image, cooldown);
 	        this.ammo = Infinity;
 	        this.name = "Pistol";
@@ -494,7 +501,7 @@
 	    }
 
 	    registerClickListeners() {
-	        inputManager.registerClickFunction(() => {
+	        inputManager.registerClickHoldFunction(() => {
 	            this.shoot();
 	        });
 	    }
@@ -894,6 +901,45 @@
 							400
 						]
 					]
+				},
+				{
+					count: 8,
+					button: [
+						[
+							0,
+							350
+						],
+						[
+							350,
+							0
+						],
+						[
+							350,
+							800
+						],
+						[
+							800,
+							350
+						]
+					],
+					morel: [
+						[
+							0,
+							400
+						],
+						[
+							400,
+							0
+						],
+						[
+							400,
+							800
+						],
+						[
+							800,
+							400
+						]
+					]
 				}
 			]
 		}
@@ -903,11 +949,7 @@
 	const entityManager = {
 	    initialize: function() {
 	        this.gnome = new Gnome(gp5$1.createVector(200, 200));
-	        this.mushrooms = [
-	            // new ButtonMushroom(gp5.createVector(100, 100)),
-	            // new MorelMushroom(gp5.createVector(300, 100)),
-
-	        ];
+	        this.mushrooms = [];
 	        this.gnomeProjectiles = [];
 	        this.mushroomProjectiles = [];
 	    },
@@ -965,7 +1007,6 @@
 	                        mushroom.health -= projectile.damage;
 	                        if (mushroom.health <= 0) {
 	                            mushroom.dead = true;
-	                            // game.decrementMushroomCount();
 	                        }
 	                    }
 	                }
@@ -976,7 +1017,18 @@
 	            if (!projectile.disabled && CollisionDetector.spriteCollision(this.gnome.position, this.gnome.image, projectile.position, projectile.image)) {
 	                projectile.disabled = true;
 	                this.gnome.health -= projectile.damage;
-	                if (this.gnome.health <= 0) ;
+	                if (this.gnome.health <= 0) {
+	                    game$1.setLoss();
+	                }
+	            }
+	        });
+
+	        this.mushrooms.forEach(mushroom => {
+	            if (!mushroom.dead && CollisionDetector.spriteCollision(this.gnome.position, this.gnome.image, mushroom.position, mushroom.image)) {
+	                this.gnome.health -= 0.5;
+	                if (this.gnome.health <= 0) {
+	                    game$1.setLoss();
+	                }
 	            }
 	        });
 	    },
@@ -1148,13 +1200,14 @@
 	     * @param {string} text 
 	     * @param {*} renderFunction 
 	     */
-	    constructor(position, actionFunction, height, width, text=undefined, renderFunction=undefined) {
+	    constructor(position, actionFunction, height=50, width=undefined, text=undefined, renderFunction=undefined, backgroundColor=undefined) {
 	        this.position = position;
 	        this.actionFunction = actionFunction;
 	        this.height = height;
-	        this.width = width;
+	        this.width = width || gp5$1.textWidth(text || "") + 10;
 	        this.text = text; // Planned to be used in the defaultDisplay. Menu Items may use this component later.
 	        this.display = renderFunction || this.defaultDisplay;
+	        this.backgroundColor = backgroundColor || gp5$1.color('green');
 	        this.registerClickListeners();
 	    }
 
@@ -1172,7 +1225,14 @@
 	    }
 
 	    defaultDisplay() {
-	        // Currently not implemented as it is only being used with a provided renderFunction
+	        gp5$1.push();
+	        gp5$1.fill(this.backgroundColor);
+	        // gp5.rectMode(gp5.CENTER);
+	        gp5$1.rect(this.position.x,  this.position.y , this.width, this.height);
+	        gp5$1.fill('white');
+	        gp5$1.textAlign(gp5$1.CENTER);
+	        gp5$1.text(this.text, this.position.x + this.width / 2, this.position.y + this.height / 2);
+	        gp5$1.pop();
 	    }
 	}
 
@@ -1227,7 +1287,9 @@
 	    }
 
 	    get tutorialText() {
-	        return `As Gerome the Gnome, you are tasked with protecting gnomish relics from fungal aggressors. You will have plenty of weaponry at your disposal. You will use ${game$1.state.MOVEMENT_SCHEME ? 'the ARROW KEYS' : 'WASD'} to control Gerome. You will use your mouse to aim and left click to shoot your weapon. It is highly recommended to use a mouse for aiming rather than a laptop touchpad.`
+	        return `As Gerome the Gnome, you are tasked with protecting gnomish relics from fungal aggressors. You will have plenty of weaponry at your disposal that you can switch between using the 'Q' key. You will use ${game$1.state.MOVEMENT_SCHEME ? 'the ARROW KEYS' : 'WASD'} to control Gerome. 
+        
+        You will use your mouse to aim and left click to shoot your weapon. It is highly recommended to use a mouse for aiming rather than a laptop touchpad.`
 	    }
 
 	    display() {
@@ -1304,6 +1366,21 @@
 	    }
 	}
 
+	class EnemyCountHud {
+	    constructor(x, y) {
+	        this.x = x;
+	        this.y = y;
+	    }
+
+	    display() {
+	        gp5$1.push();
+	        gp5$1.fill('black');
+	        gp5$1.textAlign(gp5$1.RIGHT);
+	        gp5$1.text(`Mushrooms Left: ${entityManager$1.mushrooms.length}`, this.x, this.y);
+	        gp5$1.pop();
+	    }
+	}
+
 	class HealthHud {
 	    constructor(x, y) {
 	        this.x = x;
@@ -1319,6 +1396,22 @@
 	    }
 	}
 
+	class WaveHud {
+	    constructor(x, y) {
+	        this.x = x;
+	        this.y = y;
+	    }
+
+	    display() {
+	        const wave = game$1.state.WAVE + 1;
+	        gp5$1.push();
+	        gp5$1.fill('black');
+	        gp5$1.textAlign(gp5$1.RIGHT);
+	        gp5$1.text(`Wave: ${wave}/${game$1.wavesInLevel}`, this.x, this.y);
+	        gp5$1.pop();
+	    }
+	}
+
 	class WeaponHud {
 	    constructor(x, y) {
 	        this.x = x;
@@ -1330,7 +1423,6 @@
 	        gp5$1.push();
 	        gp5$1.fill('black');
 	        gp5$1.text(`${gun.name}: ${gun.ammo === Infinity ? "∞" : gun.ammo}`, this.x, this.y);
-	        // gp5.text(`${gun.ammo === Infinity ? "∞" : gun.ammo} Bullets`, this.x, this.y + 30);
 	        gp5$1.pop();
 	    }
 	}
@@ -1338,14 +1430,31 @@
 	const hudManager = {
 	    initialize: function() {
 	        this.components = [
+	            new WaveHud(790, 25),
+	            new EnemyCountHud(790, 55),
 	            new HealthHud(0, 760),
 	            new WeaponHud(0, 790),
 	        ];
 	    },
-
 	    display: function() {
 	        this.components.forEach(comp => comp.display());
 	    }
+	};
+
+	const endStateManager = {
+	    initialize: function () {
+	        this.homeButton = new Button(gp5$1.createVector(360, 425), this.goHome, undefined, undefined, 'Home');
+	    },
+	    showMessageCenter: function(message) {
+	        gp5$1.push();
+	        gp5$1.textAlign(gp5$1.CENTER);
+	        gp5$1.text(message, 400, 400);
+	        gp5$1.pop();
+	    },
+	    goHome: function() {
+	        game$1.resetGame();
+	        gp5$1.setup();
+	    },
 	};
 
 	const game = {
@@ -1362,13 +1471,26 @@
 	                inputManager.processInputs();
 	                hudManager.display();
 	                break;
+	            case 2:
+	                endStateManager.showMessageCenter(`You Win!`);
+	                endStateManager.homeButton.display();
+	                break;
+	            case 3:
+	                endStateManager.showMessageCenter(`You Lose...`);
+	                endStateManager.homeButton.display();
+	                break;
 	        }
 	    },
 	    advanceWave: function() {
 	        if (levels[this.state.LEVEL].waves.length > this.state.WAVE + 1) {
 	            this.state.WAVE++;
 	            entityManager$1.startWave();
+	        } else {
+	            this.setWin();
 	        }
+	    },
+	    get wavesInLevel() {
+	        return levels[this.state.LEVEL].waves.length;
 	    },
 	    enemyHealthMultiplier: function() {
 	        switch(this.state.DIFFICULTY) {
@@ -1380,8 +1502,23 @@
 	                return 1.25;
 	        }
 	    },
+	    setWin: function () {
+	        inputManager.clearClickFunctions();
+	        this.state.GAME_STATE = 2;
+	        endStateManager.homeButton.registerClickListeners();
+	    },
+	    setLoss: function () {
+	        inputManager.clearClickFunctions();
+	        this.state.GAME_STATE = 3;
+	        endStateManager.homeButton.registerClickListeners();
+	    },
+	    resetGame: function () {
+	        this.state.GAME_STATE = 0;
+	        this.state.LEVEL = 0;
+	        this.state.WAVE = 0;
+	    },
 	    state: {
-	        GAME_STATE: 0, // 0: Start screen, 1: Game
+	        GAME_STATE: 0, // 0: Start screen, 1: Game, 2: Win, 3: Loss
 	        DIMENSION_MULTIPLIER: 1,
 	        DIFFICULTY: 1,
 	        MOVEMENT_SCHEME: 0,
@@ -1485,6 +1622,14 @@
 	        inputManager.onClick();
 	    };
 
+	    p.mousePressed = function(event) {
+	        inputManager.keyMap['click'] = {pressed: true};
+	    };
+
+	    p.mouseReleased = function(event) {
+	        inputManager.keyMap['click'] = {pressed: false};
+	    };
+
 	    p.keyPressed = function(event) {
 	        inputManager.keyMap[event.keyCode] = {pressed: true};
 	    };
@@ -1542,15 +1687,13 @@
 	            assets.bullet,
 	            assets.button,
 	            assets.chanterelle
-	            // ...Object.values(assets.morel),
-	            // ...Object.values(assets.button),
-	            // ...Object.values(assets.chanterelle)
 	        ].forEach(img => img.loadPixels());
 	        game$1.assets = assets;
 	        game$1.initialize();
 	        entityManager$1.initialize();
 	        hudManager.initialize();
 	        inputManager.setPlayer(entityManager$1.gnome);
+	        endStateManager.initialize();
 	    };
 	 
 	    p.draw = function() {
@@ -1559,6 +1702,15 @@
 	                p.background(assets.startScreenImage);
 	                break;
 	            case 1:
+	                p.cursor(p.CROSS);
+	                tilemapManager.display();
+	                break;
+	            case 2:
+	                p.cursor(p.ARROW);
+	                tilemapManager.display();
+	                break;
+	            case 3:
+	                p.cursor(p.ARROW);
 	                tilemapManager.display();
 	                break;
 	            default:

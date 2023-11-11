@@ -3,6 +3,7 @@ import entityManager from "./managers/entityManager";
 import inputManager from "./managers/inputManager";
 import levels from "./data/levels.json"
 import hudManager from "./managers/hudManager";
+import endStateManager from "./managers/endStateManager";
 
 const game = {
     initialize: function () {
@@ -18,13 +19,26 @@ const game = {
                 inputManager.processInputs();
                 hudManager.display();
                 break;
+            case 2:
+                endStateManager.showMessageCenter(`You Win!`);
+                endStateManager.homeButton.display();
+                break;
+            case 3:
+                endStateManager.showMessageCenter(`You Lose...`);
+                endStateManager.homeButton.display();
+                break;
         }
     },
     advanceWave: function() {
         if (levels[this.state.LEVEL].waves.length > this.state.WAVE + 1) {
             this.state.WAVE++;
             entityManager.startWave();
+        } else {
+            this.setWin();
         }
+    },
+    get wavesInLevel() {
+        return levels[this.state.LEVEL].waves.length;
     },
     enemyHealthMultiplier: function() {
         switch(this.state.DIFFICULTY) {
@@ -36,8 +50,23 @@ const game = {
                 return 1.25;
         }
     },
+    setWin: function () {
+        inputManager.clearClickFunctions();
+        this.state.GAME_STATE = 2;
+        endStateManager.homeButton.registerClickListeners();
+    },
+    setLoss: function () {
+        inputManager.clearClickFunctions();
+        this.state.GAME_STATE = 3;
+        endStateManager.homeButton.registerClickListeners();
+    },
+    resetGame: function () {
+        this.state.GAME_STATE = 0;
+        this.state.LEVEL = 0;
+        this.state.WAVE = 0;
+    },
     state: {
-        GAME_STATE: 0, // 0: Start screen, 1: Game
+        GAME_STATE: 0, // 0: Start screen, 1: Game, 2: Win, 3: Loss
         DIMENSION_MULTIPLIER: 1,
         DIFFICULTY: 1,
         MOVEMENT_SCHEME: 0,

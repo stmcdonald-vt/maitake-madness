@@ -78,6 +78,16 @@ const entityManager = {
                 }
             })
         })
+
+        this.mushroomProjectiles.forEach(projectile => {
+            if (!projectile.disabled && collisionDetector.spriteCollision(this.gnome.position, this.gnome.image, projectile.position, projectile.image)) {
+                projectile.disabled = true;
+                this.gnome.health -= projectile.damage;
+                if (this.gnome.health <= 0) {
+                    // END GAME
+                }
+            }
+        })
     },
 
     update: function() {

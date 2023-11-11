@@ -3,6 +3,7 @@ import p5 from "p5";
 import inputManager from "./managers/inputManager.js";
 import entityManager from "./managers/entityManager.js";
 import tilemapManager from "./managers/tilemapManager.js";
+import hudManager from "./managers/hudManager.js";
 
 // Use instance mode for p5. This works better with Rollup and ES6 modules. https://p5js.org/reference/#/p5/p5
 /**
@@ -80,6 +81,7 @@ let sketch = function(p) {
         game.assets = assets;
         game.initialize();
         entityManager.initialize();
+        hudManager.initialize();
         inputManager.setPlayer(entityManager.gnome);
     };
  

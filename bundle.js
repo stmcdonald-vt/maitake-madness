@@ -429,7 +429,7 @@
 	    }
 
 	    shoot(position, angle) {
-	        if (gp5$1.frameCount - this.lastShotFrame < this.cooldown) {
+	        if (gp5$1.frameCount - this.lastShotFrame < this.cooldown || this.ammo <= 0) {
 	            return;
 	        }
 	        const lowerBound = angle - this.halfSpread;
@@ -439,6 +439,7 @@
 	            const pelletAngle = lowerBound + this.increment * i;
 	            entityManager$1.addGnomeProjectile(new Bullet(startX, startY, pelletAngle, this.speed, this.range, this.damage, this.decay));
 	        }
+	        this.ammo--;
 	        this.lastShotFrame = gp5$1.frameCount;
 	    }
 	}
@@ -454,12 +455,14 @@
 	        const image = game$1.assets.pistol;
 	        const cooldown = 20;
 	        super(spread, pellets, spacing, range, damage, decay, image, cooldown);
+	        this.ammo = Infinity;
+	        this.name = "Pistol";
 	    }
 	}
 
 	class Shotgun extends Gun {
 	    constructor() {
-	        const spread = gp5$1.HALF_PI;
+	        const spread = gp5$1.QUARTER_PI;
 	        const pellets = 5;
 	        const spacing = 60;
 	        const range = 100;
@@ -468,6 +471,8 @@
 	        const image = game$1.assets.shotgun;
 	        const cooldown = 45;
 	        super(spread, pellets, spacing, range, damage, decay, image, cooldown);
+	        this.ammo = 10;
+	        this.name = "Shotgun";
 	    }
 	}
 
@@ -481,6 +486,7 @@
 	        this.angle = 0;
 	        this.moveSpeed = 3;
 	        this.image = game$1.assets.gnome.front;
+	        this.startHealth = 20;
 	        this.health = 20;
 	        this._topLeftVector = gp5$1.createVector(0, 0);
 	        this.weapons = [new Pistol(), new Shotgun()];
@@ -965,6 +971,14 @@
 	                }
 	            });
 	        });
+
+	        this.mushroomProjectiles.forEach(projectile => {
+	            if (!projectile.disabled && CollisionDetector.spriteCollision(this.gnome.position, this.gnome.image, projectile.position, projectile.image)) {
+	                projectile.disabled = true;
+	                this.gnome.health -= projectile.damage;
+	                if (this.gnome.health <= 0) ;
+	            }
+	        });
 	    },
 
 	    update: function() {
@@ -1290,6 +1304,50 @@
 	    }
 	}
 
+	class HealthHud {
+	    constructor(x, y) {
+	        this.x = x;
+	        this.y = y;
+	    }
+
+	    display() {
+	        const gnome = entityManager$1.gnome;
+	        gp5$1.push();
+	        gp5$1.fill('black');
+	        gp5$1.text(`Health: ${gp5$1.floor(gnome.health / gnome.startHealth * 100)}%`, this.x, this.y);
+	        gp5$1.pop();
+	    }
+	}
+
+	class WeaponHud {
+	    constructor(x, y) {
+	        this.x = x;
+	        this.y = y;
+	    }
+
+	    display() {
+	        const gun = entityManager$1.gnome.gun;
+	        gp5$1.push();
+	        gp5$1.fill('black');
+	        gp5$1.text(`${gun.name}: ${gun.ammo === Infinity ? "∞" : gun.ammo}`, this.x, this.y);
+	        // gp5.text(`${gun.ammo === Infinity ? "∞" : gun.ammo} Bullets`, this.x, this.y + 30);
+	        gp5$1.pop();
+	    }
+	}
+
+	const hudManager = {
+	    initialize: function() {
+	        this.components = [
+	            new HealthHud(0, 760),
+	            new WeaponHud(0, 790),
+	        ];
+	    },
+
+	    display: function() {
+	        this.components.forEach(comp => comp.display());
+	    }
+	};
+
 	const game = {
 	    initialize: function () {
 	        this.menuManager = new MenuManager();
@@ -1302,6 +1360,7 @@
 	            case 1:
 	                entityManager$1.update();
 	                inputManager.processInputs();
+	                hudManager.display();
 	                break;
 	        }
 	    },
@@ -1490,6 +1549,7 @@
 	        game$1.assets = assets;
 	        game$1.initialize();
 	        entityManager$1.initialize();
+	        hudManager.initialize();
 	        inputManager.setPlayer(entityManager$1.gnome);
 	    };
 	 

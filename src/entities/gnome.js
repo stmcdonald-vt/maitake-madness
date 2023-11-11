@@ -37,11 +37,17 @@ export default class Gnome {
     }
 
     moveX(direction) {
-        this.position.x += this.moveSpeed * direction;
+        const value = this.moveSpeed * direction;
+        if (this.position.x + value < gp5.width && this.position.x + value > 0) { // check bounds before moving
+            this.position.x += value;
+        }
     }
 
     moveY(direction) {
-        this.position.y += this.moveSpeed * direction;
+        const value = this.moveSpeed * direction;
+        if (this.position.y + value < gp5.height && this.position.y + value > 0) { // check bounds before moving
+            this.position.y += value;
+        }
     }
 
     update() {

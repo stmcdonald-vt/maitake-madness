@@ -37,12 +37,12 @@ class MorelMushroom {
     changeState() {
         switch (this.currentState) {
             case 0:
-                if (entityManager.distanceToPlayer(this) < 200) {
-                    this.currentState = 1;
+                if (entityManager.distanceToPlayer(this) < 200 && entityManager.isInbounds(this)) {
+                    this.currentState = 1; // switch to shooting when within range of player and inbounds
                 }
                 break;
             case 1:
-                if (entityManager.distanceToPlayer(this) > 200) {
+                if (entityManager.distanceToPlayer(this) > 200 || !entityManager.isInbounds(this)) {
                     this.currentState = 0;
                 }
         }

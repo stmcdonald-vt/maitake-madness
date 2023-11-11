@@ -10,11 +10,7 @@ import levels from "../data/levels.json"
 const entityManager = {
     initialize: function() {
         this.gnome = new Gnome(gp5.createVector(200, 200));
-        this.mushrooms = [
-            // new ButtonMushroom(gp5.createVector(100, 100)),
-            // new MorelMushroom(gp5.createVector(300, 100)),
-
-        ];
+        this.mushrooms = [];
         this.gnomeProjectiles = [];
         this.mushroomProjectiles = [];
     },
@@ -72,7 +68,6 @@ const entityManager = {
                         mushroom.health -= projectile.damage;
                         if (mushroom.health <= 0) {
                             mushroom.dead = true;
-                            // game.decrementMushroomCount();
                         }
                     }
                 }
@@ -84,7 +79,16 @@ const entityManager = {
                 projectile.disabled = true;
                 this.gnome.health -= projectile.damage;
                 if (this.gnome.health <= 0) {
-                    // END GAME
+                    game.setLoss();
+                }
+            }
+        })
+
+        this.mushrooms.forEach(mushroom => {
+            if (!mushroom.dead && collisionDetector.spriteCollision(this.gnome.position, this.gnome.image, mushroom.position, mushroom.image)) {
+                this.gnome.health -= 0.5;
+                if (this.gnome.health <= 0) {
+                    game.setLoss();
                 }
             }
         })

@@ -4,6 +4,7 @@ import inputManager from "./managers/inputManager.js";
 import entityManager from "./managers/entityManager.js";
 import tilemapManager from "./managers/tilemapManager.js";
 import hudManager from "./managers/hudManager.js";
+import endStateManager from "./managers/endStateManager.js";
 
 // Use instance mode for p5. This works better with Rollup and ES6 modules. https://p5js.org/reference/#/p5/p5
 /**
@@ -15,6 +16,14 @@ let sketch = function(p) {
 
     p.mouseClicked = function() {
         inputManager.onClick();
+    }
+
+    p.mousePressed = function(event) {
+        inputManager.keyMap['click'] = {pressed: true};
+    }
+
+    p.mouseReleased = function(event) {
+        inputManager.keyMap['click'] = {pressed: false}
     }
 
     p.keyPressed = function(event) {
@@ -74,15 +83,13 @@ let sketch = function(p) {
             assets.bullet,
             assets.button,
             assets.chanterelle
-            // ...Object.values(assets.morel),
-            // ...Object.values(assets.button),
-            // ...Object.values(assets.chanterelle)
         ].forEach(img => img.loadPixels());
         game.assets = assets;
         game.initialize();
         entityManager.initialize();
         hudManager.initialize();
         inputManager.setPlayer(entityManager.gnome);
+        endStateManager.initialize();
     };
  
     p.draw = function() {
@@ -91,6 +98,15 @@ let sketch = function(p) {
                 p.background(assets.startScreenImage);
                 break;
             case 1:
+                p.cursor(p.CROSS);
+                tilemapManager.display();
+                break;
+            case 2:
+                p.cursor(p.ARROW);
+                tilemapManager.display();
+                break;
+            case 3:
+                p.cursor(p.ARROW);
                 tilemapManager.display();
                 break;
             default:

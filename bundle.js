@@ -484,6 +484,9 @@
 	}
 
 	class Gnome {
+	    #moveX = 0;
+	    #moveY = 0;
+
 	    /**
 	     * 
 	     * @param {p5.Vector} position 
@@ -511,55 +514,22 @@
 	        return this._topLeftVector;
 	    }
 
+	    get gun() {
+	        return this.weapons[this.currentWeapon];
+	    }
+
 	    moveX(direction) {
 	        const value = this.moveSpeed * direction;
 	        if (this.position.x + value < gp5$1.width && this.position.x + value > 0) { // check bounds before moving
-	            this.position.x += value;
+	            this.#moveX = direction;
 	        }
 	    }
 
 	    moveY(direction) {
 	        const value = this.moveSpeed * direction;
 	        if (this.position.y + value < gp5$1.height && this.position.y + value > 0) { // check bounds before moving
-	            this.position.y += value;
+	            this.#moveY = direction;
 	        }
-	    }
-
-	    update() {
-	        const mouseVector = gp5$1.createVector(gp5$1.mouseX, gp5$1.mouseY);
-	        mouseVector.sub(this.position);
-	        this.angle = mouseVector.heading();
-	    }
-
-	    angleBetween(a, b) {
-	        return this.angle >= a && this.angle < b;
-	    }
-
-	    drawDirectionalGnome() {
-	        if (this.angleBetween(-constants.FOURTH_PI,constants.FOURTH_PI)) {
-	            this.image = game$1.assets.gnome.right;
-	        } else if (this.angleBetween(constants.FOURTH_PI, constants.THREE_FOURTHS_PI)){
-	            this.image = game$1.assets.gnome.front;
-	        } else if(this.angleBetween(-constants.THREE_FOURTHS_PI, -constants.FOURTH_PI)) {
-	            this.image = game$1.assets.gnome.back;
-	        } else {
-	            this.image = game$1.assets.gnome.left;
-	        }
-
-	        gp5$1.image(this.image, 0, 0);
-	    }
-
-	    drawDirectionalWeapon() {
-	        gp5$1.push();
-	        if (this.angleBetween(-gp5$1.PI, -gp5$1.HALF_PI) || this.angleBetween(gp5$1.HALF_PI, gp5$1.PI)) {
-	            gp5$1.scale(1,-1); // flip horizontally
-	        }
-	        gp5$1.image(this.gun.image, this.gun.spacing, 0);
-	        gp5$1.pop();
-	    }
-
-	    get gun() {
-	        return this.weapons[this.currentWeapon];
 	    }
 
 	    nextWeapon() {
@@ -568,17 +538,57 @@
 
 	    shoot() {
 	        this.weapons[this.currentWeapon].shoot(this.position, this.angle);
-	        // entityManager.addGnomeProjectile(new Bullet(this.position.x + (this.gunSpacing * gp5.cos(this.angle)), this.position.y + (this.gunSpacing * gp5.sin(this.angle)), this.angle));
 	    }
 
-	    draw() {
+	    #update() {
+	        const mouseVector = gp5$1.createVector(gp5$1.mouseX, gp5$1.mouseY);
+	        mouseVector.sub(this.position);
+	        this.angle = mouseVector.heading();
+
+	        // Move based on controls. We need to normalize here to ensure diagonal movement is the same speed.
+	        const moveVector = gp5$1.createVector(this.#moveX, this.#moveY).normalize().mult(this.moveSpeed);
+	        this.position.add(moveVector);
+	        this.#moveX = 0;
+	        this.#moveY = 0;
+	    }
+
+	    #angleBetween(a, b) {
+	        return this.angle >= a && this.angle < b;
+	    }
+
+	    #drawDirectionalGnome() {
+	        if (this.#angleBetween(-constants.FOURTH_PI,constants.FOURTH_PI)) {
+	            this.image = game$1.assets.gnome.right;
+	        } else if (this.#angleBetween(constants.FOURTH_PI, constants.THREE_FOURTHS_PI)){
+	            this.image = game$1.assets.gnome.front;
+	        } else if(this.#angleBetween(-constants.THREE_FOURTHS_PI, -constants.FOURTH_PI)) {
+	            this.image = game$1.assets.gnome.back;
+	        } else {
+	            this.image = game$1.assets.gnome.left;
+	        }
+
+	        gp5$1.image(this.image, 0, 0);
+	    }
+
+	    #drawDirectionalWeapon() {
+	        gp5$1.push();
+	        if (this.#angleBetween(-gp5$1.PI, -gp5$1.HALF_PI) || this.#angleBetween(gp5$1.HALF_PI, gp5$1.PI)) {
+	            gp5$1.scale(1,-1); // flip horizontally
+	        }
+	        gp5$1.image(this.gun.image, this.gun.spacing, 0);
+	        gp5$1.pop();
+	    }
+
+
+
+	    #draw() {
 	        gp5$1.push();
 	        gp5$1.imageMode(gp5$1.CENTER);
 	        gp5$1.stroke('black');
 	        gp5$1.noFill();
 	        // gp5.rect(this.topLeft.x, this.topLeft.y, this.image.width, this.image.height)
 	        gp5$1.translate(this.position.x, this.position.y);
-	        this.drawDirectionalGnome();
+	        this.#drawDirectionalGnome();
 
 	        // gp5.translate(this.halfWidth, this.halfHeight);
 	        // gp5.circle(0, 0, 5)
@@ -586,13 +596,13 @@
 	        gp5$1.fill('black');
 	        // gp5.rect(this.gunSpacing, 0, 15, 4);
 	        // gp5.image(game.assets.pistol, this.gunSpacing, 0);
-	        this.drawDirectionalWeapon();
+	        this.#drawDirectionalWeapon();
 	        gp5$1.pop();
 	    }
 
 	    display() {
-	        this.update();
-	        this.draw();
+	        this.#update();
+	        this.#draw();
 	    }
 	}
 

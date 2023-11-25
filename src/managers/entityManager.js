@@ -65,7 +65,7 @@ const entityManager = {
                 if (!projectile.disabled && !mushroom.dead) {
                     if (collisionDetector.spriteCollision(projectile.position, projectile.image, mushroom.topLeft, mushroom.image)) {
                         projectile.disabled = true;
-                        mushroom.health -= projectile.damage;
+                        mushroom.hit(projectile.damage);
                         if (mushroom.health <= 0) {
                             mushroom.dead = true;
                         }
@@ -75,9 +75,9 @@ const entityManager = {
         })
 
         this.mushroomProjectiles.forEach(projectile => {
-            if (!projectile.disabled && collisionDetector.spriteCollision(this.gnome.position, this.gnome.image, projectile.position, projectile.image)) {
+            if (!projectile.disabled && collisionDetector.spriteCollision(this.gnome.topLeft, this.gnome.image, projectile.position, projectile.image)) {
                 projectile.disabled = true;
-                this.gnome.health -= projectile.damage;
+                this.gnome.hit(projectile.damage);
                 if (this.gnome.health <= 0) {
                     game.setLoss();
                 }
@@ -85,8 +85,8 @@ const entityManager = {
         })
 
         this.mushrooms.forEach(mushroom => {
-            if (!mushroom.dead && collisionDetector.spriteCollision(this.gnome.position, this.gnome.image, mushroom.position, mushroom.image)) {
-                this.gnome.health -= 0.5;
+            if (!mushroom.dead && collisionDetector.spriteCollision(this.gnome.topLeft, this.gnome.image, mushroom.topLeft, mushroom.image)) {
+                this.gnome.hit(0.5);
                 if (this.gnome.health <= 0) {
                     game.setLoss();
                 }

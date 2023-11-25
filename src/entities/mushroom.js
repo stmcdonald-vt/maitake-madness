@@ -1,6 +1,7 @@
 import gp5 from "../sketch";
+import Character from "./character";
 
-export default class Mushroom {
+export default class Mushroom extends Character {
     get topLeft() {
         this._topLeftVector.set(this.position.x - this.image.width / 2, this.position.y - this.image.height / 2);
         return this._topLeftVector;
@@ -16,6 +17,7 @@ export default class Mushroom {
         gp5.imageMode(gp5.CENTER);
         gp5.translate(this.position.x, this.position.y);
         gp5.image(this.image, 0, 0);
+        this.drawHitIndication();
         gp5.pop();
     }
 

@@ -5,8 +5,9 @@ import game from '../game';
 import inputManager from '../managers/inputManager';
 import Pistol from '../weapons/pistol';
 import Shotgun from '../weapons/shotgun';
+import Character from './character';
 
-export default class Gnome {
+export default class Gnome extends Character {
     #moveX = 0;
     #moveY = 0;
 
@@ -15,6 +16,7 @@ export default class Gnome {
      * @param {p5.Vector} position 
      */
     constructor(position) {
+        super();
         this.position = position;
         this.angle = 0;
         this.moveSpeed = 3;
@@ -80,6 +82,7 @@ export default class Gnome {
     }
 
     #drawDirectionalGnome() {
+        gp5.push()
         if (this.#angleBetween(-constants.FOURTH_PI,constants.FOURTH_PI)) {
             this.image = game.assets.gnome.right;
         } else if (this.#angleBetween(constants.FOURTH_PI, constants.THREE_FOURTHS_PI)){
@@ -89,8 +92,9 @@ export default class Gnome {
         } else {
             this.image = game.assets.gnome.left
         }
-
         gp5.image(this.image, 0, 0);
+        this.drawHitIndication();
+        gp5.pop();
     }
 
     #drawDirectionalWeapon() {
@@ -101,8 +105,6 @@ export default class Gnome {
         gp5.image(this.gun.image, this.gun.spacing, 0);
         gp5.pop();
     }
-
-
 
     #draw() {
         gp5.push();

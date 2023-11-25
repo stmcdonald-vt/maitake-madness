@@ -50,6 +50,7 @@ class ButtonMushroom extends Mushroom {
             gp5.rotate(this.angle + gp5.HALF_PI);
         }
         gp5.image(this.image, 0, 0);
+        this.drawHitIndication();
         gp5.pop();
     }
 }

@@ -1,11 +1,13 @@
 import game from "../game";
-import gp5, { constants } from "../sketch";
+import gp5 from "../sketch";
 import ChaseState from "./mushroomFSM/chaseState";
 import entityManager from "../managers/entityManager";
 import ChargeState from "./mushroomFSM/chargeState";
 import Mushroom from "./mushroom";
 // Button mushroom. He feels nothing but emptiness.
 class ButtonMushroom extends Mushroom {
+    
+
     /**
      * @param {p5.Vector} position 
      */
@@ -20,6 +22,7 @@ class ButtonMushroom extends Mushroom {
         this.health = 5;
         this.dead = false;
         this._topLeftVector = gp5.createVector(0, 0);
+        this.hopDelta = .75;
     }
 
     get topLeft() {

@@ -70,11 +70,16 @@ export default class Gnome extends Character {
         mouseVector.sub(this.position);
         this.angle = mouseVector.heading();
 
-        // Move based on controls. We need to normalize here to ensure diagonal movement is the same speed.
-        const moveVector = gp5.createVector(this.#moveX, this.#moveY).normalize().mult(this.moveSpeed);
-        this.position.add(moveVector);
-        this.#moveX = 0;
-        this.#moveY = 0;
+        if (this.#moveX || this.#moveY) {
+            this.hopWalk();
+
+            // Move based on controls. We need to normalize here to ensure diagonal movement is the same speed.
+            const moveVector = gp5.createVector(this.#moveX, this.#moveY).normalize().mult(this.moveSpeed);
+            this.position.add(moveVector);
+            this.#moveX = 0;
+            this.#moveY = 0;        
+        }
+
     }
 
     #angleBetween(a, b) {

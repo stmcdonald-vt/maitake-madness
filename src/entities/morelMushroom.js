@@ -48,14 +48,5 @@ class MorelMushroom extends Mushroom{
         super.update();
         this.shootCooldown--;
     }
-
-    draw() {
-        gp5.push();
-        gp5.noFill();
-        gp5.imageMode(gp5.CENTER);
-        gp5.translate(this.position.x, this.position.y);
-        gp5.image(this.image, 0, 0);
-        gp5.pop();
-    }
 }
 export default MorelMushroom;

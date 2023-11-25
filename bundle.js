@@ -31,11 +31,11 @@
 	     */
 	    constructor(position, image) {
 	        this.image = image || undefined;
-	        this.initialPosition = gp5$1.createVector(position.x, position.y); // serves as the "ground"
+	        this.initialPosition = gp5$2.createVector(position.x, position.y); // serves as the "ground"
 	        this.position = position;
-	        this.velocity = gp5$1.createVector(0, 0);
-	        this.gravity = gp5$1.createVector(0, .3);
-	        this.acceleration = gp5$1.createVector(0, 0);
+	        this.velocity = gp5$2.createVector(0, 0);
+	        this.gravity = gp5$2.createVector(0, .3);
+	        this.acceleration = gp5$2.createVector(0, 0);
 	        this.isJumping = false;
 	    }
 
@@ -45,7 +45,7 @@
 
 	    jump(amount) {
 	        if (!this.isJumping) {
-	            this.applyForce(gp5$1.createVector(0, -amount));
+	            this.applyForce(gp5$2.createVector(0, -amount));
 	            this.isJumping = true;
 	        }
 	    }
@@ -93,15 +93,15 @@
 	    }
 
 	    draw() {
-	        gp5$1.push();
-	        gp5$1.translate(this.position.x, this.position.y);
+	        gp5$2.push();
+	        gp5$2.translate(this.position.x, this.position.y);
 	        if (this.velocity.x < 0) { 
-	            gp5$1.scale(-1,1);
-	            gp5$1.image(this.image, -this.image.width, 0);
+	            gp5$2.scale(-1,1);
+	            gp5$2.image(this.image, -this.image.width, 0);
 	        } else {
-	            gp5$1.image(this.image, 0, 0);
+	            gp5$2.image(this.image, 0, 0);
 	        }
-	        gp5$1.pop();
+	        gp5$2.pop();
 	    }
 	}
 
@@ -116,15 +116,15 @@
 	    }
 
 	    draw() {
-	        gp5$1.push();
-	        gp5$1.translate(this.position.x, this.position.y);
+	        gp5$2.push();
+	        gp5$2.translate(this.position.x, this.position.y);
 	        if (this.velocity.x > 0) { // Eyes are toward left, so the flip logic is reverse compared to gnome
-	            gp5$1.scale(-1,1);
-	            gp5$1.image(this.image, -this.image.width, 0);
+	            gp5$2.scale(-1,1);
+	            gp5$2.image(this.image, -this.image.width, 0);
 	        } else {
-	            gp5$1.image(this.image, 0, 0);
+	            gp5$2.image(this.image, 0, 0);
 	        }
-	        gp5$1.pop();
+	        gp5$2.pop();
 	    }
 	}
 
@@ -138,15 +138,15 @@
 	    }
 
 	    draw() {
-	        gp5$1.push();
-	        gp5$1.translate(this.position.x, this.position.y);
+	        gp5$2.push();
+	        gp5$2.translate(this.position.x, this.position.y);
 	        if (this.velocity.x < 0) { 
-	            gp5$1.scale(-1,1);
-	            gp5$1.image(this.image, -this.image.width, 0);
+	            gp5$2.scale(-1,1);
+	            gp5$2.image(this.image, -this.image.width, 0);
 	        } else {
-	            gp5$1.image(this.image, 0, 0);
+	            gp5$2.image(this.image, 0, 0);
 	        }
-	        gp5$1.pop();
+	        gp5$2.pop();
 	    }
 	}
 
@@ -163,10 +163,10 @@
 	    }
 
 	    draw() {
-	        gp5$1.push();
-	        gp5$1.translate(this.position.x, this.position.y);
-	        gp5$1.image(this.image, 0, 0);
-	        gp5$1.pop();
+	        gp5$2.push();
+	        gp5$2.translate(this.position.x, this.position.y);
+	        gp5$2.image(this.image, 0, 0);
+	        gp5$2.pop();
 	    }
 	}
 
@@ -178,10 +178,10 @@
 	    constructor(position) {
 	        this.position = position;
 	        this.forward = true;
-	        this.gnome = new GnomeActor(gp5$1.createVector(this.position.x, this.position.y));
-	        this.button = new ButtonMushroomActor(gp5$1.createVector(this.position.x - 100, this.position.y));
-	        this.chanterelle = new ChanterelleActor(gp5$1.createVector(this.position.x - 150, this.position.y));
-	        this.morel = new MorelActor(gp5$1.createVector(this.position.x - 200, this.position.y));
+	        this.gnome = new GnomeActor(gp5$2.createVector(this.position.x, this.position.y));
+	        this.button = new ButtonMushroomActor(gp5$2.createVector(this.position.x - 100, this.position.y));
+	        this.chanterelle = new ChanterelleActor(gp5$2.createVector(this.position.x - 150, this.position.y));
+	        this.morel = new MorelActor(gp5$2.createVector(this.position.x - 200, this.position.y));
 
 	        this.actors = [
 	            this.gnome,
@@ -194,8 +194,8 @@
 	    }
 
 	    setReverse() { // Need to rearrange the order and move them the other direction. 
-	        const startPoint = gp5$1.width + 50;
-	        const speed = gp5$1.random(-6, -1);
+	        const startPoint = gp5$2.width + 50;
+	        const speed = gp5$2.random(-6, -1);
 	        this.gnome.setXPosition(startPoint);
 	        this.gnome.setXVelocity(speed);
 	        this.button.setXPosition(startPoint + 100);
@@ -209,7 +209,7 @@
 
 	    setForward() {
 	        const startPoint = -50;
-	        const speed = gp5$1.random(1, 6);
+	        const speed = gp5$2.random(1, 6);
 	        this.gnome.setXPosition(startPoint);
 	        this.gnome.setXVelocity(speed);
 	        this.button.setXPosition(startPoint - 100);
@@ -222,7 +222,7 @@
 	    }
 
 	    display() {
-	        if (this.forward && this.morel.position.x > gp5$1.width) {
+	        if (this.forward && this.morel.position.x > gp5$2.width) {
 	            this.setReverse();
 	        } else if (!this.forward && this.morel.position.x < -30) {
 	            this.setForward();
@@ -276,14 +276,14 @@
 	    },
 
 	    mouseInsideBounds: function (lowX, highX, lowY, highY) {
-	        return gp5$1.mouseX > lowX
-	            && gp5$1.mouseX < highX
-	            && gp5$1.mouseY > lowY
-	            && gp5$1.mouseY < highY;
+	        return gp5$2.mouseX > lowX
+	            && gp5$2.mouseX < highX
+	            && gp5$2.mouseY > lowY
+	            && gp5$2.mouseY < highY;
 	    },
 
 	    processInputs() {
-	        if (!gp5$1.keyIsPressed && !gp5$1.mouseIsPressed) {
+	        if (!gp5$2.keyIsPressed && !gp5$2.mouseIsPressed) {
 	            return;
 	        }
 	        if (game$1.state.MOVEMENT_SCHEME === 0 ? this.keyMap[68]?.pressed : this.keyMap[39]?.pressed) { // D or arrow moves player right
@@ -322,7 +322,7 @@
 	    }
 
 	    get buttonWidth() {
-	        const widths = this.items.map(item => gp5$1.textWidth(item.text));
+	        const widths = this.items.map(item => gp5$2.textWidth(item.text));
 	        return Math.max(...widths) + 10;
 	    }
 
@@ -332,7 +332,7 @@
 	        const startingY = this.position.y + this.buttonHeight / 2 + 5; // +5 for a gap between section label and buttons
 	        this.items.forEach((item, idx) => {
 	            const gap = (this.buttonWidth + 10) * idx;
-	            item.position = gp5$1.createVector(startingX + gap, startingY);
+	            item.position = gp5$2.createVector(startingX + gap, startingY);
 	        });
 	    }
 
@@ -355,35 +355,35 @@
 	    }
 
 	    display() {
-	        gp5$1.push();      
+	        gp5$2.push();      
 	        if (this.label) { // Draw the section label
-	            gp5$1.fill('white');
-	            gp5$1.text(this.label, this.position.x, this.position.y);
+	            gp5$2.fill('white');
+	            gp5$2.text(this.label, this.position.x, this.position.y);
 	        }
 	        this.items.forEach((item) => {
-	            let backgroundColor = this.primaryColor || gp5$1.color('gray');
+	            let backgroundColor = this.primaryColor || gp5$2.color('gray');
 	            if (this.toggleable && item === this.items[this.selectedIndex]) {
-	                backgroundColor = gp5$1.color('white'); // style the selected button differently
+	                backgroundColor = gp5$2.color('white'); // style the selected button differently
 	            }
 	            // Draw the buttons
-	            gp5$1.push();
-	            gp5$1.fill(backgroundColor);
-	            gp5$1.rectMode(gp5$1.CENTER);
-	            gp5$1.rect(item.position.x,  item.position.y, this.buttonWidth, this.buttonHeight);
-	            gp5$1.fill(this.textColor || 'black');
-	            gp5$1.textAlign(gp5$1.CENTER);
-	            gp5$1.text(item.text, item.position.x, item.position.y);
-	            gp5$1.pop();
+	            gp5$2.push();
+	            gp5$2.fill(backgroundColor);
+	            gp5$2.rectMode(gp5$2.CENTER);
+	            gp5$2.rect(item.position.x,  item.position.y, this.buttonWidth, this.buttonHeight);
+	            gp5$2.fill(this.textColor || 'black');
+	            gp5$2.textAlign(gp5$2.CENTER);
+	            gp5$2.text(item.text, item.position.x, item.position.y);
+	            gp5$2.pop();
 	        });
-	        gp5$1.pop();
+	        gp5$2.pop();
 	    }
 	}
 
 	class Bullet {
 	    constructor(x, y, heading, speed=6, distance=400, damage=3, decayPerFrame=0.01) {
-	        this.position = gp5$1.createVector(x, y);
+	        this.position = gp5$2.createVector(x, y);
 	        this.speed = speed;
-	        this.velocity = gp5$1.createVector(speed, 0);
+	        this.velocity = gp5$2.createVector(speed, 0);
 	        this.velocity.setHeading(heading);
 	        this.heading = heading;
 	        this.distance = distance;
@@ -403,11 +403,11 @@
 	    }
 
 	    draw() {
-	        gp5$1.push();
-	        gp5$1.translate(this.position.x, this.position.y);
-	        gp5$1.rotate(this.heading);
-	        gp5$1.image(this.image, 0, 0);
-	        gp5$1.pop();
+	        gp5$2.push();
+	        gp5$2.translate(this.position.x, this.position.y);
+	        gp5$2.rotate(this.heading);
+	        gp5$2.image(this.image, 0, 0);
+	        gp5$2.pop();
 	    }
 
 	    display() {
@@ -436,18 +436,18 @@
 	    }
 
 	    shoot(position, angle) {
-	        if (gp5$1.frameCount - this.lastShotFrame < this.cooldown || this.ammo <= 0) {
+	        if (gp5$2.frameCount - this.lastShotFrame < this.cooldown || this.ammo <= 0) {
 	            return;
 	        }
 	        const lowerBound = angle - this.halfSpread;
-	        const startX = position.x + ((this.spacing + this.halfWidth) * gp5$1.cos(angle));
-	        const startY = position.y + ((this.spacing + this.halfWidth) * gp5$1.sin(angle));
+	        const startX = position.x + ((this.spacing + this.halfWidth) * gp5$2.cos(angle));
+	        const startY = position.y + ((this.spacing + this.halfWidth) * gp5$2.sin(angle));
 	        for (let i = 0; i < this.pellets; i++) {
 	            const pelletAngle = lowerBound + this.increment * i;
 	            entityManager$1.addGnomeProjectile(new Bullet(startX, startY, pelletAngle, this.speed, this.range, this.damage, this.decay));
 	        }
 	        this.ammo--;
-	        this.lastShotFrame = gp5$1.frameCount;
+	        this.lastShotFrame = gp5$2.frameCount;
 	    }
 	}
 
@@ -469,7 +469,7 @@
 
 	class Shotgun extends Gun {
 	    constructor() {
-	        const spread = gp5$1.QUARTER_PI;
+	        const spread = gp5$2.QUARTER_PI;
 	        const pellets = 5;
 	        const spacing = 60;
 	        const range = 100;
@@ -498,7 +498,7 @@
 	        this.image = game$1.assets.gnome.front;
 	        this.startHealth = 20;
 	        this.health = 20;
-	        this._topLeftVector = gp5$1.createVector(0, 0);
+	        this._topLeftVector = gp5$2.createVector(0, 0);
 	        this.weapons = [new Pistol(), new Shotgun()];
 	        this.currentWeapon = 1;
 	    }
@@ -520,14 +520,14 @@
 
 	    moveX(direction) {
 	        const value = this.moveSpeed * direction;
-	        if (this.position.x + value < gp5$1.width && this.position.x + value > 0) { // check bounds before moving
+	        if (this.position.x + value < gp5$2.width && this.position.x + value > 0) { // check bounds before moving
 	            this.#moveX = direction;
 	        }
 	    }
 
 	    moveY(direction) {
 	        const value = this.moveSpeed * direction;
-	        if (this.position.y + value < gp5$1.height && this.position.y + value > 0) { // check bounds before moving
+	        if (this.position.y + value < gp5$2.height && this.position.y + value > 0) { // check bounds before moving
 	            this.#moveY = direction;
 	        }
 	    }
@@ -541,12 +541,12 @@
 	    }
 
 	    #update() {
-	        const mouseVector = gp5$1.createVector(gp5$1.mouseX, gp5$1.mouseY);
+	        const mouseVector = gp5$2.createVector(gp5$2.mouseX, gp5$2.mouseY);
 	        mouseVector.sub(this.position);
 	        this.angle = mouseVector.heading();
 
 	        // Move based on controls. We need to normalize here to ensure diagonal movement is the same speed.
-	        const moveVector = gp5$1.createVector(this.#moveX, this.#moveY).normalize().mult(this.moveSpeed);
+	        const moveVector = gp5$2.createVector(this.#moveX, this.#moveY).normalize().mult(this.moveSpeed);
 	        this.position.add(moveVector);
 	        this.#moveX = 0;
 	        this.#moveY = 0;
@@ -567,37 +567,37 @@
 	            this.image = game$1.assets.gnome.left;
 	        }
 
-	        gp5$1.image(this.image, 0, 0);
+	        gp5$2.image(this.image, 0, 0);
 	    }
 
 	    #drawDirectionalWeapon() {
-	        gp5$1.push();
-	        if (this.#angleBetween(-gp5$1.PI, -gp5$1.HALF_PI) || this.#angleBetween(gp5$1.HALF_PI, gp5$1.PI)) {
-	            gp5$1.scale(1,-1); // flip horizontally
+	        gp5$2.push();
+	        if (this.#angleBetween(-gp5$2.PI, -gp5$2.HALF_PI) || this.#angleBetween(gp5$2.HALF_PI, gp5$2.PI)) {
+	            gp5$2.scale(1,-1); // flip horizontally
 	        }
-	        gp5$1.image(this.gun.image, this.gun.spacing, 0);
-	        gp5$1.pop();
+	        gp5$2.image(this.gun.image, this.gun.spacing, 0);
+	        gp5$2.pop();
 	    }
 
 
 
 	    #draw() {
-	        gp5$1.push();
-	        gp5$1.imageMode(gp5$1.CENTER);
-	        gp5$1.stroke('black');
-	        gp5$1.noFill();
+	        gp5$2.push();
+	        gp5$2.imageMode(gp5$2.CENTER);
+	        gp5$2.stroke('black');
+	        gp5$2.noFill();
 	        // gp5.rect(this.topLeft.x, this.topLeft.y, this.image.width, this.image.height)
-	        gp5$1.translate(this.position.x, this.position.y);
+	        gp5$2.translate(this.position.x, this.position.y);
 	        this.#drawDirectionalGnome();
 
 	        // gp5.translate(this.halfWidth, this.halfHeight);
 	        // gp5.circle(0, 0, 5)
-	        gp5$1.rotate(this.angle);
-	        gp5$1.fill('black');
+	        gp5$2.rotate(this.angle);
+	        gp5$2.fill('black');
 	        // gp5.rect(this.gunSpacing, 0, 15, 4);
 	        // gp5.image(game.assets.pistol, this.gunSpacing, 0);
 	        this.#drawDirectionalWeapon();
-	        gp5$1.pop();
+	        gp5$2.pop();
 	    }
 
 	    display() {
@@ -610,7 +610,7 @@
 	    constructor(enemy) {
 	        this.enemy = enemy;
 	        this.player = entityManager$1.gnome;
-	        this.step = gp5$1.createVector(0, 0);
+	        this.step = gp5$2.createVector(0, 0);
 	    }
 
 	    execute() {
@@ -625,7 +625,7 @@
 	    constructor(enemy) {
 	        this.enemy = enemy;
 	        this.player = entityManager$1.gnome;
-	        this.step = gp5$1.createVector(0, 0);
+	        this.step = gp5$2.createVector(0, 0);
 	    }
 
 	    setAngle() {
@@ -641,21 +641,49 @@
 	    }
 	}
 
+	class Mushroom {
+	    get topLeft() {
+	        this._topLeftVector.set(this.position.x - this.image.width / 2, this.position.y - this.image.height / 2);
+	        return this._topLeftVector;
+	    }
+
+	    update() {
+	        this.states[this.currentState].execute();
+	        this.position.add(this.velocity);
+	    }
+
+	    draw() {
+	        gp5.push();
+	        gp5.imageMode(gp5.CENTER);
+	        gp5.translate(this.position.x, this.position.y);
+	        gp5.image(this.image, 0, 0);
+	        gp5.pop();
+	    }
+
+	    display() {
+	        if (!this.dead) {
+	            this.update();
+	            this.draw();
+	        }
+	    }
+	}
+
 	// Button mushroom. He feels nothing but emptiness.
-	class ButtonMushroom {
+	class ButtonMushroom extends Mushroom {
 	    /**
 	     * @param {p5.Vector} position 
 	     */
 	    constructor(position) {
+	        super();
 	        this.position = position;
-	        this.velocity = gp5$1.createVector(0, 0);
+	        this.velocity = gp5$2.createVector(0, 0);
 	        this.image = game$1.assets.button;
 	        this.states = [new ChaseState(this), new ChargeState(this)];
 	        this.currentState = 0;
 	        this.angle = 0;
 	        this.health = 5;
 	        this.dead = false;
-	        this._topLeftVector = gp5$1.createVector(0, 0);
+	        this._topLeftVector = gp5$2.createVector(0, 0);
 	    }
 
 	    get topLeft() {
@@ -678,28 +706,15 @@
 	        }
 	    }
 
-	    update() {
-	        this.states[this.currentState].execute();
-	        this.position.add(this.velocity);
-	    }
-
-	    draw() {
-	        gp5$1.push();
-	        gp5$1.imageMode(gp5$1.CENTER);
-	        gp5$1.translate(this.position.x, this.position.y);
+	    draw() { // override Mushroom draw(), need to rotate sprite.
+	        gp5$2.push();
+	        gp5$2.imageMode(gp5$2.CENTER);
+	        gp5$2.translate(this.position.x, this.position.y);
 	        if (this.currentState === 1) {
-	            gp5$1.rotate(this.angle + gp5$1.HALF_PI);
+	            gp5$2.rotate(this.angle + gp5$2.HALF_PI);
 	        }
-	        // gp5.scale(.5, .5)
-	        gp5$1.image(this.image, 0, 0);
-	        gp5$1.pop();
-	    }
-
-	    display() {
-	        if (!this.dead) {
-	            this.update();
-	            this.draw();
-	        }
+	        gp5$2.image(this.image, 0, 0);
+	        gp5$2.pop();
 	    }
 	}
 
@@ -707,7 +722,7 @@
 	    constructor(enemy) {
 	        this.enemy = enemy;
 	        this.player = entityManager$1.gnome;
-	        this.step = gp5$1.createVector(0, 0);
+	        this.step = gp5$2.createVector(0, 0);
 	    }
 
 	    execute() {
@@ -723,6 +738,60 @@
 	    }
 	}
 
+	// Button mushroom. He feels nothing but emptiness.
+	class MorelMushroom extends Mushroom{
+	    /**
+	     * @param {p5.Vector} position 
+	     */
+	    constructor(position) {
+	        super();
+	        this.position = position;
+	        this.velocity = gp5$2.createVector(0, 0);
+	        this.image = game$1.assets.morel;
+	        this.image.loadPixels();
+	        this.states = [new ChaseState(this), new ShootState(this)];
+	        this.currentState = 0;
+	        this.angle = 0;
+	        this.shootAngle;
+	        this.shootCooldown = 0;
+	        this._topLeftVector = gp5$2.createVector(0, 0);
+	        this.dead = false;
+	        this.health = 10 * game$1.enemyHealthMultiplier();
+	    }
+	    
+	    shoot() {
+	        entityManager$1.addMushroomProjectile(new Bullet(this.position.x, this.position.y, this.shootAngle));
+	    }
+
+	    changeState() {
+	        switch (this.currentState) {
+	            case 0:
+	                if (entityManager$1.distanceToPlayer(this) < 200 && entityManager$1.isInbounds(this)) {
+	                    this.currentState = 1; // switch to shooting when within range of player and inbounds
+	                }
+	                break;
+	            case 1:
+	                if (entityManager$1.distanceToPlayer(this) > 200 || !entityManager$1.isInbounds(this)) {
+	                    this.currentState = 0;
+	                }
+	        }
+	    }
+
+	    update() {
+	        super.update();
+	        this.shootCooldown--;
+	    }
+
+	    draw() {
+	        gp5$2.push();
+	        gp5$2.noFill();
+	        gp5$2.imageMode(gp5$2.CENTER);
+	        gp5$2.translate(this.position.x, this.position.y);
+	        gp5$2.image(this.image, 0, 0);
+	        gp5$2.pop();
+	    }
+	}
+
 	class CollisionDetector {
 	    /**
 	     * 
@@ -730,10 +799,10 @@
 	     * @param {*} sprite2 
 	     */
 	    static spriteCollision(position1, sprite1, position2, sprite2) {
-	        const p1x = gp5$1.round(position1.x);
-	        const p1y = gp5$1.round(position1.y);
-	        const p2x = gp5$1.round(position2.x);
-	        const p2y = gp5$1.round(position2.y);
+	        const p1x = gp5$2.round(position1.x);
+	        const p1y = gp5$2.round(position1.y);
+	        const p2x = gp5$2.round(position2.x);
+	        const p2y = gp5$2.round(position2.y);
 	        const intersection = this.rectangleIntersection(
 	            {x: p1x, y: p1y, height: sprite1.height, width: sprite1.width},
 	            {x: p2x, y: p2y, height: sprite2.height, width: sprite2.width}
@@ -802,74 +871,6 @@
 
 	        // Check if either rectangle is to the left, right, above, or below the other
 	        return !(r1x >= r2RightEdge || r2x >= r1RightEdge || r1y >= r2BottomEdge || r2y >= r1BottomEdge)
-	    }
-	}
-
-	// Button mushroom. He feels nothing but emptiness.
-	class MorelMushroom {
-	    /**
-	     * @param {p5.Vector} position 
-	     */
-	    constructor(position) {
-	        this.position = position;
-	        this.velocity = gp5$1.createVector(0, 0);
-	        this.image = game$1.assets.morel;
-	        this.image.loadPixels();
-	        this.states = [new ChaseState(this), new ShootState(this)];
-	        this.currentState = 0;
-	        this.angle = 0;
-	        this.shootAngle;
-	        this.shootCooldown = 0;
-	        this._topLeftVector = gp5$1.createVector(0, 0);
-	        this.dead = false;
-	        this.health = 10 * game$1.enemyHealthMultiplier();
-	    }
-
-	    get topLeft() {
-	        this._topLeftVector.set(this.position.x - this.image.width / 2, this.position.y - this.image.height / 2);
-	        return this._topLeftVector;
-	    }
-
-	    shoot() {
-	        entityManager$1.addMushroomProjectile(new Bullet(this.position.x, this.position.y, this.shootAngle));
-	    }
-
-	    changeState() {
-	        switch (this.currentState) {
-	            case 0:
-	                if (entityManager$1.distanceToPlayer(this) < 200 && entityManager$1.isInbounds(this)) {
-	                    this.currentState = 1; // switch to shooting when within range of player and inbounds
-	                }
-	                break;
-	            case 1:
-	                if (entityManager$1.distanceToPlayer(this) > 200 || !entityManager$1.isInbounds(this)) {
-	                    this.currentState = 0;
-	                }
-	        }
-	    }
-
-	    update() {
-	        this.states[this.currentState].execute();
-	        this.position.add(this.velocity);
-	        this.shootCooldown--;
-	    }
-
-	    draw() {
-	        gp5$1.push();
-	        gp5$1.noFill();
-	        // gp5.rect(this.topLeft.x, this.topLeft.y, this.image.width, this.image.height)
-	        gp5$1.imageMode(gp5$1.CENTER);
-	        gp5$1.translate(this.position.x, this.position.y);
-	        // gp5.scale(.75, .75);
-	        gp5$1.image(this.image, 0, 0);
-	        gp5$1.pop();
-	    }
-
-	    display() {
-	        if (!this.dead) {
-	            this.update();
-	            this.draw();
-	        }
 	    }
 	}
 
@@ -964,7 +965,7 @@
 	// Handles input 
 	const entityManager = {
 	    initialize: function() {
-	        this.gnome = new Gnome(gp5$1.createVector(200, 200));
+	        this.gnome = new Gnome(gp5$2.createVector(200, 200));
 	        this.mushrooms = [];
 	        this.gnomeProjectiles = [];
 	        this.mushroomProjectiles = [];
@@ -972,9 +973,9 @@
 
 	    isInbounds: function(entity) {
 	        return entity.position.x > 0
-	            && entity.position.x < gp5$1.width
+	            && entity.position.x < gp5$2.width
 	            && entity.position.y > 0
-	            && entity.position.y < gp5$1.height
+	            && entity.position.y < gp5$2.height
 	    },
 
 	    cleanupProjectiles: function() {
@@ -1005,13 +1006,13 @@
 	    startWave: function() {
 	        const wave = levels[game$1.state.LEVEL].waves[game$1.state.WAVE];
 
-	        wave.morel?.forEach(coord => this.mushrooms.push(new MorelMushroom(gp5$1.createVector(coord[0], coord[1]))));
-	        wave.button?.forEach(coord => this.mushrooms.push(new ButtonMushroom(gp5$1.createVector(coord[0], coord[1]))));
+	        wave.morel?.forEach(coord => this.mushrooms.push(new MorelMushroom(gp5$2.createVector(coord[0], coord[1]))));
+	        wave.button?.forEach(coord => this.mushrooms.push(new ButtonMushroom(gp5$2.createVector(coord[0], coord[1]))));
 
 	    },
 
 	    distanceToPlayer: function(entity) {
-	        return gp5$1.dist(this.gnome.position.x, this.gnome.position.y, entity.position.x, entity.position.y);
+	        return gp5$2.dist(this.gnome.position.x, this.gnome.position.y, entity.position.x, entity.position.y);
 	    },
 
 	    detectCollisions: function() {
@@ -1057,11 +1058,11 @@
 
 	        this.detectCollisions();
 
-	        if (gp5$1.frameCount % 120 === 0) {
+	        if (gp5$2.frameCount % 120 === 0) {
 	            this.cleanupProjectiles();
 	        }
 
-	        if (gp5$1.frameCount % 30 === 0) {
+	        if (gp5$2.frameCount % 30 === 0) {
 	            this.cleanupMushrooms();
 	        }
 	    }
@@ -1076,8 +1077,8 @@
 	     */
 	    constructor(position) {
 	        super(position, 0, false);
-	        this.primaryColor = gp5$1.color('green');
-	        this.textColor = gp5$1.color('white');
+	        this.primaryColor = gp5$2.color('green');
+	        this.textColor = gp5$2.color('white');
 	        this.items = [
 	            {text: 'Start', func: () => {
 	                inputManager.clearClickFunctions();
@@ -1102,23 +1103,23 @@
 	    }
 
 	    display() {
-	        gp5$1.push();
-	        gp5$1.textSize(gp5$1.width / 10);
-	        gp5$1.textAlign(gp5$1.CENTER);
-	        gp5$1.textWrap(gp5$1.WORD);
-	        gp5$1.textFont(game$1.assets.fonts.oldForest);
-	        gp5$1.fill('white');
-	        gp5$1.text(this.text, this.position.x, this.position.y);
-	        gp5$1.pop();
+	        gp5$2.push();
+	        gp5$2.textSize(gp5$2.width / 10);
+	        gp5$2.textAlign(gp5$2.CENTER);
+	        gp5$2.textWrap(gp5$2.WORD);
+	        gp5$2.textFont(game$1.assets.fonts.oldForest);
+	        gp5$2.fill('white');
+	        gp5$2.text(this.text, this.position.x, this.position.y);
+	        gp5$2.pop();
 	    }
 	}
 
 	class MainMenu extends Menu {
 	    constructor() {
 	        super();
-	        const buttonPosition = gp5$1.createVector(gp5$1.width * .4, gp5$1.height / 3);
-	        const titlePosition = gp5$1.createVector(gp5$1.width / 2, gp5$1.height / 4);
-	        const animationPosition = gp5$1.createVector(0, gp5$1.height * 0.8);
+	        const buttonPosition = gp5$2.createVector(gp5$2.width * .4, gp5$2.height / 3);
+	        const titlePosition = gp5$2.createVector(gp5$2.width / 2, gp5$2.height / 4);
+	        const animationPosition = gp5$2.createVector(0, gp5$2.height * 0.8);
 	        this.items = [
 	            new MainNavigationMenuItem(buttonPosition),
 	            new Title(titlePosition),
@@ -1133,10 +1134,10 @@
 	    display() {
 	        super.display();
 	        // Also display author text which doesn't warrant a component
-	        gp5$1.push();
-	        gp5$1.fill('white');
-	        gp5$1.text('Built by: Sean McDonald', 0, gp5$1.height * 0.95);
-	        gp5$1.pop();
+	        gp5$2.push();
+	        gp5$2.fill('white');
+	        gp5$2.text('Built by: Sean McDonald', 0, gp5$2.height * 0.95);
+	        gp5$2.pop();
 	    }
 	}
 
@@ -1148,10 +1149,10 @@
 	    constructor( position) {
 	        this.position = position;
 	        this.forward = true;
-	        this.button = new ButtonMushroomActor(gp5$1.createVector(this.position.x, this.position.y));
-	        this.chanterelle = new ChanterelleActor(gp5$1.createVector(this.position.x -50, this.position.y));
-	        this.morel = new MorelActor(gp5$1.createVector(this.position.x -100, this.position.y));
-	        this.gnome = new GnomeActor(gp5$1.createVector(this.position.x - 200, this.position.y));
+	        this.button = new ButtonMushroomActor(gp5$2.createVector(this.position.x, this.position.y));
+	        this.chanterelle = new ChanterelleActor(gp5$2.createVector(this.position.x -50, this.position.y));
+	        this.morel = new MorelActor(gp5$2.createVector(this.position.x -100, this.position.y));
+	        this.gnome = new GnomeActor(gp5$2.createVector(this.position.x - 200, this.position.y));
 
 	        this.actors = [
 	            this.gnome,
@@ -1164,8 +1165,8 @@
 	    }
 
 	    setReverse() { // Need to rearrange the order and move them the other direction. 
-	        const startPoint = gp5$1.width + 50;
-	        const speed = gp5$1.random(-6, -1);
+	        const startPoint = gp5$2.width + 50;
+	        const speed = gp5$2.random(-6, -1);
 	        this.button.setXPosition(startPoint);
 	        this.button.setXVelocity(speed);
 	        this.chanterelle.setXPosition(startPoint + 50);
@@ -1179,7 +1180,7 @@
 
 	    setForward() { 
 	        const startPoint = -50;
-	        const speed = gp5$1.random(1, 6);
+	        const speed = gp5$2.random(1, 6);
 	        this.button.setXPosition(startPoint);
 	        this.button.setXVelocity(speed);
 	        this.chanterelle.setXPosition(startPoint - 50);
@@ -1192,7 +1193,7 @@
 	    }
 
 	    display() {
-	        if (this.forward && this.gnome.position.x > gp5$1.width) {
+	        if (this.forward && this.gnome.position.x > gp5$2.width) {
 	            this.setReverse();
 	        } else if (!this.forward && this.gnome.position.x < -30) {
 	            this.setForward();
@@ -1220,10 +1221,10 @@
 	        this.position = position;
 	        this.actionFunction = actionFunction;
 	        this.height = height;
-	        this.width = width || gp5$1.textWidth(text || "") + 10;
+	        this.width = width || gp5$2.textWidth(text || "") + 10;
 	        this.text = text; // Planned to be used in the defaultDisplay. Menu Items may use this component later.
 	        this.display = renderFunction || this.defaultDisplay;
-	        this.backgroundColor = backgroundColor || gp5$1.color('green');
+	        this.backgroundColor = backgroundColor || gp5$2.color('green');
 	        this.registerClickListeners();
 	    }
 
@@ -1241,14 +1242,14 @@
 	    }
 
 	    defaultDisplay() {
-	        gp5$1.push();
-	        gp5$1.fill(this.backgroundColor);
+	        gp5$2.push();
+	        gp5$2.fill(this.backgroundColor);
 	        // gp5.rectMode(gp5.CENTER);
-	        gp5$1.rect(this.position.x,  this.position.y , this.width, this.height);
-	        gp5$1.fill('white');
-	        gp5$1.textAlign(gp5$1.CENTER);
-	        gp5$1.text(this.text, this.position.x + this.width / 2, this.position.y + this.height / 2);
-	        gp5$1.pop();
+	        gp5$2.rect(this.position.x,  this.position.y , this.width, this.height);
+	        gp5$2.fill('white');
+	        gp5$2.textAlign(gp5$2.CENTER);
+	        gp5$2.text(this.text, this.position.x + this.width / 2, this.position.y + this.height / 2);
+	        gp5$2.pop();
 	    }
 	}
 
@@ -1309,15 +1310,15 @@
 	    }
 
 	    display() {
-	        gp5$1.push();
-	        gp5$1.noStroke();
-	        gp5$1.fill('rgba(0,0,0,0.4)'); // Transparent square behind for readability
-	        gp5$1.rect(this.position.x -5, this.position.y - 5, this.width, this.height);
-	        gp5$1.textSize(20);
-	        gp5$1.textWrap(gp5$1.WORD);
-	        gp5$1.fill('white');
-	        gp5$1.text(this.tutorialText, this.position.x, this.position.y, this.width, this.height);
-	        gp5$1.pop();
+	        gp5$2.push();
+	        gp5$2.noStroke();
+	        gp5$2.fill('rgba(0,0,0,0.4)'); // Transparent square behind for readability
+	        gp5$2.rect(this.position.x -5, this.position.y - 5, this.width, this.height);
+	        gp5$2.textSize(20);
+	        gp5$2.textWrap(gp5$2.WORD);
+	        gp5$2.fill('white');
+	        gp5$2.text(this.tutorialText, this.position.x, this.position.y, this.width, this.height);
+	        gp5$2.pop();
 	    }
 	}
 
@@ -1325,31 +1326,31 @@
 	    constructor() {
 	        super();
 
-	        const optionsPosition = gp5$1.createVector(20, gp5$1.height * 0.5);
-	        const tutorialPosition = gp5$1.createVector(gp5$1.width * 0.05, gp5$1.height * 0.1);
-	        const animationPosition = gp5$1.createVector(0, gp5$1.height * 0.8);
+	        const optionsPosition = gp5$2.createVector(20, gp5$2.height * 0.5);
+	        const tutorialPosition = gp5$2.createVector(gp5$2.width * 0.05, gp5$2.height * 0.1);
+	        const animationPosition = gp5$2.createVector(0, gp5$2.height * 0.8);
 
 	        // Back button setup
-	        const backButtonPosition = gp5$1.createVector(20, 20);
+	        const backButtonPosition = gp5$2.createVector(20, 20);
 	        const backButtonHeight = 30;
 	        const backButtonWidth = 30;
 	        const backButtonAction = () => game$1.menuManager.setMenu(0);
 
 	        const backButtonDisplay = () => {
-	            gp5$1.push();
-	            gp5$1.noStroke();
-	            gp5$1.fill('white');
-	            gp5$1.translate(backButtonPosition.x + backButtonWidth / 2, backButtonPosition.y + backButtonHeight / 2);
-	            gp5$1.triangle(-15, 0, 0, 7, 0, -7);
-	            gp5$1.rect(0, -3, 10, 6);
-	            gp5$1.pop();
+	            gp5$2.push();
+	            gp5$2.noStroke();
+	            gp5$2.fill('white');
+	            gp5$2.translate(backButtonPosition.x + backButtonWidth / 2, backButtonPosition.y + backButtonHeight / 2);
+	            gp5$2.triangle(-15, 0, 0, 7, 0, -7);
+	            gp5$2.rect(0, -3, 10, 6);
+	            gp5$2.pop();
 	        };
 
 	        this.items = [
 	            new DifficultyMenuItem(game$1.p5.createVector(optionsPosition.x, optionsPosition.y)),
 	            new ControlMenuItem(game$1.p5.createVector(optionsPosition.x, optionsPosition.y + 100)),
 	            new Button(backButtonPosition, backButtonAction, backButtonHeight, backButtonWidth, undefined, backButtonDisplay),
-	            new Tutorial(tutorialPosition, gp5$1.width * 0.9, gp5$1.height * 0.3),
+	            new Tutorial(tutorialPosition, gp5$2.width * 0.9, gp5$2.height * 0.3),
 	            new GnomeChaseAnimation(animationPosition)
 	        ];
 	    }
@@ -1389,11 +1390,11 @@
 	    }
 
 	    display() {
-	        gp5$1.push();
-	        gp5$1.fill('black');
-	        gp5$1.textAlign(gp5$1.RIGHT);
-	        gp5$1.text(`Mushrooms Left: ${entityManager$1.mushrooms.length}`, this.x, this.y);
-	        gp5$1.pop();
+	        gp5$2.push();
+	        gp5$2.fill('black');
+	        gp5$2.textAlign(gp5$2.RIGHT);
+	        gp5$2.text(`Mushrooms Left: ${entityManager$1.mushrooms.length}`, this.x, this.y);
+	        gp5$2.pop();
 	    }
 	}
 
@@ -1405,10 +1406,10 @@
 
 	    display() {
 	        const gnome = entityManager$1.gnome;
-	        gp5$1.push();
-	        gp5$1.fill('black');
-	        gp5$1.text(`Health: ${gp5$1.floor(gnome.health / gnome.startHealth * 100)}%`, this.x, this.y);
-	        gp5$1.pop();
+	        gp5$2.push();
+	        gp5$2.fill('black');
+	        gp5$2.text(`Health: ${gp5$2.floor(gnome.health / gnome.startHealth * 100)}%`, this.x, this.y);
+	        gp5$2.pop();
 	    }
 	}
 
@@ -1420,11 +1421,11 @@
 
 	    display() {
 	        const wave = game$1.state.WAVE + 1;
-	        gp5$1.push();
-	        gp5$1.fill('black');
-	        gp5$1.textAlign(gp5$1.RIGHT);
-	        gp5$1.text(`Wave: ${wave}/${game$1.wavesInLevel}`, this.x, this.y);
-	        gp5$1.pop();
+	        gp5$2.push();
+	        gp5$2.fill('black');
+	        gp5$2.textAlign(gp5$2.RIGHT);
+	        gp5$2.text(`Wave: ${wave}/${game$1.wavesInLevel}`, this.x, this.y);
+	        gp5$2.pop();
 	    }
 	}
 
@@ -1436,10 +1437,10 @@
 
 	    display() {
 	        const gun = entityManager$1.gnome.gun;
-	        gp5$1.push();
-	        gp5$1.fill('black');
-	        gp5$1.text(`${gun.name}: ${gun.ammo === Infinity ? "∞" : gun.ammo}`, this.x, this.y);
-	        gp5$1.pop();
+	        gp5$2.push();
+	        gp5$2.fill('black');
+	        gp5$2.text(`${gun.name}: ${gun.ammo === Infinity ? "∞" : gun.ammo}`, this.x, this.y);
+	        gp5$2.pop();
 	    }
 	}
 
@@ -1459,17 +1460,17 @@
 
 	const endStateManager = {
 	    initialize: function () {
-	        this.homeButton = new Button(gp5$1.createVector(360, 425), this.goHome, undefined, undefined, 'Home');
+	        this.homeButton = new Button(gp5$2.createVector(360, 425), this.goHome, undefined, undefined, 'Home');
 	    },
 	    showMessageCenter: function(message) {
-	        gp5$1.push();
-	        gp5$1.textAlign(gp5$1.CENTER);
-	        gp5$1.text(message, 400, 400);
-	        gp5$1.pop();
+	        gp5$2.push();
+	        gp5$2.textAlign(gp5$2.CENTER);
+	        gp5$2.text(message, 400, 400);
+	        gp5$2.pop();
 	    },
 	    goHome: function() {
 	        game$1.resetGame();
-	        gp5$1.setup();
+	        gp5$2.setup();
 	    },
 	};
 
@@ -1620,7 +1621,7 @@
 	                    default:
 	                        img = game$1.assets.tiles.plainGrass;
 	                }
-	                gp5$1.image(img, x, y);
+	                gp5$2.image(img, x, y);
 	            });
 	        });
 	    }
@@ -1736,17 +1737,17 @@
 	    };
 	  };
 
-	const gp5 = new p5(sketch);
-	var gp5$1 = gp5;
+	const gp5$1 = new p5(sketch);
+	var gp5$2 = gp5$1;
 
 	const constants = {
-	    FOURTH_PI: gp5.HALF_PI / 2,
-	    THREE_FOURTHS_PI: (gp5.HALF_PI / 2) * 3,
+	    FOURTH_PI: gp5$1.HALF_PI / 2,
+	    THREE_FOURTHS_PI: (gp5$1.HALF_PI / 2) * 3,
 	    TILEMAP_BLOCK_SIZE: 32,
 	};
 
 	exports.constants = constants;
-	exports.default = gp5$1;
+	exports.default = gp5$2;
 
 	Object.defineProperty(exports, '__esModule', { value: true });
 

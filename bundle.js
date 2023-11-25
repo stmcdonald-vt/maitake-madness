@@ -674,6 +674,7 @@
 	        this.enemy = enemy;
 	        this.player = entityManager$1.gnome;
 	        this.step = gp5$1.createVector(0, 0);
+	        this.chargeCounter = 0;
 	    }
 
 	    setAngle() {
@@ -681,10 +682,12 @@
 	        this.step.normalize();
 	        this.step.mult(5);
 	        this.enemy.velocity = this.step;
+	        this.chargeCounter = 60;
 	        return this.step.heading();
 	    }
 
 	    execute() {
+	        this.chargeCounter--;
 	        this.enemy.changeState();
 	    }
 	}
@@ -757,7 +760,7 @@
 	                }
 	                break;
 	            case 1:
-	                if (entityManager$1.distanceToPlayer(this) > 150 || !entityManager$1.isInbounds(this)) {
+	                if (entityManager$1.distanceToPlayer(this) > 150 || !entityManager$1.isInbounds(this) || this.states[this.currentState].chargeCounter < 0) {
 	                    this.currentState = 0;
 	                }
 	        }

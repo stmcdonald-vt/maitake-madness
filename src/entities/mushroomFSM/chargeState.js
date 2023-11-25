@@ -5,6 +5,7 @@ export default class ChargeState {
         this.enemy = enemy;
         this.player = entityManager.gnome;
         this.step = gp5.createVector(0, 0);
+        this.chargeCounter = 0;
     }
 
     setAngle() {
@@ -12,10 +13,12 @@ export default class ChargeState {
         this.step.normalize();
         this.step.mult(5);
         this.enemy.velocity = this.step;
+        this.chargeCounter = 60;
         return this.step.heading();
     }
 
     execute() {
+        this.chargeCounter--;
         this.enemy.changeState();
     }
 }

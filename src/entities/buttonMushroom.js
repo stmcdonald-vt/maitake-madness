@@ -39,7 +39,7 @@ class ButtonMushroom extends Mushroom {
                 }
                 break;
             case 1:
-                if (entityManager.distanceToPlayer(this) > 150 || !entityManager.isInbounds(this)) {
+                if (entityManager.distanceToPlayer(this) > 150 || !entityManager.isInbounds(this) || this.states[this.currentState].chargeCounter < 0) {
                     this.currentState = 0;
                 }
         }

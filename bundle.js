@@ -1450,18 +1450,50 @@
 	    }
 	}
 
+	class HealthBar {
+	    /**
+	    * @param {p5.Vector} position
+	    * @param {Character} entity
+	    * @param {number} maxHealth
+	    */
+	    constructor(x, y, entity, width=20, length=100) {
+	        this.x = x;
+	        this.y = y;
+	        this.entity = entity;
+	        this.width = width;
+	        this.length = length;
+	    }
+
+	    display() {
+	        const greenLength = this.entity.health / this.entity.startHealth * this.length;
+	        const redLength = this.length - greenLength;
+	        console.log(greenLength, redLength);
+	        gp5$1.push();
+	        gp5$1.noStroke();
+	        gp5$1.rectMode(gp5$1.CORNER);
+	        gp5$1.translate(this.x, this.y);
+	        gp5$1.fill('green');
+	        gp5$1.rect(0, 0, greenLength, this.width);
+	        gp5$1.translate(greenLength, 0);
+	        gp5$1.fill('red');
+	        gp5$1.rect(0, 0, redLength, this.width);
+	        gp5$1.pop();
+	    }
+	}
+
 	class HealthHud {
 	    constructor(x, y) {
 	        this.x = x;
 	        this.y = y;
+	        this.healthBar = new HealthBar(this.x + 85, this.y - 17, entityManager$1.gnome);
 	    }
 
 	    display() {
-	        const gnome = entityManager$1.gnome;
 	        gp5$1.push();
 	        gp5$1.fill('black');
-	        gp5$1.text(`Health: ${gp5$1.floor(gnome.health / gnome.startHealth * 100)}%`, this.x, this.y);
+	        gp5$1.text(`Health:`, this.x, this.y);
 	        gp5$1.pop();
+	        this.healthBar.display();
 	    }
 	}
 

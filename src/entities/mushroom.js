@@ -1,3 +1,5 @@
+import gp5 from "../sketch";
+
 export default class Mushroom {
     get topLeft() {
         this._topLeftVector.set(this.position.x - this.image.width / 2, this.position.y - this.image.height / 2);

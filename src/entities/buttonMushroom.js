@@ -3,12 +3,14 @@ import gp5, { constants } from "../sketch";
 import ChaseState from "./mushroomFSM/chaseState";
 import entityManager from "../managers/entityManager";
 import ChargeState from "./mushroomFSM/chargeState";
+import Mushroom from "./mushroom";
 // Button mushroom. He feels nothing but emptiness.
-class ButtonMushroom {
+class ButtonMushroom extends Mushroom {
     /**
      * @param {p5.Vector} position 
      */
     constructor(position) {
+        super();
         this.position = position;
         this.velocity = gp5.createVector(0, 0)
         this.image = game.assets.button;
@@ -40,28 +42,15 @@ class ButtonMushroom {
         }
     }
 
-    update() {
-        this.states[this.currentState].execute();
-        this.position.add(this.velocity);
-    }
-
-    draw() {
+    draw() { // override Mushroom draw(), need to rotate sprite.
         gp5.push();
         gp5.imageMode(gp5.CENTER);
         gp5.translate(this.position.x, this.position.y);
         if (this.currentState === 1) {
             gp5.rotate(this.angle + gp5.HALF_PI);
         }
-        // gp5.scale(.5, .5)
         gp5.image(this.image, 0, 0);
         gp5.pop();
-    }
-
-    display() {
-        if (!this.dead) {
-            this.update();
-            this.draw();
-        }
     }
 }
 export default ButtonMushroom;

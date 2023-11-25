@@ -3,14 +3,15 @@ import gp5, { constants } from "../sketch";
 import ChaseState from "./mushroomFSM/chaseState";
 import entityManager from "../managers/entityManager";
 import ShootState from "./mushroomFSM/shootState";
-import CollisionDetector from "../managers/collisionDetector";
 import Bullet from "./bullet";
+import Mushroom from "./mushroom";
 // Button mushroom. He feels nothing but emptiness.
-class MorelMushroom {
+class MorelMushroom extends Mushroom{
     /**
      * @param {p5.Vector} position 
      */
     constructor(position) {
+        super();
         this.position = position;
         this.velocity = gp5.createVector(0, 0)
         this.image = game.assets.morel;
@@ -24,12 +25,7 @@ class MorelMushroom {
         this.dead = false;
         this.health = 10 * game.enemyHealthMultiplier();
     }
-
-    get topLeft() {
-        this._topLeftVector.set(this.position.x - this.image.width / 2, this.position.y - this.image.height / 2);
-        return this._topLeftVector;
-    }
-
+    
     shoot() {
         entityManager.addMushroomProjectile(new Bullet(this.position.x, this.position.y, this.shootAngle));
     }
@@ -49,27 +45,17 @@ class MorelMushroom {
     }
 
     update() {
-        this.states[this.currentState].execute();
-        this.position.add(this.velocity);
+        super.update();
         this.shootCooldown--;
     }
 
     draw() {
         gp5.push();
         gp5.noFill();
-        // gp5.rect(this.topLeft.x, this.topLeft.y, this.image.width, this.image.height)
         gp5.imageMode(gp5.CENTER);
         gp5.translate(this.position.x, this.position.y);
-        // gp5.scale(.75, .75);
         gp5.image(this.image, 0, 0);
         gp5.pop();
-    }
-
-    display() {
-        if (!this.dead) {
-            this.update();
-            this.draw();
-        }
     }
 }
 export default MorelMushroom;

@@ -2,9 +2,11 @@ import Character from "../entities/character";
 import gp5 from "../sketch";
 export default class HealthBar {
     /**
-    * @param {p5.Vector} position
+    * @param {number} x
+    * @param {number} y
     * @param {Character} entity
-    * @param {number} maxHealth
+    * @param {number} width
+    * @param {number} width
     */
     constructor(x, y, entity, width=20, length=100) {
         this.x = x;

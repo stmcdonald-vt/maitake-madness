@@ -1,5 +1,6 @@
 import gp5 from "../sketch";
 import Character from "./character";
+import ChaseState from "./mushroomFSM/chaseState";
 
 export default class Mushroom extends Character {
     get topLeft() {
@@ -8,8 +9,13 @@ export default class Mushroom extends Character {
     }
 
     update() {
-        this.states[this.currentState].execute();
+        const currentState = this.states[this.currentState];
+        currentState.execute();
         this.position.add(this.velocity);
+
+        if (currentState instanceof ChaseState) {
+            this.hopWalk();
+        }
     }
 
     draw() {

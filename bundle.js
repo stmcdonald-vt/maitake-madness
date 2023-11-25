@@ -485,6 +485,10 @@
 
 	class Character {
 	    constructor() {
+	        this.hopState = 0;
+	        this.maxHopState = 4;
+	        this.hoppingUp = false;
+	        this.hopDelta = 1;
 	        this.hitTimer = 0;
 	        this.maxHitTimer = 20;
 	    }
@@ -500,6 +504,24 @@
 	    hit(damage) {
 	        this.health -= damage;
 	        this.hitTimer = this.maxHitTimer;
+	    }
+
+	    hopWalk() {
+	        if (this.hoppingUp) {
+	            if (this.hopState < this.maxHopState) {
+	                this.position.y -= this.hopDelta;
+	                this.hopState++;
+	            } else {
+	                this.hoppingUp = false;
+	            }
+	        } else {
+	            if (this.hopState > 0) {
+	                this.position.y += this.hopDelta;
+	                this.hopState--;
+	            } else {
+	                this.hoppingUp = true;
+	            }
+	        }
 	    }
 	}
 
@@ -566,11 +588,16 @@
 	        mouseVector.sub(this.position);
 	        this.angle = mouseVector.heading();
 
-	        // Move based on controls. We need to normalize here to ensure diagonal movement is the same speed.
-	        const moveVector = gp5$1.createVector(this.#moveX, this.#moveY).normalize().mult(this.moveSpeed);
-	        this.position.add(moveVector);
-	        this.#moveX = 0;
-	        this.#moveY = 0;
+	        if (this.#moveX || this.#moveY) {
+	            this.hopWalk();
+
+	            // Move based on controls. We need to normalize here to ensure diagonal movement is the same speed.
+	            const moveVector = gp5$1.createVector(this.#moveX, this.#moveY).normalize().mult(this.moveSpeed);
+	            this.position.add(moveVector);
+	            this.#moveX = 0;
+	            this.#moveY = 0;        
+	        }
+
 	    }
 
 	    #angleBetween(a, b) {
@@ -669,8 +696,13 @@
 	    }
 
 	    update() {
-	        this.states[this.currentState].execute();
+	        const currentState = this.states[this.currentState];
+	        currentState.execute();
 	        this.position.add(this.velocity);
+
+	        if (currentState instanceof ChaseState) {
+	            this.hopWalk();
+	        }
 	    }
 
 	    draw() {
@@ -692,6 +724,8 @@
 
 	// Button mushroom. He feels nothing but emptiness.
 	class ButtonMushroom extends Mushroom {
+	    
+
 	    /**
 	     * @param {p5.Vector} position 
 	     */
@@ -706,6 +740,7 @@
 	        this.health = 5;
 	        this.dead = false;
 	        this._topLeftVector = gp5$1.createVector(0, 0);
+	        this.hopDelta = .75;
 	    }
 
 	    get topLeft() {

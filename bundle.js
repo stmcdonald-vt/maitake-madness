@@ -424,7 +424,8 @@
 	        this.pellets = pellets;
 	        this.spacing = spacing;
 	        this.range = range;
-	        this.damage = damage;
+	        this._damage = damage;
+	        this.damageMultiplier = 1;
 	        this.decay = decay;
 	        this.image = image;
 	        this.cooldown = cooldown;
@@ -435,6 +436,10 @@
 	        this.lastShotFrame = 0;
 	    }
 
+	    get damage() {
+	        return this._damage * this.damageMultiplier;
+	    }
+	    
 	    shoot(position, angle) {
 	        if (gp5$1.frameCount - this.lastShotFrame < this.cooldown || this.ammo <= 0) {
 	            return;
@@ -491,6 +496,12 @@
 	        this.hopDelta = 1;
 	        this.hitTimer = 0;
 	        this.maxHitTimer = 20;
+	        this._topLeftVector = gp5$1.createVector(0, 0);
+	    }
+
+	    get topLeft() {
+	        this._topLeftVector.set(this.position.x - this.image.width / 2, this.position.y - this.image.height / 2);
+	        return this._topLeftVector;
 	    }
 
 	    drawHitIndication() {
@@ -502,6 +513,9 @@
 	    }
 
 	    hit(damage) {
+	        if (this.damageTakenMultiplier !== undefined) {
+	            damage *= this.damageTakenMultiplier;
+	        }
 	        this.health -= damage;
 	        this.hitTimer = this.maxHitTimer;
 	    }
@@ -537,19 +551,25 @@
 	        super();
 	        this.position = position;
 	        this.angle = 0;
-	        this.moveSpeed = 3;
+	        this._moveSpeed = 3;
+	        this.speedMultiplier = 1;
 	        this.image = game$1.assets.gnome.front;
 	        this.startHealth = 20;
 	        this.health = 20;
 	        this._topLeftVector = gp5$1.createVector(0, 0);
 	        this.weapons = [new Pistol(), new Shotgun()];
 	        this.currentWeapon = 1;
+	        this.damageTakenMultiplier = 1;
 	    }
 
 	    registerClickListeners() {
 	        inputManager.registerClickHoldFunction(() => {
 	            this.shoot();
 	        });
+	    }
+
+	    get moveSpeed() {
+	        return this._moveSpeed * this.speedMultiplier;
 	    }
 
 	    get topLeft() {
@@ -665,6 +685,7 @@
 	        this.step.set(this.player.position.x - this.enemy.position.x, this.player.position.y - this.enemy.position.y);
 	        this.step.normalize();
 	        this.enemy.velocity = this.step;
+	        this.enemy.target = this.player;
 	        this.enemy.changeState();
 	    }
 	}
@@ -692,6 +713,37 @@
 	    }
 	}
 
+	class ChaseRelicState {
+	    constructor(enemy) {
+	        this.enemy = enemy;
+	        this.step = gp5$1.createVector(0, 0);
+	    }
+
+	    findClosestRelic() {
+	        let closest;
+	        let closestDist;
+
+	        entityManager$1.relics.forEach(relic => {
+	            const newDist = gp5$1.dist(relic.position.x, relic.position.y, this.enemy.position.x, this.enemy.position.y);
+	            if (!closest || newDist < closestDist) { // closest relic has min distance
+	                closest = relic;
+	                closestDist = newDist;
+	            }
+	        });
+
+	        return closest;
+	    }
+
+	    execute() {
+	        const closestRelic = this.findClosestRelic();
+	        this.enemy.target = closestRelic;
+	        this.step.set(closestRelic.position.x - this.enemy.position.x, closestRelic.position.y - this.enemy.position.y);
+	        this.step.normalize();
+	        this.enemy.velocity = this.step;
+	        this.enemy.changeState();
+	    }
+	}
+
 	class Mushroom extends Character {
 	    get topLeft() {
 	        this._topLeftVector.set(this.position.x - this.image.width / 2, this.position.y - this.image.height / 2);
@@ -703,7 +755,7 @@
 	        currentState.execute();
 	        this.position.add(this.velocity);
 
-	        if (currentState instanceof ChaseState) {
+	        if (currentState instanceof ChaseState || currentState instanceof ChaseRelicState) {
 	            this.hopWalk();
 	        }
 	    }
@@ -782,14 +834,13 @@
 	class ShootState {
 	    constructor(enemy) {
 	        this.enemy = enemy;
-	        this.player = entityManager$1.gnome;
 	        this.step = gp5$1.createVector(0, 0);
 	    }
 
 	    execute() {
 	        if (this.enemy.shootCooldown <= 0) {
 	            this.enemy.velocity.set(0, 0);
-	            this.step.set(this.player.position.x - this.enemy.position.x, this.player.position.y - this.enemy.position.y);
+	            this.step.set(this.enemy.target.position.x - this.enemy.position.x, this.enemy.target.position.y - this.enemy.position.y);
 	            this.enemy.shootAngle = this.step.heading();
 	            this.enemy.shoot();
 	            this.enemy.shootCooldown = 40;
@@ -810,7 +861,7 @@
 	        this.velocity = gp5$1.createVector(0, 0);
 	        this.image = game$1.assets.morel;
 	        this.image.loadPixels();
-	        this.states = [new ChaseState(this), new ShootState(this)];
+	        this.states = [new ChaseRelicState(this), new ChaseState(this), new ShootState(this)];
 	        this.currentState = 0;
 	        this.angle = 0;
 	        this.shootAngle;
@@ -818,22 +869,38 @@
 	        this._topLeftVector = gp5$1.createVector(0, 0);
 	        this.dead = false;
 	        this.health = 10 * game$1.enemyHealthMultiplier();
+	        this.target = entityManager$1.gnome;
 	    }
 	    
 	    shoot() {
 	        entityManager$1.addMushroomProjectile(new Bullet(this.position.x, this.position.y, this.shootAngle));
 	    }
 
+	    get distanceToTarget() {
+	        return gp5$1.dist(this.position.x, this.position.y, this.target.position.x, this.target.position.y);
+	    }
+
 	    changeState() {
 	        switch (this.currentState) {
 	            case 0:
-	                if (entityManager$1.distanceToPlayer(this) < 200 && entityManager$1.isInbounds(this)) {
-	                    this.currentState = 1; // switch to shooting when within range of player and inbounds
+	                if (this.distanceToTarget < 200) {
+	                    this.currentState = 2;
+	                } else if (entityManager$1.distanceToPlayer(this) < 300) {
+	                    this.currentState = 1;
 	                }
 	                break;
 	            case 1:
-	                if (entityManager$1.distanceToPlayer(this) > 200 || !entityManager$1.isInbounds(this)) {
+	                if (entityManager$1.distanceToPlayer(this) < 200 && entityManager$1.isInbounds(this)) {
+	                    this.currentState = 2; // switch to shooting when within range of player and inbounds
+	                } else if (entityManager$1.distanceToPlayer(this) > 300) {
 	                    this.currentState = 0;
+	                }
+	                break;
+	            case 2:
+	                if ((this.target === entityManager$1.gnome && this.distanceToTarget > 200)
+	                    || (this.target !== entityManager$1.gnome && entityManager$1.distanceToPlayer(this) < 200)
+	                    || !entityManager$1.isInbounds(this)) {
+	                    this.currentState = 1; // Switch back to chase if gnome moves out of range or the gnome gets close while shooting relic.
 	                }
 	        }
 	    }
@@ -1010,9 +1077,163 @@
 						]
 					]
 				}
+			],
+			relics: [
+				{
+					type: "power",
+					location: [
+						600,
+						600
+					]
+				},
+				{
+					type: "speed",
+					location: [
+						200,
+						200
+					]
+				},
+				{
+					type: "defense",
+					location: [
+						200,
+						600
+					]
+				}
 			]
 		}
 	];
+
+	class HealthBar {
+	    /**
+	    * @param {number} x
+	    * @param {number} y
+	    * @param {Character} entity
+	    * @param {number} width
+	    * @param {number} length
+	    */
+	    constructor(x, y, entity, width=20, length=100) {
+	        this.x = x;
+	        this.y = y;
+	        this.entity = entity;
+	        this.width = width;
+	        this.length = length;
+	    }
+
+	    display() {
+	        const greenLength = this.entity.health / this.entity.startHealth * this.length;
+	        const redLength = this.length - greenLength;
+	        gp5$1.push();
+	        gp5$1.noStroke();
+	        gp5$1.rectMode(gp5$1.CORNER);
+	        gp5$1.translate(this.x, this.y);
+	        gp5$1.fill('green');
+	        gp5$1.rect(0, 0, greenLength, this.width);
+	        gp5$1.translate(greenLength, 0);
+	        gp5$1.fill('red');
+	        gp5$1.rect(0, 0, redLength, this.width);
+	        gp5$1.pop();
+	    }
+	}
+
+	class Relic extends Character {
+	    /**
+	     * @param {p5.Vector} position 
+	     */
+	    constructor(position) {
+	        super();
+	        this.position = position;
+	        this.health = 100;
+	        this.startHealth = 100;
+	        this.healthBarWidth = 5;
+	        this.healthBarGap = 4;
+	        this.auraExtension = 150;
+	        this.auraColor = gp5$1.color(255, 0, 0, 30);
+	    }
+
+	    initialize() {
+	        this.healthBar = new HealthBar(this.topLeft.x, this.topLeft.y + this.image.height + this.healthBarGap, this, this.healthBarWidth, this.image.width);
+	    }
+
+	    showAura() {
+	        gp5$1.push();
+	        gp5$1.noStroke();
+	        gp5$1.fill(this.auraColor);
+	        gp5$1.circle(0, 0, this.image.width + this.auraExtension);
+	        gp5$1.pop();
+	    }
+
+	    update() {
+	        this.applyEffect();
+	    }
+
+	    draw() {
+	        gp5$1.push();
+	        gp5$1.translate(this.position.x, this.position.y);
+	        gp5$1.imageMode(gp5$1.CENTER);
+	        this.showAura();
+	        gp5$1.image(this.image, 0, 0);
+	        this.drawHitIndication();
+	        gp5$1.pop();
+	        this.healthBar.display();
+	    }
+
+	    display() {
+	        this.update();
+	        this.draw();
+	    }
+	}
+
+	class PowerRelic extends Relic {
+	    constructor(position) {
+	        super(position);
+	        this.image = game$1.assets.chanterelle;
+	        this.auraColor = gp5$1.color(255, 0, 0, 30);
+	        this.initialize();
+	    }
+
+	    applyEffect() {
+	        if (entityManager$1.distanceToPlayer(this) < this.auraExtension) {
+	            entityManager$1.gnome.gun.damageMultiplier = 2;
+	        } else {
+	            entityManager$1.gnome.gun.damageMultiplier = 1;
+	        }
+	    }
+	}
+
+	class SpeedRelic extends Relic {
+	    constructor(position) {
+	        super(position);
+	        this.image = game$1.assets.chanterelle;
+	        this.auraColor = gp5$1.color(0, 0, 255, 30);
+	        this.initialize();
+	    }
+
+	    applyEffect() {
+	        if (entityManager$1.distanceToPlayer(this) < this.auraExtension) {
+	            entityManager$1.gnome.speedMultiplier = 1.5;
+	        } else {
+	            entityManager$1.gnome.speedMultiplier = 1;
+	        }
+	    }
+	}
+
+	class DefenseRelic extends Relic {
+	    constructor(position) {
+	        super(position);
+	        this.image = game$1.assets.chanterelle;
+	        this.auraColor = gp5$1.color(255, 255, 0, 30);
+	        this.initialize();
+	    }
+
+	    applyEffect() {
+	        if (entityManager$1.distanceToPlayer(this) < this.auraExtension) {
+	            entityManager$1.gnome.damageTakenMultiplier = 0.5;
+	        } else {
+	            entityManager$1.gnome.damageTakenMultiplier = 1;
+	        }
+	    }
+	}
 
 	// Handles input 
 	const entityManager = {
@@ -1021,6 +1242,7 @@
 	        this.mushrooms = [];
 	        this.gnomeProjectiles = [];
 	        this.mushroomProjectiles = [];
+	        this.relics = [];
 	    },
 
 	    isInbounds: function(entity) {
@@ -1052,7 +1274,21 @@
 
 	    setupGame: function() {
 	        this.gnome.registerClickListeners();
+	        this.startLevel();
 	        this.startWave();
+	    },
+
+	    startLevel: function() {
+	        const level = levels[game$1.state.LEVEL];
+	        const relicMap = {
+	            power: PowerRelic,
+	            speed: SpeedRelic,
+	            defense: DefenseRelic
+	        };
+
+	        level.relics.forEach(relic => {
+	            this.relics.push(new relicMap[relic.type](gp5$1.createVector(relic.location[0], relic.location[1])));
+	        });
 	    },
 
 	    startWave: function() {
@@ -1060,7 +1296,6 @@
 
 	        wave.morel?.forEach(coord => this.mushrooms.push(new MorelMushroom(gp5$1.createVector(coord[0], coord[1]))));
 	        wave.button?.forEach(coord => this.mushrooms.push(new ButtonMushroom(gp5$1.createVector(coord[0], coord[1]))));
-
 	    },
 
 	    distanceToPlayer: function(entity) {
@@ -1090,6 +1325,17 @@
 	                    game$1.setLoss();
 	                }
 	            }
+	            this.relics.forEach(relic => {
+	                if (!projectile.disabled) {
+	                    if (CollisionDetector.spriteCollision(projectile.position, projectile.image, relic.position, relic.image)) {
+	                        projectile.disabled = true;
+	                        relic.hit(projectile.damage);
+	                        if (relic.health <= 0) {
+	                            game$1.setLoss();
+	                        }
+	                    }
+	                }
+	            });
 	        });
 
 	        this.mushrooms.forEach(mushroom => {
@@ -1103,6 +1349,7 @@
 	    },
 
 	    update: function() {
+	        this.relics.forEach(relic => relic.display());
 	        this.mushrooms.forEach(mushroom => mushroom.display());
 	        this.gnome.display();
 	        this.gnomeProjectiles.forEach(projectile => projectile.display());
@@ -1446,37 +1693,6 @@
 	        gp5$1.fill('black');
 	        gp5$1.textAlign(gp5$1.RIGHT);
 	        gp5$1.text(`Mushrooms Left: ${entityManager$1.mushrooms.length}`, this.x, this.y);
-	        gp5$1.pop();
-	    }
-	}
-
-	class HealthBar {
-	    /**
-	    * @param {p5.Vector} position
-	    * @param {Character} entity
-	    * @param {number} maxHealth
-	    */
-	    constructor(x, y, entity, width=20, length=100) {
-	        this.x = x;
-	        this.y = y;
-	        this.entity = entity;
-	        this.width = width;
-	        this.length = length;
-	    }
-
-	    display() {
-	        const greenLength = this.entity.health / this.entity.startHealth * this.length;
-	        const redLength = this.length - greenLength;
-	        console.log(greenLength, redLength);
-	        gp5$1.push();
-	        gp5$1.noStroke();
-	        gp5$1.rectMode(gp5$1.CORNER);
-	        gp5$1.translate(this.x, this.y);
-	        gp5$1.fill('green');
-	        gp5$1.rect(0, 0, greenLength, this.width);
-	        gp5$1.translate(greenLength, 0);
-	        gp5$1.fill('red');
-	        gp5$1.rect(0, 0, redLength, this.width);
 	        gp5$1.pop();
 	    }
 	}

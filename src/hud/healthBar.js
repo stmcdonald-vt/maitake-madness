@@ -6,7 +6,7 @@ export default class HealthBar {
     * @param {number} y
     * @param {Character} entity
     * @param {number} width
-    * @param {number} width
+    * @param {number} length
     */
     constructor(x, y, entity, width=20, length=100) {
         this.x = x;
@@ -19,7 +19,6 @@ export default class HealthBar {
     display() {
         const greenLength = this.entity.health / this.entity.startHealth * this.length;
         const redLength = this.length - greenLength;
-        console.log(greenLength, redLength)
         gp5.push();
         gp5.noStroke();
         gp5.rectMode(gp5.CORNER);

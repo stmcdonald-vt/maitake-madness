@@ -6,7 +6,7 @@ import gp5 from "../../sketch";
 export default class DefenseRelic extends Relic {
     constructor(position) {
         super(position);
-        this.image = game.assets.chanterelle;
+        this.image = game.assets.gnome.side;
         this.auraColor = gp5.color(255, 255, 0, 30)
         this.initialize();
     }

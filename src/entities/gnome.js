@@ -10,6 +10,9 @@ import Character from './character';
 export default class Gnome extends Character {
     #moveX = 0;
     #moveY = 0;
+    #poisoned = false;
+    #poisonTimer = 0;
+    #poisonDamage = 0.01;
 
     /**
      * 
@@ -28,6 +31,11 @@ export default class Gnome extends Character {
         this.weapons = [new Pistol(), new Shotgun()];
         this.currentWeapon = 1;
         this.damageTakenMultiplier = 1;
+    }
+
+    inflictPoison(time) {
+        this.#poisoned = true;
+        this.#poisonTimer = time; 
     }
 
     registerClickListeners() {
@@ -85,7 +93,13 @@ export default class Gnome extends Character {
             this.#moveX = 0;
             this.#moveY = 0;        
         }
-
+        if (this.#poisoned) {
+            this.health -= this.#poisonDamage;
+            this.#poisonTimer--;
+            if (this.#poisonTimer < 0) {
+                this.#poisoned = false;
+            }
+        }
     }
 
     #angleBetween(a, b) {
@@ -104,7 +118,14 @@ export default class Gnome extends Character {
             this.image = game.assets.gnome.left
         }
         gp5.image(this.image, 0, 0);
+
+        if (this.#poisoned) {
+            gp5.tint(0, 255, 0, 100);  // Tint green when poisoned
+            gp5.image(this.image, 0, 0);
+        }
         this.drawHitIndication();
+
+        this.hitTimer--;
         gp5.pop();
     }
 

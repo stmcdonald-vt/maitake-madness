@@ -7,7 +7,7 @@ import Bullet from "./bullet";
 import Mushroom from "./mushroom";
 import ChaseRelicState from "./mushroomFSM/chaseRelicState";
 // Button mushroom. He feels nothing but emptiness.
-class MorelMushroom extends Mushroom{
+class ChanterelleMushroom extends Mushroom{
     /**
      * @param {p5.Vector} position 
      */
@@ -15,7 +15,7 @@ class MorelMushroom extends Mushroom{
         super();
         this.position = position;
         this.velocity = gp5.createVector(0, 0)
-        this.image = game.assets.morel;
+        this.image = game.assets.chanterelle;
         this.states = [new ChaseRelicState(this), new ChaseState(this), new ShootState(this)];
         this.currentState = 0;
         this.angle = 0;
@@ -25,10 +25,19 @@ class MorelMushroom extends Mushroom{
         this.dead = false;
         this.health = 10 * game.enemyHealthMultiplier();
         this.target = entityManager.gnome;
+        this.shotSpeed = 3;
+        this.shotDamage = 1;
+        this.shotDistance = 100;
+        this.shotDecayPerFrame = 0.1;
+        this.maxCooldown = 100;
     }
+
+
     
     shoot() {
-        entityManager.addMushroomProjectile(new Bullet(this.position.x, this.position.y, this.shootAngle));
+        entityManager.addMushroomProjectile(new Bullet(this.position.x, this.position.y, this.shootAngle, this.shotSpeed, this.shotDistance, this.shotDamage, this.shotDecayPerFrame, true));
+        entityManager.addMushroomProjectile(new Bullet(this.position.x, this.position.y, this.shootAngle - constants.EIGHTH_PI, this.shotSpeed, this.shotDistance, this.shotDamage, this.shotDecayPerFrame, true));
+        entityManager.addMushroomProjectile(new Bullet(this.position.x, this.position.y, this.shootAngle + constants.EIGHTH_PI, this.shotSpeed, this.shotDistance, this.shotDamage, this.shotDecayPerFrame, true));
     }
 
     get distanceToTarget() {
@@ -38,22 +47,22 @@ class MorelMushroom extends Mushroom{
     changeState() {
         switch (this.currentState) {
             case 0:
-                if (this.distanceToTarget < 200) {
+                if (this.distanceToTarget < 50) {
                     this.currentState = 2;
-                } else if (entityManager.distanceToPlayer(this) < 300) {
+                } else if (entityManager.distanceToPlayer(this) < 200) {
                     this.currentState = 1
                 }
                 break;
             case 1:
-                if (entityManager.distanceToPlayer(this) < 200 && entityManager.isInbounds(this)) {
+                if (entityManager.distanceToPlayer(this) < 100 && entityManager.isInbounds(this)) {
                     this.currentState = 2; // switch to shooting when within range of player and inbounds
-                } else if (entityManager.distanceToPlayer(this) > 300) {
+                } else if (entityManager.distanceToPlayer(this) > 200) {
                     this.currentState = 0;
                 }
                 break;
             case 2:
-                if ((this.target === entityManager.gnome && this.distanceToTarget > 200)
-                    || (this.target !== entityManager.gnome && entityManager.distanceToPlayer(this) < 200)
+                if ((this.target === entityManager.gnome && this.distanceToTarget > 100)
+                    || (this.target !== entityManager.gnome && entityManager.distanceToPlayer(this) < 100)
                     || !entityManager.isInbounds(this)) {
                     this.currentState = 1; // Switch back to chase if gnome moves out of range or the gnome gets close while shooting relic.
                 }
@@ -65,4 +74,4 @@ class MorelMushroom extends Mushroom{
         this.shootCooldown--;
     }
 }
-export default MorelMushroom;
+export default ChanterelleMushroom;

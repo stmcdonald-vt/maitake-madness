@@ -6,7 +6,7 @@ import gp5 from "../../sketch";
 export default class SpeedRelic extends Relic {
     constructor(position) {
         super(position);
-        this.image = game.assets.chanterelle;
+        this.image = game.assets.gnome.side;
         this.auraColor = gp5.color(0, 0, 255, 30)
         this.initialize();
     }

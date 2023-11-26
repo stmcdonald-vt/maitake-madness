@@ -380,7 +380,7 @@
 	}
 
 	class Bullet {
-	    constructor(x, y, heading, speed=6, distance=400, damage=3, decayPerFrame=0.01) {
+	    constructor(x, y, heading, speed=6, distance=400, damage=3, decayPerFrame=0.01, poison=false, poisonFrames=120) {
 	        this.position = gp5$1.createVector(x, y);
 	        this.speed = speed;
 	        this.velocity = gp5$1.createVector(speed, 0);
@@ -391,12 +391,17 @@
 	        this.decayPerFrame = decayPerFrame;
 	        this.disabled = false;
 	        this.image = game$1.assets.bullet;
+	        this.poison = poison;
+	        this.poisonFrames = poisonFrames;
 	    }
 
 	    update() {
 	        this.position.add(this.velocity);
 	        this.distance -= this.speed;
 	        this.damage -= this.decayPerFrame;
+	        if (this.damage < 0) {
+	            this.damage = 0;
+	        }
 	        if (this.distance <= 0) {
 	            this.disabled = true;
 	        }
@@ -542,6 +547,9 @@
 	class Gnome extends Character {
 	    #moveX = 0;
 	    #moveY = 0;
+	    #poisoned = false;
+	    #poisonTimer = 0;
+	    #poisonDamage = 0.01;
 
 	    /**
 	     * 
@@ -560,6 +568,11 @@
 	        this.weapons = [new Pistol(), new Shotgun()];
 	        this.currentWeapon = 1;
 	        this.damageTakenMultiplier = 1;
+	    }
+
+	    inflictPoison(time) {
+	        this.#poisoned = true;
+	        this.#poisonTimer = time; 
 	    }
 
 	    registerClickListeners() {
@@ -617,7 +630,13 @@
 	            this.#moveX = 0;
 	            this.#moveY = 0;        
 	        }
-
+	        if (this.#poisoned) {
+	            this.health -= this.#poisonDamage;
+	            this.#poisonTimer--;
+	            if (this.#poisonTimer < 0) {
+	                this.#poisoned = false;
+	            }
+	        }
 	    }
 
 	    #angleBetween(a, b) {
@@ -636,7 +655,14 @@
 	            this.image = game$1.assets.gnome.left;
 	        }
 	        gp5$1.image(this.image, 0, 0);
+
+	        if (this.#poisoned) {
+	            gp5$1.tint(0, 255, 0, 100);  // Tint green when poisoned
+	            gp5$1.image(this.image, 0, 0);
+	        }
 	        this.drawHitIndication();
+
+	        this.hitTimer--;
 	        gp5$1.pop();
 	    }
 
@@ -843,7 +869,7 @@
 	            this.step.set(this.enemy.target.position.x - this.enemy.position.x, this.enemy.target.position.y - this.enemy.position.y);
 	            this.enemy.shootAngle = this.step.heading();
 	            this.enemy.shoot();
-	            this.enemy.shootCooldown = 40;
+	            this.enemy.shootCooldown = this.enemy.maxCooldown || 40;
 	        }
 
 	        this.enemy.changeState();
@@ -860,7 +886,6 @@
 	        this.position = position;
 	        this.velocity = gp5$1.createVector(0, 0);
 	        this.image = game$1.assets.morel;
-	        this.image.loadPixels();
 	        this.states = [new ChaseRelicState(this), new ChaseState(this), new ShootState(this)];
 	        this.currentState = 0;
 	        this.angle = 0;
@@ -997,7 +1022,7 @@
 		{
 			waves: [
 				{
-					count: 4,
+					count: 6,
 					morel: [
 						[
 							0,
@@ -1014,6 +1039,16 @@
 						[
 							800,
 							400
+						]
+					],
+					chanterelle: [
+						[
+							800,
+							800
+						],
+						[
+							0,
+							0
 						]
 					]
 				},
@@ -1187,7 +1222,7 @@
 	class PowerRelic extends Relic {
 	    constructor(position) {
 	        super(position);
-	        this.image = game$1.assets.chanterelle;
+	        this.image = game$1.assets.gnome.side;
 	        this.auraColor = gp5$1.color(255, 0, 0, 30);
 	        this.initialize();
 	    }
@@ -1204,7 +1239,7 @@
 	class SpeedRelic extends Relic {
 	    constructor(position) {
 	        super(position);
-	        this.image = game$1.assets.chanterelle;
+	        this.image = game$1.assets.gnome.side;
 	        this.auraColor = gp5$1.color(0, 0, 255, 30);
 	        this.initialize();
 	    }
@@ -1221,7 +1256,7 @@
 	class DefenseRelic extends Relic {
 	    constructor(position) {
 	        super(position);
-	        this.image = game$1.assets.chanterelle;
+	        this.image = game$1.assets.gnome.side;
 	        this.auraColor = gp5$1.color(255, 255, 0, 30);
 	        this.initialize();
 	    }
@@ -1232,6 +1267,75 @@
 	        } else {
 	            entityManager$1.gnome.damageTakenMultiplier = 1;
 	        }
+	    }
+	}
+
+	// Button mushroom. He feels nothing but emptiness.
+	class ChanterelleMushroom extends Mushroom{
+	    /**
+	     * @param {p5.Vector} position 
+	     */
+	    constructor(position) {
+	        super();
+	        this.position = position;
+	        this.velocity = gp5$1.createVector(0, 0);
+	        this.image = game$1.assets.chanterelle;
+	        this.states = [new ChaseRelicState(this), new ChaseState(this), new ShootState(this)];
+	        this.currentState = 0;
+	        this.angle = 0;
+	        this.shootAngle;
+	        this.shootCooldown = 0;
+	        this._topLeftVector = gp5$1.createVector(0, 0);
+	        this.dead = false;
+	        this.health = 10 * game$1.enemyHealthMultiplier();
+	        this.target = entityManager$1.gnome;
+	        this.shotSpeed = 3;
+	        this.shotDamage = 1;
+	        this.shotDistance = 100;
+	        this.shotDecayPerFrame = 0.1;
+	        this.maxCooldown = 100;
+	    }
+
+
+	    
+	    shoot() {
+	        entityManager$1.addMushroomProjectile(new Bullet(this.position.x, this.position.y, this.shootAngle, this.shotSpeed, this.shotDistance, this.shotDamage, this.shotDecayPerFrame, true));
+	        entityManager$1.addMushroomProjectile(new Bullet(this.position.x, this.position.y, this.shootAngle - constants.EIGHTH_PI, this.shotSpeed, this.shotDistance, this.shotDamage, this.shotDecayPerFrame, true));
+	        entityManager$1.addMushroomProjectile(new Bullet(this.position.x, this.position.y, this.shootAngle + constants.EIGHTH_PI, this.shotSpeed, this.shotDistance, this.shotDamage, this.shotDecayPerFrame, true));
+	    }
+
+	    get distanceToTarget() {
+	        return gp5$1.dist(this.position.x, this.position.y, this.target.position.x, this.target.position.y);
+	    }
+
+	    changeState() {
+	        switch (this.currentState) {
+	            case 0:
+	                if (this.distanceToTarget < 50) {
+	                    this.currentState = 2;
+	                } else if (entityManager$1.distanceToPlayer(this) < 200) {
+	                    this.currentState = 1;
+	                }
+	                break;
+	            case 1:
+	                if (entityManager$1.distanceToPlayer(this) < 100 && entityManager$1.isInbounds(this)) {
+	                    this.currentState = 2; // switch to shooting when within range of player and inbounds
+	                } else if (entityManager$1.distanceToPlayer(this) > 200) {
+	                    this.currentState = 0;
+	                }
+	                break;
+	            case 2:
+	                if ((this.target === entityManager$1.gnome && this.distanceToTarget > 100)
+	                    || (this.target !== entityManager$1.gnome && entityManager$1.distanceToPlayer(this) < 100)
+	                    || !entityManager$1.isInbounds(this)) {
+	                    this.currentState = 1; // Switch back to chase if gnome moves out of range or the gnome gets close while shooting relic.
+	                }
+	        }
+	    }
+
+	    update() {
+	        super.update();
+	        this.shootCooldown--;
 	    }
 	}
 
@@ -1296,6 +1400,7 @@
 
 	        wave.morel?.forEach(coord => this.mushrooms.push(new MorelMushroom(gp5$1.createVector(coord[0], coord[1]))));
 	        wave.button?.forEach(coord => this.mushrooms.push(new ButtonMushroom(gp5$1.createVector(coord[0], coord[1]))));
+	        wave.chanterelle?.forEach(coord => this.mushrooms.push(new ChanterelleMushroom(gp5$1.createVector(coord[0], coord[1]))));
 	    },
 
 	    distanceToPlayer: function(entity) {
@@ -1321,13 +1426,16 @@
 	            if (!projectile.disabled && CollisionDetector.spriteCollision(this.gnome.topLeft, this.gnome.image, projectile.position, projectile.image)) {
 	                projectile.disabled = true;
 	                this.gnome.hit(projectile.damage);
+	                if (projectile.poison) {
+	                    this.gnome.inflictPoison(projectile.poisonFrames);
+	                }
 	                if (this.gnome.health <= 0) {
 	                    game$1.setLoss();
 	                }
 	            }
 	            this.relics.forEach(relic => {
 	                if (!projectile.disabled) {
-	                    if (CollisionDetector.spriteCollision(projectile.position, projectile.image, relic.position, relic.image)) {
+	                    if (CollisionDetector.spriteCollision(projectile.position, projectile.image, relic.topLeft, relic.image)) {
 	                        projectile.disabled = true;
 	                        relic.hit(projectile.damage);
 	                        if (relic.health <= 0) {
@@ -2042,6 +2150,7 @@
 
 	const constants = {
 	    FOURTH_PI: gp5.HALF_PI / 2,
+	    EIGHTH_PI: gp5.HALF_PI / 4,
 	    THREE_FOURTHS_PI: (gp5.HALF_PI / 2) * 3,
 	    TILEMAP_BLOCK_SIZE: 32,
 	};

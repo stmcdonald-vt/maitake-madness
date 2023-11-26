@@ -121,6 +121,7 @@ export default gp5;
 
 export const constants = {
     FOURTH_PI: gp5.HALF_PI / 2,
+    EIGHTH_PI: gp5.HALF_PI / 4,
     THREE_FOURTHS_PI: (gp5.HALF_PI / 2) * 3,
     TILEMAP_BLOCK_SIZE: 32,
 }

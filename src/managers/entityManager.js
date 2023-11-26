@@ -8,6 +8,7 @@ import levels from "../data/levels.json"
 import PowerRelic from "../entities/relics/powerRelic";
 import SpeedRelic from "../entities/relics/speedRelic";
 import DefenseRelic from "../entities/relics/defenseRelic";
+import ChanterelleMushroom from "../entities/chanterelleMushroom";
 
 // Handles input 
 const entityManager = {
@@ -70,6 +71,7 @@ const entityManager = {
 
         wave.morel?.forEach(coord => this.mushrooms.push(new MorelMushroom(gp5.createVector(coord[0], coord[1]))));
         wave.button?.forEach(coord => this.mushrooms.push(new ButtonMushroom(gp5.createVector(coord[0], coord[1]))));
+        wave.chanterelle?.forEach(coord => this.mushrooms.push(new ChanterelleMushroom(gp5.createVector(coord[0], coord[1]))));
     },
 
     distanceToPlayer: function(entity) {
@@ -95,13 +97,16 @@ const entityManager = {
             if (!projectile.disabled && collisionDetector.spriteCollision(this.gnome.topLeft, this.gnome.image, projectile.position, projectile.image)) {
                 projectile.disabled = true;
                 this.gnome.hit(projectile.damage);
+                if (projectile.poison) {
+                    this.gnome.inflictPoison(projectile.poisonFrames);
+                }
                 if (this.gnome.health <= 0) {
                     game.setLoss();
                 }
             }
             this.relics.forEach(relic => {
                 if (!projectile.disabled) {
-                    if (collisionDetector.spriteCollision(projectile.position, projectile.image, relic.position, relic.image)) {
+                    if (collisionDetector.spriteCollision(projectile.position, projectile.image, relic.topLeft, relic.image)) {
                         projectile.disabled = true;
                         relic.hit(projectile.damage);
                         if (relic.health <= 0) {

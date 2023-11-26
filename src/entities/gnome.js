@@ -19,19 +19,25 @@ export default class Gnome extends Character {
         super();
         this.position = position;
         this.angle = 0;
-        this.moveSpeed = 3;
+        this._moveSpeed = 3;
+        this.speedMultiplier = 1;
         this.image = game.assets.gnome.front;
         this.startHealth = 20;
         this.health = 20;
         this._topLeftVector = gp5.createVector(0, 0);
         this.weapons = [new Pistol(), new Shotgun()];
         this.currentWeapon = 1;
+        this.damageTakenMultiplier = 1;
     }
 
     registerClickListeners() {
         inputManager.registerClickHoldFunction(() => {
             this.shoot();
         })
+    }
+
+    get moveSpeed() {
+        return this._moveSpeed * this.speedMultiplier;
     }
 
     get topLeft() {

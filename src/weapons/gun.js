@@ -8,7 +8,8 @@ export default class Gun {
         this.pellets = pellets;
         this.spacing = spacing;
         this.range = range;
-        this.damage = damage;
+        this._damage = damage;
+        this.damageMultiplier = 1;
         this.decay = decay;
         this.image = image;
         this.cooldown = cooldown;
@@ -19,6 +20,10 @@ export default class Gun {
         this.lastShotFrame = 0;
     }
 
+    get damage() {
+        return this._damage * this.damageMultiplier;
+    }
+    
     shoot(position, angle) {
         if (gp5.frameCount - this.lastShotFrame < this.cooldown || this.ammo <= 0) {
             return;

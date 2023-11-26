@@ -34,6 +34,20 @@
                     [800, 400]
                 ]
             }
+        ],
+        "relics": [
+            {
+                "type": "power",
+                "location": [600, 600]
+            },
+            {
+                "type": "speed",
+                "location": [200, 200]
+            },
+            {
+                "type": "defense",
+                "location": [200, 600]
+            }
         ]
     }
 ]

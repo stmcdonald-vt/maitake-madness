@@ -5,6 +5,9 @@ import MorelMushroom from "../entities/morelMushroom";
 import collisionDetector from "./collisionDetector";
 import game from "../game";
 import levels from "../data/levels.json"
+import PowerRelic from "../entities/relics/powerRelic";
+import SpeedRelic from "../entities/relics/speedRelic";
+import DefenseRelic from "../entities/relics/defenseRelic";
 
 // Handles input 
 const entityManager = {
@@ -13,6 +16,7 @@ const entityManager = {
         this.mushrooms = [];
         this.gnomeProjectiles = [];
         this.mushroomProjectiles = [];
+        this.relics = [];
     },
 
     isInbounds: function(entity) {
@@ -44,7 +48,21 @@ const entityManager = {
 
     setupGame: function() {
         this.gnome.registerClickListeners();
+        this.startLevel();
         this.startWave();
+    },
+
+    startLevel: function() {
+        const level = levels[game.state.LEVEL];
+        const relicMap = {
+            power: PowerRelic,
+            speed: SpeedRelic,
+            defense: DefenseRelic
+        }
+
+        level.relics.forEach(relic => {
+            this.relics.push(new relicMap[relic.type](gp5.createVector(relic.location[0], relic.location[1])));
+        })
     },
 
     startWave: function() {
@@ -52,7 +70,6 @@ const entityManager = {
 
         wave.morel?.forEach(coord => this.mushrooms.push(new MorelMushroom(gp5.createVector(coord[0], coord[1]))));
         wave.button?.forEach(coord => this.mushrooms.push(new ButtonMushroom(gp5.createVector(coord[0], coord[1]))));
-
     },
 
     distanceToPlayer: function(entity) {
@@ -82,6 +99,17 @@ const entityManager = {
                     game.setLoss();
                 }
             }
+            this.relics.forEach(relic => {
+                if (!projectile.disabled) {
+                    if (collisionDetector.spriteCollision(projectile.position, projectile.image, relic.position, relic.image)) {
+                        projectile.disabled = true;
+                        relic.hit(projectile.damage);
+                        if (relic.health <= 0) {
+                            game.setLoss();
+                        }
+                    }
+                }
+            })
         })
 
         this.mushrooms.forEach(mushroom => {
@@ -95,6 +123,7 @@ const entityManager = {
     },
 
     update: function() {
+        this.relics.forEach(relic => relic.display());
         this.mushrooms.forEach(mushroom => mushroom.display());
         this.gnome.display();
         this.gnomeProjectiles.forEach(projectile => projectile.display());

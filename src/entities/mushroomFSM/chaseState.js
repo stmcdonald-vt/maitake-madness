@@ -12,6 +12,7 @@ export default class ChaseState {
         this.step.set(this.player.position.x - this.enemy.position.x, this.player.position.y - this.enemy.position.y);
         this.step.normalize();
         this.enemy.velocity = this.step;
+        this.enemy.target = this.player;
         this.enemy.changeState();
     }
 }

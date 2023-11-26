@@ -1,5 +1,6 @@
 import gp5 from "../sketch";
 import Character from "./character";
+import ChaseRelicState from "./mushroomFSM/chaseRelicState";
 import ChaseState from "./mushroomFSM/chaseState";
 
 export default class Mushroom extends Character {
@@ -13,7 +14,7 @@ export default class Mushroom extends Character {
         currentState.execute();
         this.position.add(this.velocity);
 
-        if (currentState instanceof ChaseState) {
+        if (currentState instanceof ChaseState || currentState instanceof ChaseRelicState) {
             this.hopWalk();
         }
     }

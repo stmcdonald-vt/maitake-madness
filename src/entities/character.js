@@ -8,6 +8,12 @@ export default class Character {
         this.hopDelta = 1;
         this.hitTimer = 0;
         this.maxHitTimer = 20;
+        this._topLeftVector = gp5.createVector(0, 0);
+    }
+
+    get topLeft() {
+        this._topLeftVector.set(this.position.x - this.image.width / 2, this.position.y - this.image.height / 2);
+        return this._topLeftVector;
     }
 
     drawHitIndication() {
@@ -19,6 +25,9 @@ export default class Character {
     }
 
     hit(damage) {
+        if (this.damageTakenMultiplier !== undefined) {
+            damage *= this.damageTakenMultiplier;
+        }
         this.health -= damage;
         this.hitTimer = this.maxHitTimer;
     }

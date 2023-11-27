@@ -40,6 +40,9 @@ const game = {
     get wavesInLevel() {
         return levels[this.state.LEVEL].waves.length;
     },
+    get currentLevel() {
+        return levels[this.state.LEVEL];
+    },
     enemyHealthMultiplier: function() {
         switch(this.state.DIFFICULTY) {
             case 0:

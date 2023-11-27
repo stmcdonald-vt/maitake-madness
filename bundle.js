@@ -1135,7 +1135,129 @@
 						600
 					]
 				}
-			]
+			],
+			name: "The Plains",
+			description: "Protect the magic stump from destructive forces of angry mushrooms in an open field."
+		},
+		{
+			waves: [
+				{
+					count: 6,
+					morel: [
+						[
+							0,
+							400
+						],
+						[
+							400,
+							0
+						],
+						[
+							400,
+							800
+						],
+						[
+							800,
+							400
+						]
+					],
+					chanterelle: [
+						[
+							800,
+							800
+						],
+						[
+							0,
+							0
+						]
+					]
+				},
+				{
+					count: 4,
+					button: [
+						[
+							0,
+							400
+						],
+						[
+							400,
+							0
+						],
+						[
+							400,
+							800
+						],
+						[
+							800,
+							400
+						]
+					]
+				},
+				{
+					count: 8,
+					button: [
+						[
+							0,
+							350
+						],
+						[
+							350,
+							0
+						],
+						[
+							350,
+							800
+						],
+						[
+							800,
+							350
+						]
+					],
+					morel: [
+						[
+							0,
+							400
+						],
+						[
+							400,
+							0
+						],
+						[
+							400,
+							800
+						],
+						[
+							800,
+							400
+						]
+					]
+				}
+			],
+			relics: [
+				{
+					type: "power",
+					location: [
+						600,
+						600
+					]
+				},
+				{
+					type: "speed",
+					location: [
+						200,
+						200
+					]
+				},
+				{
+					type: "defense",
+					location: [
+						200,
+						600
+					]
+				}
+			],
+			name: "The Plains 2",
+			description: "Protect the magic stump from destructive forces of angry mushrooms in an open field. 2"
 		}
 	];
 
@@ -1487,10 +1609,9 @@
 	        this.primaryColor = gp5$1.color('green');
 	        this.textColor = gp5$1.color('white');
 	        this.items = [
-	            {text: 'Start', func: () => {
+	            {text: 'Play', func: () => {
 	                inputManager.clearClickFunctions();
-	                entityManager$1.setupGame();
-	                game$1.state.GAME_STATE = 1;
+	                game$1.menuManager.setMenu(2);
 	            }},
 	            {text: 'Options', func: () => {game$1.menuManager.setMenu(1);}},
 	        ];
@@ -1704,16 +1825,11 @@
 	     * @param {number} width 
 	     * @param {number} height 
 	     */
-	    constructor(position, width, height) {
+	    constructor(position, width, height, text) {
 	        this.width = width;
 	        this.height = height;
 	        this.position = position;
-	    }
-
-	    get tutorialText() {
-	        return `As Gerome the Gnome, you are tasked with protecting gnomish relics from fungal aggressors. You will have plenty of weaponry at your disposal that you can switch between using the 'Q' key. You will use ${game$1.state.MOVEMENT_SCHEME ? 'the ARROW KEYS' : 'WASD'} to control Gerome. 
-        
-        You will use your mouse to aim and left click to shoot your weapon. It is highly recommended to use a mouse for aiming rather than a laptop touchpad.`
+	        this.tutorialText = text;
 	    }
 
 	    display() {
@@ -1753,17 +1869,144 @@
 	            gp5$1.pop();
 	        };
 
+	        const tutorialText = `As Gerome the Gnome, you are tasked with protecting gnomish relics from fungal aggressors. You will have plenty of weaponry at your disposal that you can switch between using the 'Q' key. You will use ${game$1.state.MOVEMENT_SCHEME ? 'the ARROW KEYS' : 'WASD'} to control Gerome. 
+            
+            You will use your mouse to aim and left click to shoot your weapon. It is highly recommended to use a mouse for aiming rather than a laptop touchpad.`;
+
 	        this.items = [
 	            new DifficultyMenuItem(game$1.p5.createVector(optionsPosition.x, optionsPosition.y)),
 	            new ControlMenuItem(game$1.p5.createVector(optionsPosition.x, optionsPosition.y + 100)),
 	            new Button(backButtonPosition, backButtonAction, backButtonHeight, backButtonWidth, undefined, backButtonDisplay),
-	            new Tutorial(tutorialPosition, gp5$1.width * 0.9, gp5$1.height * 0.3),
+	            new Tutorial(tutorialPosition, gp5$1.width * 0.9, gp5$1.height * 0.3, tutorialText),
 	            new GnomeChaseAnimation(animationPosition)
 	        ];
 	    }
 
 	    reset() {
 	        this.items.slice(0,3).forEach(item => item.registerClickListeners());
+	    }
+	}
+
+	class LevelPreview {
+	    constructor(position, image, width=undefined, height=undefined) {
+	        this.position = position;
+	        this.image = image;
+	        this.width = width;
+	        this.height = height;
+	    }
+
+	    display() {
+	        gp5$1.push();
+	        gp5$1.image(this.image, this.position.x, this.position.y, this.width, this.height);
+	        gp5$1.pop(); 
+	    }
+	}
+
+	// Navigation to options or start game.
+	class ConfirmLevelMenuItem extends PickerMenuItem {
+	    /**
+	     * @param {p5.Vector} position 
+	     */
+	    constructor(position) {
+	        super(position, 0, false);
+	        this.primaryColor = gp5$1.color('green');
+	        this.textColor = gp5$1.color('white');
+	        this.items = [
+	            {text: 'Start', func: () => {
+	                inputManager.clearClickFunctions();
+	                entityManager$1.setupGame();
+	                game$1.state.GAME_STATE = 1;
+	            }}
+	        ];
+	        this.initializePositions();
+	        this.registerClickListeners();
+	    }
+	}
+
+	class LevelSelectMenu extends Menu{
+	    // Don't forget to do this on start:
+	    // entityManager.setupGame();
+	    // game.state.GAME_STATE = 1;
+	    constructor() {
+	        super();
+	        // Screenshot center top, description below, start below that, arrows on left and right
+	        const previewPosition = gp5$1.createVector(gp5$1.width * 0.2, gp5$1.height * 0.1);
+	        const descriptionPosition = gp5$1.createVector(gp5$1.width * 0.05, gp5$1.height * 0.75);
+	        const buttonPosition = gp5$1.createVector(gp5$1.width * 0.45, gp5$1.height * 0.85);
+
+	        // back button setup
+	        const backButtonPosition = gp5$1.createVector(gp5$1.width * 0.1 - 30, gp5$1.height * 0.5);
+	        const backButtonHeight = 30;
+	        const backButtonWidth = 30;
+	        const backButtonAction = () => {
+	            if (game$1.state.LEVEL > 0) {
+	                game$1.state.LEVEL--;
+	                this.updateLevel();
+	            }
+	        };
+	        const backButtonDisplay = () => {
+	            if (game$1.state.LEVEL > 0) {
+	                gp5$1.push();
+	                gp5$1.noStroke();
+	                gp5$1.fill('white');
+	                gp5$1.translate(backButtonPosition.x + backButtonWidth / 2, backButtonPosition.y + backButtonHeight / 2);
+	                gp5$1.triangle(-15, 0, 0, 7, 0, -7);
+	                gp5$1.rect(0, -3, 10, 6);
+	                gp5$1.pop();
+	            }
+	        };
+
+	        // forward button setup
+	        const forwardButtonPosition = gp5$1.createVector(gp5$1.width * 0.9, gp5$1.height * 0.5);
+	        const forwardButtonHeight = 30;
+	        const forwardButtonWidth = 30;
+	        const forwardButtonAction = () => {
+	            if (game$1.state.LEVEL < levels.length - 1) {
+	                game$1.state.LEVEL++;
+	                this.updateLevel();
+	            }
+	        };
+
+	        const forwardButtonDisplay = () => {
+	            if (game$1.state.LEVEL < levels.length - 1) {
+	                gp5$1.push();
+	                gp5$1.noStroke();
+	                gp5$1.fill('white');
+	                gp5$1.translate(forwardButtonPosition.x + forwardButtonWidth / 2, forwardButtonPosition.y + forwardButtonHeight / 2);
+	                gp5$1.triangle(15, 0, 0, 7, 0, -7);
+	                gp5$1.rect(-10, -3, 10, 6);
+	                gp5$1.pop();
+	            }
+	        };
+
+
+	        this.items = [
+	            new LevelPreview(previewPosition, this.levelPreviewImage, gp5$1.width * 0.6, gp5$1.width * 0.6),
+	            new Tutorial(descriptionPosition, gp5$1.width * 0.9, gp5$1.height * 0.1, this.descriptionText),
+	            new ConfirmLevelMenuItem(buttonPosition),
+	            new Button(backButtonPosition, backButtonAction, backButtonHeight, backButtonWidth, undefined, backButtonDisplay),
+	            new Button(forwardButtonPosition, forwardButtonAction, forwardButtonHeight, forwardButtonWidth, undefined, forwardButtonDisplay),
+	        ];
+	    }
+
+	    reset() {
+	        this.items[2].registerClickListeners();
+	        this.items[3].registerClickListeners();
+	        this.items[4].registerClickListeners();
+
+	    }
+
+	    updateLevel() {
+	        this.items[0].image = this.levelPreviewImage;
+	        this.items[1].tutorialText = this.descriptionText;
+	    }
+
+	    get descriptionText() {
+	        return `${game$1.currentLevel.name}: ${game$1.currentLevel.description}`;
+	    }
+
+	    get levelPreviewImage() {
+	        return game$1.assets.levelScreenshots[game$1.state.LEVEL];
 	    }
 	}
 
@@ -1774,7 +2017,8 @@
 	    constructor() {
 	        this.menus = [
 	            new MainMenu(),
-	            new OptionsMenu()
+	            new OptionsMenu(),
+	            new LevelSelectMenu()
 	        ];
 	        this.currentMenuIndex = 0;
 	    }
@@ -1916,6 +2160,9 @@
 	    },
 	    get wavesInLevel() {
 	        return levels[this.state.LEVEL].waves.length;
+	    },
+	    get currentLevel() {
+	        return levels[this.state.LEVEL];
 	    },
 	    enemyHealthMultiplier: function() {
 	        switch(this.state.DIFFICULTY) {
@@ -2095,7 +2342,11 @@
 	            },
 	            bullet: p.loadImage('assets/bullet.png'),
 	            shotgun: p.loadImage('assets/shotgun.png'),
-	            pistol: p.loadImage('assets/pistol.png')
+	            pistol: p.loadImage('assets/pistol.png'),
+	            levelScreenshots: [
+	                p.loadImage('assets/plains.png'),
+	                p.loadImage('assets/plains.png')
+	            ]
 
 	        };
 	    };

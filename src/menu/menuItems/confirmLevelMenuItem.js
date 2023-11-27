@@ -5,7 +5,7 @@ import entityManager from "../../managers/entityManager";
 import inputManager from "../../managers/inputManager";
 
 // Navigation to options or start game.
-class MainNavigationMenuItem extends PickerMenuItem {
+export default class ConfirmLevelMenuItem extends PickerMenuItem {
     /**
      * @param {p5.Vector} position 
      */
@@ -14,14 +14,13 @@ class MainNavigationMenuItem extends PickerMenuItem {
         this.primaryColor = gp5.color('green');
         this.textColor = gp5.color('white');
         this.items = [
-            {text: 'Play', func: () => {
+            {text: 'Start', func: () => {
                 inputManager.clearClickFunctions();
-                game.menuManager.setMenu(2)
-            }},
-            {text: 'Options', func: () => {game.menuManager.setMenu(1)}},
+                entityManager.setupGame();
+                game.state.GAME_STATE = 1;
+            }}
         ];
         this.initializePositions();
         this.registerClickListeners();
     }
 }
-export default MainNavigationMenuItem;

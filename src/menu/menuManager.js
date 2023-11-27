@@ -2,6 +2,7 @@ import MainMenu from "./mainMenu"
 import OptionsMenu from "./optionsMenu"
 import game from "../game"
 import inputManager from "../managers/inputManager"
+import LevelSelectMenu from "./levelSelectMenu"
 /**
  * Instantiate and manage all of the menus
  */
@@ -9,7 +10,8 @@ class MenuManager {
     constructor() {
         this.menus = [
             new MainMenu(),
-            new OptionsMenu()
+            new OptionsMenu(),
+            new LevelSelectMenu()
         ]
         this.currentMenuIndex = 0;
     }

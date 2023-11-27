@@ -66,7 +66,11 @@ let sketch = function(p) {
             },
             bullet: p.loadImage('assets/bullet.png'),
             shotgun: p.loadImage('assets/shotgun.png'),
-            pistol: p.loadImage('assets/pistol.png')
+            pistol: p.loadImage('assets/pistol.png'),
+            levelScreenshots: [
+                p.loadImage('assets/plains.png'),
+                p.loadImage('assets/plains.png')
+            ]
 
         };
     }

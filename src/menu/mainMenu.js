@@ -3,7 +3,6 @@ import Menu from './menu';
 import MainNavigationMenuItem from './menuItems/mainNavigationMenuItem';
 import Title from './title';
 import gp5 from '../sketch';
-import game from '../game';
 
 class MainMenu extends Menu {
     constructor() {

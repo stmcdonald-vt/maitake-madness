@@ -774,6 +774,12 @@
 	}
 
 	class Mushroom extends Character {
+	    constructor() {
+	        super();
+	        this.velocity = gp5$1.createVector(0, 0);
+	        this.dead = false;
+	    }
+
 	    get topLeft() {
 	        this._topLeftVector.set(this.position.x - this.image.width / 2, this.position.y - this.image.height / 2);
 	        return this._topLeftVector;
@@ -861,9 +867,10 @@
 	}
 
 	class ShootState {
-	    constructor(enemy) {
+	    constructor(enemy, shootFunction=undefined) {
 	        this.enemy = enemy;
 	        this.step = gp5$1.createVector(0, 0);
+	        this.shootFunction = shootFunction;
 	    }
 
 	    execute() {
@@ -871,7 +878,7 @@
 	            this.enemy.velocity.set(0, 0);
 	            this.step.set(this.enemy.target.position.x - this.enemy.position.x, this.enemy.target.position.y - this.enemy.position.y);
 	            this.enemy.shootAngle = this.step.heading();
-	            this.enemy.shoot();
+	            this.shootFunction ? this.shootFunction() : this.enemy.shoot();
 	            this.enemy.shootCooldown = this.enemy.maxCooldown || 40;
 	        }
 
@@ -1025,6 +1032,15 @@
 		{
 			waves: [
 				{
+					count: 1,
+					maitake: [
+						[
+							400,
+							400
+						]
+					]
+				},
+				{
 					count: 6,
 					morel: [
 						[
@@ -1056,7 +1072,7 @@
 					]
 				},
 				{
-					count: 4,
+					count: 5,
 					button: [
 						[
 							0,
@@ -1072,6 +1088,12 @@
 						],
 						[
 							800,
+							400
+						]
+					],
+					maitake: [
+						[
+							400,
 							400
 						]
 					]
@@ -1482,6 +1504,108 @@
 	    }
 	}
 
+	class JumpBurstState {
+	    constructor(enemy, shootFunction, jumpHeight = 12) {
+	        this.enemy = enemy;
+	        this.step = gp5$1.createVector(0, 0);
+	        this.shootFunction = shootFunction;
+	        this.jumpHeight = jumpHeight;
+	        this.jumpState = 0;
+	        this.jumpingUp = false;
+	        this.jumpCooldown = 0;
+	        this.maxCooldown = 60;
+	        this.fired = true;
+	    }
+
+	    shotBurst() {
+	        for (let i = 0; i < gp5$1.TWO_PI; i += constants.EIGHTH_PI) {
+	            this.shootFunction(i);
+	        }
+	    }
+
+	    execute() {
+
+	        if (this.jumpingUp) {
+	            if (this.jumpState < this.jumpHeight) {
+	                this.enemy.position.y--;
+	                this.jumpState++;
+	            } else {
+	                this.jumpingUp = false;
+	            }
+	        } else {
+	            if (this.jumpState > 0) {
+	                this.enemy.position.y++;
+	                this.jumpState--;
+	            } else {
+	                if (!this.fired) {
+	                    this.shotBurst();
+	                    this.fired = true;
+	                }
+
+	                if (this.jumpCooldown <= 0) {
+	                    this.jumpingUp = true;
+	                    this.jumpCooldown = this.maxCooldown;
+	                    this.fired = false;
+	                    this.enemy.changeState();
+	                }
+	            }
+	        }
+	        this.jumpCooldown--;
+
+	    }
+	}
+
+	class MaitakeMushroom extends Mushroom{
+	        /**
+	         * @param {p5.Vector} position 
+	         */
+	        constructor(position) {
+	            super();
+	            this.position = position;
+	            this.image = game$1.assets.maitake;
+	            this.states = [
+	                new ShootState(this, () => this.shootBullet()),
+	                new JumpBurstState(this, (angle) => this.shootSpore(angle)),
+	                new ShootState(this, () => this.shootSpore()),
+	                new JumpBurstState(this, (angle) => this.shootBullet(angle)),
+	            ];
+	            this.currentState = 0;
+	            this.shootAngle = 0;
+	            this.shootCooldown = 0;
+	            this._topLeftVector = gp5$1.createVector(0, 0);
+	            this.health = 100 * game$1.enemyHealthMultiplier();
+	            this.target = entityManager$1.gnome;
+	            this.maxCooldown = 10;
+	            this.stateTimer = 300;
+	            this.maxStateTime = 300;
+	        }
+	        
+	        shootBullet(angle=this.shootAngle) {
+	            entityManager$1.addMushroomProjectile(new Bullet(this.position.x, this.position.y, angle));
+	        }
+
+	        shootSpore(angle=this.shootAngle) {
+	            entityManager$1.addMushroomProjectile(new Spore(this.position.x, this.position.y, angle, 2, 400));
+	        }
+	    
+	        get distanceToTarget() {
+	            return gp5$1.dist(this.position.x, this.position.y, this.target.position.x, this.target.position.y);
+	        }
+	    
+	        changeState() {
+	            if (this.stateTimer < 0) {
+	                this.currentState = (this.currentState + 1) % this.states.length;
+	                this.stateTimer = this.maxStateTime;
+	            }
+	        }
+	    
+	        update() {
+	            super.update();
+	            this.shootCooldown--;
+	            this.stateTimer--;
+	        }
+	}
+
 	// Handles input 
 	const entityManager = {
 	    initialize: function() {
@@ -1544,6 +1668,7 @@
 	        wave.morel?.forEach(coord => this.mushrooms.push(new MorelMushroom(gp5$1.createVector(coord[0], coord[1]))));
 	        wave.button?.forEach(coord => this.mushrooms.push(new ButtonMushroom(gp5$1.createVector(coord[0], coord[1]))));
 	        wave.chanterelle?.forEach(coord => this.mushrooms.push(new ChanterelleMushroom(gp5$1.createVector(coord[0], coord[1]))));
+	        wave.maitake?.forEach(coord => this.mushrooms.push(new MaitakeMushroom(gp5$1.createVector(coord[0], coord[1]))));
 	    },
 
 	    distanceToPlayer: function(entity) {
@@ -2343,6 +2468,7 @@
 	            button: p.loadImage('assets/buttonshroom.png'),
 	            buttonActor: p.loadImage('assets/buttonshroom-actor.png'),
 	            chanterelle: p.loadImage('assets/chanterelle.png'),
+	            maitake: p.loadImage('assets/maitake.png'),
 	            fonts: {
 	                oldForest: p.loadFont('assets/TheOldForest.ttf')
 	            },
@@ -2383,6 +2509,7 @@
 	            assets.spore,
 	            assets.button,
 	            assets.chanterelle,
+	            assets.maitake
 	        ].forEach(img => img.loadPixels());
 	        game$1.assets = assets;
 	        game$1.initialize();

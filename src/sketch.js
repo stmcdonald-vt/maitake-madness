@@ -49,6 +49,7 @@ let sketch = function(p) {
             button: p.loadImage('assets/buttonshroom.png'),
             buttonActor: p.loadImage('assets/buttonshroom-actor.png'),
             chanterelle: p.loadImage('assets/chanterelle.png'),
+            maitake: p.loadImage('assets/maitake.png'),
             fonts: {
                 oldForest: p.loadFont('assets/TheOldForest.ttf')
             },
@@ -89,6 +90,7 @@ let sketch = function(p) {
             assets.spore,
             assets.button,
             assets.chanterelle,
+            assets.maitake
         ].forEach(img => img.loadPixels());
         game.assets = assets;
         game.initialize();

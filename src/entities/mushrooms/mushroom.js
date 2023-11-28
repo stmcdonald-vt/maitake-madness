@@ -1,9 +1,15 @@
-import gp5 from "../sketch";
-import Character from "./character";
-import ChaseRelicState from "./mushroomFSM/chaseRelicState";
-import ChaseState from "./mushroomFSM/chaseState";
+import gp5 from "../../sketch";
+import Character from "../character";
+import ChaseRelicState from "../mushroomFSM/chaseRelicState";
+import ChaseState from "../mushroomFSM/chaseState";
 
 export default class Mushroom extends Character {
+    constructor() {
+        super();
+        this.velocity = gp5.createVector(0, 0);
+        this.dead = false;
+    }
+
     get topLeft() {
         this._topLeftVector.set(this.position.x - this.image.width / 2, this.position.y - this.image.height / 2);
         return this._topLeftVector;

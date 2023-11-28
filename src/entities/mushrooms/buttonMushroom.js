@@ -1,8 +1,8 @@
-import game from "../game";
-import gp5 from "../sketch";
-import ChaseState from "./mushroomFSM/chaseState";
-import entityManager from "../managers/entityManager";
-import ChargeState from "./mushroomFSM/chargeState";
+import game from "../../game";
+import gp5 from "../../sketch";
+import ChaseState from "../mushroomFSM/chaseState";
+import entityManager from "../../managers/entityManager";
+import ChargeState from "../mushroomFSM/chargeState";
 import Mushroom from "./mushroom";
 // Button mushroom. He feels nothing but emptiness.
 class ButtonMushroom extends Mushroom {

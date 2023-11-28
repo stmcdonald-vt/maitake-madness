@@ -1,8 +1,9 @@
 import gp5 from "../../sketch";
 export default class ShootState {
-    constructor(enemy) {
+    constructor(enemy, shootFunction=undefined) {
         this.enemy = enemy;
         this.step = gp5.createVector(0, 0);
+        this.shootFunction = shootFunction;
     }
 
     execute() {
@@ -10,7 +11,7 @@ export default class ShootState {
             this.enemy.velocity.set(0, 0);
             this.step.set(this.enemy.target.position.x - this.enemy.position.x, this.enemy.target.position.y - this.enemy.position.y);
             this.enemy.shootAngle = this.step.heading();
-            this.enemy.shoot();
+            this.shootFunction ? this.shootFunction() : this.enemy.shoot();
             this.enemy.shootCooldown = this.enemy.maxCooldown || 40;
         }
 

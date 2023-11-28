@@ -3,9 +3,10 @@ import gp5, { constants } from "../sketch";
 import ChaseState from "./mushroomFSM/chaseState";
 import entityManager from "../managers/entityManager";
 import ShootState from "./mushroomFSM/shootState";
-import Bullet from "./bullet";
+import Bullet from "./projectiles/bullet";
 import Mushroom from "./mushroom";
 import ChaseRelicState from "./mushroomFSM/chaseRelicState";
+import Spore from "./projectiles/spore";
 // Button mushroom. He feels nothing but emptiness.
 class ChanterelleMushroom extends Mushroom{
     /**
@@ -35,9 +36,9 @@ class ChanterelleMushroom extends Mushroom{
 
     
     shoot() {
-        entityManager.addMushroomProjectile(new Bullet(this.position.x, this.position.y, this.shootAngle, this.shotSpeed, this.shotDistance, this.shotDamage, this.shotDecayPerFrame, true));
-        entityManager.addMushroomProjectile(new Bullet(this.position.x, this.position.y, this.shootAngle - constants.EIGHTH_PI, this.shotSpeed, this.shotDistance, this.shotDamage, this.shotDecayPerFrame, true));
-        entityManager.addMushroomProjectile(new Bullet(this.position.x, this.position.y, this.shootAngle + constants.EIGHTH_PI, this.shotSpeed, this.shotDistance, this.shotDamage, this.shotDecayPerFrame, true));
+        entityManager.addMushroomProjectile(new Spore(this.position.x, this.position.y, this.shootAngle, this.shotSpeed, this.shotDistance, this.shotDamage, this.shotDecayPerFrame, true));
+        entityManager.addMushroomProjectile(new Spore(this.position.x, this.position.y, this.shootAngle - constants.EIGHTH_PI, this.shotSpeed, this.shotDistance, this.shotDamage, this.shotDecayPerFrame, true));
+        entityManager.addMushroomProjectile(new Spore(this.position.x, this.position.y, this.shootAngle + constants.EIGHTH_PI, this.shotSpeed, this.shotDistance, this.shotDamage, this.shotDecayPerFrame, true));
     }
 
     get distanceToTarget() {

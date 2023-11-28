@@ -65,6 +65,7 @@ let sketch = function(p) {
                 dirtBottomRightGrass: p.loadImage('assets/tiles/dirt_bottom_right.png'),
             },
             bullet: p.loadImage('assets/bullet.png'),
+            spore: p.loadImage('assets/spore.png'),
             shotgun: p.loadImage('assets/shotgun.png'),
             pistol: p.loadImage('assets/pistol.png'),
             levelScreenshots: [
@@ -85,8 +86,9 @@ let sketch = function(p) {
             ...Object.values(assets.gnome),
             assets.morel,
             assets.bullet,
+            assets.spore,
             assets.button,
-            assets.chanterelle
+            assets.chanterelle,
         ].forEach(img => img.loadPixels());
         game.assets = assets;
         game.initialize();

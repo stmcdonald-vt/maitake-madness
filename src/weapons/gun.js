@@ -1,5 +1,5 @@
 import entityManager from "../managers/entityManager";
-import Bullet from "../entities/bullet";
+import Bullet from "../entities/projectiles/bullet";
 import gp5 from "../sketch";
 
 export default class Gun {

@@ -379,22 +379,7 @@
 	    }
 	}
 
-	class Bullet {
-	    constructor(x, y, heading, speed=6, distance=400, damage=3, decayPerFrame=0.01, poison=false, poisonFrames=120) {
-	        this.position = gp5$1.createVector(x, y);
-	        this.speed = speed;
-	        this.velocity = gp5$1.createVector(speed, 0);
-	        this.velocity.setHeading(heading);
-	        this.heading = heading;
-	        this.distance = distance;
-	        this.damage = damage;
-	        this.decayPerFrame = decayPerFrame;
-	        this.disabled = false;
-	        this.image = game$1.assets.bullet;
-	        this.poison = poison;
-	        this.poisonFrames = poisonFrames;
-	    }
-
+	class Projectile {
 	    update() {
 	        this.position.add(this.velocity);
 	        this.distance -= this.speed;
@@ -420,6 +405,24 @@
 	            this.update();
 	            this.draw();
 	        }
+	    }
+	}
+
+	class Bullet extends Projectile {
+	    constructor(x, y, heading, speed=6, distance=400, damage=3, decayPerFrame=0.01, poison=false, poisonFrames=120) {
+	        super();
+	        this.position = gp5$1.createVector(x, y);
+	        this.speed = speed;
+	        this.velocity = gp5$1.createVector(speed, 0);
+	        this.velocity.setHeading(heading);
+	        this.heading = heading;
+	        this.distance = distance;
+	        this.damage = damage;
+	        this.decayPerFrame = decayPerFrame;
+	        this.disabled = false;
+	        this.image = game$1.assets.bullet;
+	        this.poison = poison;
+	        this.poisonFrames = poisonFrames;
 	    }
 	}
 
@@ -1392,6 +1395,24 @@
 	    }
 	}
 
+	class Spore extends Projectile {
+	    constructor(x, y, heading, speed=3, distance=100, damage=3, decayPerFrame=0.01, poison=true, poisonFrames=120) {
+	        super();
+	        this.position = gp5$1.createVector(x, y);
+	        this.speed = speed;
+	        this.velocity = gp5$1.createVector(speed, 0);
+	        this.velocity.setHeading(heading);
+	        this.heading = heading;
+	        this.distance = distance;
+	        this.damage = damage;
+	        this.decayPerFrame = decayPerFrame;
+	        this.disabled = false;
+	        this.image = game$1.assets.spore;
+	        this.poison = poison;
+	        this.poisonFrames = poisonFrames;
+	    }
+	}
+
 	// Button mushroom. He feels nothing but emptiness.
 	class ChanterelleMushroom extends Mushroom{
 	    /**
@@ -1421,9 +1442,9 @@
 
 	    
 	    shoot() {
-	        entityManager$1.addMushroomProjectile(new Bullet(this.position.x, this.position.y, this.shootAngle, this.shotSpeed, this.shotDistance, this.shotDamage, this.shotDecayPerFrame, true));
-	        entityManager$1.addMushroomProjectile(new Bullet(this.position.x, this.position.y, this.shootAngle - constants.EIGHTH_PI, this.shotSpeed, this.shotDistance, this.shotDamage, this.shotDecayPerFrame, true));
-	        entityManager$1.addMushroomProjectile(new Bullet(this.position.x, this.position.y, this.shootAngle + constants.EIGHTH_PI, this.shotSpeed, this.shotDistance, this.shotDamage, this.shotDecayPerFrame, true));
+	        entityManager$1.addMushroomProjectile(new Spore(this.position.x, this.position.y, this.shootAngle, this.shotSpeed, this.shotDistance, this.shotDamage, this.shotDecayPerFrame, true));
+	        entityManager$1.addMushroomProjectile(new Spore(this.position.x, this.position.y, this.shootAngle - constants.EIGHTH_PI, this.shotSpeed, this.shotDistance, this.shotDamage, this.shotDecayPerFrame, true));
+	        entityManager$1.addMushroomProjectile(new Spore(this.position.x, this.position.y, this.shootAngle + constants.EIGHTH_PI, this.shotSpeed, this.shotDistance, this.shotDamage, this.shotDecayPerFrame, true));
 	    }
 
 	    get distanceToTarget() {
@@ -1924,9 +1945,6 @@
 	}
 
 	class LevelSelectMenu extends Menu{
-	    // Don't forget to do this on start:
-	    // entityManager.setupGame();
-	    // game.state.GAME_STATE = 1;
 	    constructor() {
 	        super();
 	        // Screenshot center top, description below, start below that, arrows on left and right
@@ -2341,6 +2359,7 @@
 	                dirtBottomRightGrass: p.loadImage('assets/tiles/dirt_bottom_right.png'),
 	            },
 	            bullet: p.loadImage('assets/bullet.png'),
+	            spore: p.loadImage('assets/spore.png'),
 	            shotgun: p.loadImage('assets/shotgun.png'),
 	            pistol: p.loadImage('assets/pistol.png'),
 	            levelScreenshots: [
@@ -2361,8 +2380,9 @@
 	            ...Object.values(assets.gnome),
 	            assets.morel,
 	            assets.bullet,
+	            assets.spore,
 	            assets.button,
-	            assets.chanterelle
+	            assets.chanterelle,
 	        ].forEach(img => img.loadPixels());
 	        game$1.assets = assets;
 	        game$1.initialize();

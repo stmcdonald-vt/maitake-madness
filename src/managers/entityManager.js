@@ -1,14 +1,15 @@
 import gp5 from "../sketch";
 import Gnome from "../entities/gnome";
-import ButtonMushroom from "../entities/buttonMushroom";
-import MorelMushroom from "../entities/morelMushroom";
+import ButtonMushroom from "../entities/mushrooms/buttonMushroom";
+import MorelMushroom from "../entities/mushrooms/morelMushroom";
 import collisionDetector from "./collisionDetector";
 import game from "../game";
 import levels from "../data/levels.json"
 import PowerRelic from "../entities/relics/powerRelic";
 import SpeedRelic from "../entities/relics/speedRelic";
 import DefenseRelic from "../entities/relics/defenseRelic";
-import ChanterelleMushroom from "../entities/chanterelleMushroom";
+import ChanterelleMushroom from "../entities/mushrooms/chanterelleMushroom";
+import MaitakeMushroom from "../entities/mushrooms/maitakeMushroom";
 
 // Handles input 
 const entityManager = {
@@ -72,6 +73,7 @@ const entityManager = {
         wave.morel?.forEach(coord => this.mushrooms.push(new MorelMushroom(gp5.createVector(coord[0], coord[1]))));
         wave.button?.forEach(coord => this.mushrooms.push(new ButtonMushroom(gp5.createVector(coord[0], coord[1]))));
         wave.chanterelle?.forEach(coord => this.mushrooms.push(new ChanterelleMushroom(gp5.createVector(coord[0], coord[1]))));
+        wave.maitake?.forEach(coord => this.mushrooms.push(new MaitakeMushroom(gp5.createVector(coord[0], coord[1]))));
     },
 
     distanceToPlayer: function(entity) {

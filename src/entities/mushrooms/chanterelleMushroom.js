@@ -1,12 +1,12 @@
-import game from "../game";
-import gp5, { constants } from "../sketch";
-import ChaseState from "./mushroomFSM/chaseState";
-import entityManager from "../managers/entityManager";
-import ShootState from "./mushroomFSM/shootState";
-import Bullet from "./projectiles/bullet";
+import game from "../../game";
+import gp5, { constants } from "../../sketch";
+import ChaseState from "../mushroomFSM/chaseState";
+import entityManager from "../../managers/entityManager";
+import ShootState from "../mushroomFSM/shootState";
+import Bullet from "../projectiles/bullet";
 import Mushroom from "./mushroom";
-import ChaseRelicState from "./mushroomFSM/chaseRelicState";
-import Spore from "./projectiles/spore";
+import ChaseRelicState from "../mushroomFSM/chaseRelicState";
+import Spore from "../projectiles/spore";
 // Button mushroom. He feels nothing but emptiness.
 class ChanterelleMushroom extends Mushroom{
     /**

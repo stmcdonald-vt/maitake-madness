@@ -8,9 +8,6 @@ import levels from "../data/levels.json";
 import Button from "./button";
 
 export default class LevelSelectMenu extends Menu{
-    // Don't forget to do this on start:
-    // entityManager.setupGame();
-    // game.state.GAME_STATE = 1;
     constructor() {
         super();
         // Screenshot center top, description below, start below that, arrows on left and right

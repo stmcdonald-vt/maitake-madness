@@ -25,7 +25,7 @@ export default class MaitakeMushroom extends Mushroom{
             this.shootAngle = 0;
             this.shootCooldown = 0;
             this._topLeftVector = gp5.createVector(0, 0);
-            this.health = 100 * game.enemyHealthMultiplier();
+            this.health = 200 * game.enemyHealthMultiplier();
             this.target = entityManager.gnome;
             this.maxCooldown = 10;
             this.stateTimer = 300;
@@ -33,11 +33,11 @@ export default class MaitakeMushroom extends Mushroom{
         }
         
         shootBullet(angle=this.shootAngle) {
-            entityManager.addMushroomProjectile(new Bullet(this.position.x, this.position.y, angle));
+            entityManager.addMushroomProjectile(new Bullet(this.position.x, this.position.y, angle, undefined, 500));
         }
 
         shootSpore(angle=this.shootAngle) {
-            entityManager.addMushroomProjectile(new Spore(this.position.x, this.position.y, angle, 2, 400));
+            entityManager.addMushroomProjectile(new Spore(this.position.x, this.position.y, angle, 2, 500));
         }
     
         get distanceToTarget() {

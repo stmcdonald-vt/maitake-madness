@@ -1141,117 +1141,56 @@
 		{
 			waves: [
 				{
-					count: 6,
-					morel: [
-						[
-							0,
-							400
-						],
+					count: 1,
+					maitake: [
 						[
 							400,
-							0
-						],
-						[
-							400,
-							800
-						],
-						[
-							800,
 							400
 						]
 					],
-					chanterelle: [
-						[
-							800,
-							800
-						],
-						[
-							0,
-							0
-						]
-					]
-				},
-				{
-					count: 4,
 					button: [
 						[
-							0,
-							400
+							-200,
+							200
 						],
 						[
-							400,
-							0
+							200,
+							-200
 						],
 						[
-							400,
-							800
-						],
-						[
-							800,
-							400
-						]
-					]
-				},
-				{
-					count: 8,
-					button: [
-						[
-							0,
-							350
-						],
-						[
-							350,
-							0
-						],
-						[
-							350,
-							800
-						],
-						[
-							800,
-							350
-						]
-					],
-					morel: [
-						[
-							0,
-							400
-						],
-						[
-							400,
-							0
-						],
-						[
-							400,
-							800
-						],
-						[
-							800,
-							400
+							600,
+							600
 						]
 					]
 				}
 			],
 			relics: [
 				{
-					type: "power",
+					type: "defense",
 					location: [
-						600,
-						600
-					]
-				},
-				{
-					type: "speed",
-					location: [
-						200,
-						200
+						125,
+						125
 					]
 				},
 				{
 					type: "defense",
 					location: [
-						200,
-						600
+						675,
+						675
+					]
+				},
+				{
+					type: "defense",
+					location: [
+						125,
+						675
+					]
+				},
+				{
+					type: "defense",
+					location: [
+						675,
+						125
 					]
 				}
 			],
@@ -1547,7 +1486,7 @@
 	            this.shootAngle = 0;
 	            this.shootCooldown = 0;
 	            this._topLeftVector = gp5$1.createVector(0, 0);
-	            this.health = 100 * game$1.enemyHealthMultiplier();
+	            this.health = 200 * game$1.enemyHealthMultiplier();
 	            this.target = entityManager$1.gnome;
 	            this.maxCooldown = 10;
 	            this.stateTimer = 300;
@@ -1555,11 +1494,11 @@
 	        }
 	        
 	        shootBullet(angle=this.shootAngle) {
-	            entityManager$1.addMushroomProjectile(new Bullet(this.position.x, this.position.y, angle));
+	            entityManager$1.addMushroomProjectile(new Bullet(this.position.x, this.position.y, angle, undefined, 500));
 	        }
 
 	        shootSpore(angle=this.shootAngle) {
-	            entityManager$1.addMushroomProjectile(new Spore(this.position.x, this.position.y, angle, 2, 400));
+	            entityManager$1.addMushroomProjectile(new Spore(this.position.x, this.position.y, angle, 2, 500));
 	        }
 	    
 	        get distanceToTarget() {
@@ -2352,6 +2291,62 @@
 	            decoration: [
 	                '-G----G-----------G------',
 	                '--G--G-GG-------G-G------',
+	                'G--gs-GG----S----gsG-GFgG',
+	                '--G-GffGGF---A---Gg-GgSG-',
+	                'G-S-F-GffG------G-G--GGG-',
+	                '--G-GG-GG--------fG--Gf-G',
+	                '-G--g-----------G---g--G-',
+	                '--G---------------G------',
+	                '-G-g-G-------------g-Gfg-',
+	                '---------------A--G------',
+	                '--AS------------------AsA',
+	                '-----------GGG-----------',
+	                '-----------GGG-----------',
+	                '-----------GGGs-------S--',
+	                '-As-------------------A--',
+	                'GgG-G-G-----S------G---G-',
+	                '--GG--G---------A-G-G-g-G',
+	                '-G-sGg---A-------A--G-GG-',
+	                '-G--G--GG-A-----GG--G-g-f',
+	                '--g-G-GG-G------g-SG--Gg-',
+	                '-G-G--g-F------G-G-GG--G-',
+	                'G-GgfG-gG-------G--G-S-G-',
+	                '-GgsGfgG-------G-GGgGfG--',
+	                '------Gg-G------fGf-GFg-G',
+	                '-------G--A-s--G-f---G-G-',
+	            ]
+	        },
+	        {
+	            base: [
+	                'ggggggggggggggggggggggggg',
+	                'ggggggggggggggggggggggggg',
+	                'ggLNNRgggggggggggggLNNRgg',
+	                'ggWdddNNNNNNNNNNNNNdddEgg',
+	                'ggWdddddddddddddddddddEgg',
+	                'ggldddSSSSSSSSSSSSSdddrgg',
+	                'gggWdEgggggggggggggWdEggg',
+	                'gggWdEgggggggggggggWdEggg',
+	                'gggWdEgggggggggggggWdEggg',
+	                'gggWdEgggggggggggggWdEggg',
+	                'gggWdEgggggggggggggWdEggg',
+	                'gggWdEgggggggggggggWdEggg',
+	                'gggWdEgggggggggggggWdEggg',
+	                'gggWdEgggggggggggggWdEggg',
+	                'gggWdEgggggggggggggWdEggg',
+	                'gggWdEgggggggggggggWdEggg',
+	                'gggWdEgggggggggggggWdEggg',
+	                'gggWdEgggggggggggggWdEggg',
+	                'gggWdEgggggggggggggWdEggg',
+	                'ggLdddNNNNNNNNNNNNNdddRgg',
+	                'ggWdddddddddddddddddddEgg',
+	                'ggWdddSSSSSSSSSSSSSdddEgg',
+	                'gglSSrggggggggggggglSSrgg',
+	                'ggggggggggggggggggggggggg',
+	                'ggggggggggggggggggggggggg', 
+	            ],
+	            decoration: [
+	                '-G----G-----------G------',
+	                '--G--G-GG-------G-G------',
 	                '---gs-GG----S----gsG-GFgG',
 	                '--G-GffGGF---A---Gg-GgSG-',
 	                '--S-F-GffG------G-G--GGG-',
@@ -2376,7 +2371,8 @@
 	                '--G-gSg--G------fGf-GFg-G',
 	                '----------A-s----f---G-G-',
 	            ]
-	        }
+	        },
+	        
 
 	    ],
 	    display: function() {

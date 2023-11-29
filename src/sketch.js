@@ -65,6 +65,23 @@ let sketch = function(p) {
                 dirtBottomLeftGrass: p.loadImage('assets/tiles/dirt_bottom_left.png'),
                 dirtBottomRightGrass: p.loadImage('assets/tiles/dirt_bottom_right.png'),
             },
+            decorations: {
+                dirt1: p.loadImage('assets/decorations/dirt1.png'),
+                dirt2: p.loadImage('assets/decorations/dirt2.png'),
+                dirt3: p.loadImage('assets/decorations/dirt3.png'),
+                flower1: p.loadImage('assets/decorations/flower1.png'),
+                flower2: p.loadImage('assets/decorations/flower2.png'),
+                flower3: p.loadImage('assets/decorations/flower3.png'),
+                grass1: p.loadImage('assets/decorations/grass1.png'),
+                grass2: p.loadImage('assets/decorations/grass2.png'),
+                grass3: p.loadImage('assets/decorations/grass3.png'),
+                stone1: p.loadImage('assets/decorations/stone1.png'),
+                stone2: p.loadImage('assets/decorations/stone2.png'),
+                stone3: p.loadImage('assets/decorations/stone3.png'),
+            },
+            relics: {
+                stump: p.loadImage('assets/relics/stump.png')
+            },
             bullet: p.loadImage('assets/bullet.png'),
             spore: p.loadImage('assets/spore.png'),
             shotgun: p.loadImage('assets/shotgun.png'),
@@ -85,6 +102,7 @@ let sketch = function(p) {
         game.p5 = p;
         [
             ...Object.values(assets.gnome),
+            ...Object.values(assets.relics),
             assets.morel,
             assets.bullet,
             assets.spore,
@@ -132,4 +150,5 @@ export const constants = {
     EIGHTH_PI: gp5.HALF_PI / 4,
     THREE_FOURTHS_PI: (gp5.HALF_PI / 2) * 3,
     TILEMAP_BLOCK_SIZE: 32,
+    DECORATION_BLOCK_SIZE: 32
 }

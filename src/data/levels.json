@@ -2,10 +2,7 @@
     {
         "waves": [
             {
-                "count": 1,
-                "maitake": [
-                    [400, 400]
-                ]
+                "count": 1
             },
             {
                 "count": 6,
@@ -22,15 +19,12 @@
 
             },
             {
-                "count": 5,
+                "count": 4,
                 "button": [
                     [0, 400],
                     [400, 0],
                     [400, 800],
                     [800, 400]
-                ],
-                "maitake": [
-                    [400, 400]
                 ]
             },
             {
@@ -51,16 +45,8 @@
         ],
         "relics": [
             {
-                "type": "power",
-                "location": [600, 600]
-            },
-            {
-                "type": "speed",
-                "location": [200, 200]
-            },
-            {
                 "type": "defense",
-                "location": [200, 600]
+                "location": [400, 400]
             }
         ],
         "name": "The Plains",

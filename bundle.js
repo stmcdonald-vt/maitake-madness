@@ -578,7 +578,7 @@
 	    #moveY = 0;
 	    #poisoned = false;
 	    #poisonTimer = 0;
-	    #poisonDamage = 0.01;
+	    #poisonDamage = 0.02;
 
 	    /**
 	     * 
@@ -597,6 +597,7 @@
 	        this.weapons = [new Pistol(), new Shotgun(), new Sniper()];
 	        this.currentWeapon = 1;
 	        this.damageTakenMultiplier = 1;
+	        this.regenRate = 0;
 	    }
 
 	    inflictPoison(time) {
@@ -608,6 +609,10 @@
 	        inputManager.registerClickHoldFunction(() => {
 	            this.shoot();
 	        });
+	    }
+
+	    heal(amount) {
+	        this.health = gp5$1.min(this.health + amount, this.startHealth);
 	    }
 
 	    get moveSpeed() {
@@ -673,6 +678,9 @@
 	            if (this.#poisonTimer < 0) {
 	                this.#poisoned = false;
 	            }
+	        }
+	        if (this.regenRate) {
+	            this.heal(this.regenRate);
 	        }
 	    }
 
@@ -1274,7 +1282,7 @@
 			],
 			relics: [
 				{
-					type: "defense",
+					type: "health",
 					location: [
 						400,
 						400
@@ -1319,21 +1327,21 @@
 					]
 				},
 				{
-					type: "defense",
+					type: "speed",
 					location: [
 						675,
 						675
 					]
 				},
 				{
-					type: "defense",
+					type: "power",
 					location: [
 						125,
 						675
 					]
 				},
 				{
-					type: "defense",
+					type: "health",
 					location: [
 						675,
 						125
@@ -1400,7 +1408,7 @@
 	        gp5$1.push();
 	        gp5$1.noStroke();
 	        gp5$1.fill(this.auraColor);
-	        gp5$1.circle(0, 0, this.image.width + this.auraExtension);
+	        gp5$1.circle(0, 0, this.image.width + this.auraExtension + 20);
 	        gp5$1.pop();
 	    }
 
@@ -1428,7 +1436,7 @@
 	class PowerRelic extends Relic {
 	    constructor(position) {
 	        super(position);
-	        this.image = game$1.assets.gnome.side;
+	        this.image = game$1.assets.relics.vase;
 	        this.auraColor = gp5$1.color(255, 0, 0, 30);
 	        this.initialize();
 	    }
@@ -1445,7 +1453,7 @@
 	class SpeedRelic extends Relic {
 	    constructor(position) {
 	        super(position);
-	        this.image = game$1.assets.gnome.side;
+	        this.image = game$1.assets.relics.pillar;
 	        this.auraColor = gp5$1.color(0, 0, 255, 30);
 	        this.initialize();
 	    }
@@ -1462,7 +1470,7 @@
 	class DefenseRelic extends Relic {
 	    constructor(position) {
 	        super(position);
-	        this.image = game$1.assets.relics.stump;
+	        this.image = game$1.assets.relics.chest;
 	        this.auraColor = gp5$1.color(255, 255, 0, 30);
 	        this.initialize();
 	    }
@@ -1770,6 +1778,23 @@
 	    }
 	}
 
+	class HealthRelic extends Relic {
+	    constructor(position) {
+	        super(position);
+	        this.image = game$1.assets.relics.statue;
+	        this.auraColor = gp5$1.color(255, 255, 0, 30);
+	        this.initialize();
+	    }
+
+	    applyEffect() {
+	        if (entityManager$1.distanceToPlayer(this) < this.auraExtension) {
+	            entityManager$1.gnome.regenRate = 0.02;
+	        } else {
+	            entityManager$1.gnome.regenRate = 0;
+	        }
+	    }
+	}
+
 	// Handles input 
 	const entityManager = {
 	    initialize: function() {
@@ -1823,7 +1848,8 @@
 	        const relicMap = {
 	            power: PowerRelic,
 	            speed: SpeedRelic,
-	            defense: DefenseRelic
+	            defense: DefenseRelic,
+	            health: HealthRelic
 	        };
 
 	        level.relics.forEach(relic => {
@@ -2795,7 +2821,11 @@
 	                stone3: p.loadImage('assets/decorations/stone3.png'),
 	            },
 	            relics: {
-	                stump: p.loadImage('assets/relics/stump.png')
+	                stump: p.loadImage('assets/relics/stump.png'),
+	                statue: p.loadImage('assets/relics/statue.png'),
+	                vase: p.loadImage('assets/relics/vase.png'),
+	                pillar: p.loadImage('assets/relics/pillar.png'),
+	                chest: p.loadImage('assets/relics/chest.png')
 	            },
 	            bullet: p.loadImage('assets/bullet.png'),
 	            spore: p.loadImage('assets/spore.png'),

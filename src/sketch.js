@@ -84,7 +84,11 @@ let sketch = function(p) {
                 stone3: p.loadImage('assets/decorations/stone3.png'),
             },
             relics: {
-                stump: p.loadImage('assets/relics/stump.png')
+                stump: p.loadImage('assets/relics/stump.png'),
+                statue: p.loadImage('assets/relics/statue.png'),
+                vase: p.loadImage('assets/relics/vase.png'),
+                pillar: p.loadImage('assets/relics/pillar.png'),
+                chest: p.loadImage('assets/relics/chest.png')
             },
             bullet: p.loadImage('assets/bullet.png'),
             spore: p.loadImage('assets/spore.png'),

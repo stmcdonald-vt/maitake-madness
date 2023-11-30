@@ -25,7 +25,7 @@ export default class Relic extends Character {
         gp5.push();
         gp5.noStroke();
         gp5.fill(this.auraColor);
-        gp5.circle(0, 0, this.image.width + this.auraExtension);
+        gp5.circle(0, 0, this.image.width + this.auraExtension + 20);
         gp5.pop();
     }
 

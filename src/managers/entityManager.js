@@ -132,9 +132,9 @@ const entityManager = {
     update: function() {
         this.relics.forEach(relic => relic.display());
         this.mushrooms.forEach(mushroom => mushroom.display());
-        // this.gnome.display();
-        // this.gnomeProjectiles.forEach(projectile => projectile.display());
-        // this.mushroomProjectiles.forEach(projectile => projectile.display());
+        this.gnome.display();
+        this.gnomeProjectiles.forEach(projectile => projectile.display());
+        this.mushroomProjectiles.forEach(projectile => projectile.display());
 
         this.detectCollisions();
 

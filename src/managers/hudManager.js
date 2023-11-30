@@ -15,7 +15,7 @@ const hudManager = {
         ]
     },
     display: function() {
-        // this.components.forEach(comp => comp.display());
+        this.components.forEach(comp => comp.display());
     }
 }
 export default hudManager;

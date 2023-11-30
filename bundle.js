@@ -1785,9 +1785,9 @@
 	    update: function() {
 	        this.relics.forEach(relic => relic.display());
 	        this.mushrooms.forEach(mushroom => mushroom.display());
-	        // this.gnome.display();
-	        // this.gnomeProjectiles.forEach(projectile => projectile.display());
-	        // this.mushroomProjectiles.forEach(projectile => projectile.display());
+	        this.gnome.display();
+	        this.gnomeProjectiles.forEach(projectile => projectile.display());
+	        this.mushroomProjectiles.forEach(projectile => projectile.display());
 
 	        this.detectCollisions();
 
@@ -2341,7 +2341,7 @@
 	        ];
 	    },
 	    display: function() {
-	        // this.components.forEach(comp => comp.display());
+	        this.components.forEach(comp => comp.display());
 	    }
 	};
 
@@ -2373,6 +2373,7 @@
 	            case 1:
 	                entityManager$1.update();
 	                inputManager.processInputs();
+	                hudManager.display();
 	                break;
 	            case 2:
 	                endStateManager.showMessageCenter(`You Win!`);
@@ -2523,35 +2524,33 @@
 	                'ggggggggggggggggggggggggg', 
 	            ],
 	            decoration: [
-	                '-G----G-----------G------',
-	                '--G--G-GG-------G-G------',
-	                '---gs-GG----S----gsG-GFgG',
-	                '--G-GffGGF---A---Gg-GgSG-',
-	                '--S-F-GffG------G-G--GGG-',
-	                '--G-GG-GG--------fG--Gf-G',
-	                '-G--g-----------G---g--G-',
-	                '--G---------------G------',
-	                '-G-g-G-------------g-Gfg-',
-	                '---------------A--G------',
-	                '--AS------------------AsA',
-	                '-----------GGG-----------',
-	                '-----------GGG-----------',
-	                '-----------GGGs-------S--',
-	                '-As----------------------',
-	                '------------S------------',
-	                '--GG------------A-G-G-g--',
-	                '---------A-------A--G-G--',
-	                '-G--G--GG-A-----G---G-g--',
-	                '--g-G-GG-G---------G--G--',
-	                '---G--g-F--------G-GG--G-',
-	                '--GgfG-gG----------G-S-G-',
-	                '---sGfgG---------GGgGfG--',
-	                '--G-gSg--G------fGf-GFg-G',
-	                '----------A-s----f---G-G-',
+	                'GsG--GGGfG---G-G-g-S-GG-s',
+	                '-G--G-Gsg-G-gG-GG-Gg-GgGF',
+	                '-gA-A-G-GG-g----G-GSG---G',
+	                'G----------------------G',
+	                '-G--------------------GG-',
+	                '-G------A----------A---G',
+	                'G-G-------G-GGG--------G-',
+	                'G-------G-G-g-F---F---Gg-',
+	                'GG-----gG-G--g-G--G---g-G',
+	                '-G-----G-g-G--fs--G----GG',
+	                '--G---G---G--G---G----GGG',
+	                '-g-A---G-s-----G-g-----G-',
+	                'GS-----GGG-G-s-G--G----G-',
+	                'G-G----gG--G--g-G-------g',
+	                '-g-------g---G--g--A--Gg-',
+	                'gG-S----G--G------G------',
+	                '-------GGG---s-G-------G-',
+	                '--s---gG--G-g---g------gs',
+	                '-G----GGG--G--G---G-----Gf',
+	                'G-------------S---------g',
+	                '--GA------------------G--',
+	                'G-G--------------A-----g-',
+	                'Gg---G--G--Sg-G--g-s--G--',
+	                '-G-G-G-GG-g-sG-gFSg-G-SG-',
+	                'G-G--gs-GGG-G--G-G-fg---G',
 	            ]
 	        },
-	        
-
 	    ],
 	    display: function() {
 	        const map = game$1.state.LEVEL;

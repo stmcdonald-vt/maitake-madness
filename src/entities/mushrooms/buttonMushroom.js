@@ -25,6 +25,7 @@ class ButtonMushroom extends Mushroom {
         this.hopDelta = .75;
         this.chaseSpeed = 1.5;
         this.contactDamagePerFrame = 0.1;
+        this.colors = [gp5.color(20, 10, 1), gp5.color(143, 107, 74), gp5.color(0,0,0)]
     }
 
     get topLeft() {

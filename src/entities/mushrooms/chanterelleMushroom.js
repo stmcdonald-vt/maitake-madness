@@ -31,6 +31,7 @@ class ChanterelleMushroom extends Mushroom{
         this.shotDistance = 100;
         this.shotDecayPerFrame = 0.1;
         this.maxCooldown = 100;
+        this.colors = [gp5.color(227, 176, 7), gp5.color(247, 241, 220)]
     }
 
 

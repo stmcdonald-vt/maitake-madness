@@ -26,6 +26,7 @@ class MorelMushroom extends Mushroom{
         this.health = 10 * game.enemyHealthMultiplier();
         this.target = entityManager.gnome;
         this.shotDamage = 2.5;
+        this.colors = [gp5.color(23, 13, 2), gp5.color(0, 0, 0)];
     }
     
     shoot() {

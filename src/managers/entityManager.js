@@ -10,6 +10,8 @@ import SpeedRelic from "../entities/relics/speedRelic";
 import DefenseRelic from "../entities/relics/defenseRelic";
 import ChanterelleMushroom from "../entities/mushrooms/chanterelleMushroom";
 import MaitakeMushroom from "../entities/mushrooms/maitakeMushroom";
+import FadingParticleSystem from "../particleSystems/fadingParticleSystem";
+import ExplosionParticleSystem from "../particleSystems/expolosionParticleSystem";
 
 // Handles input 
 const entityManager = {
@@ -19,6 +21,7 @@ const entityManager = {
         this.gnomeProjectiles = [];
         this.mushroomProjectiles = [];
         this.relics = [];
+        this.particleSystems = [];
     },
 
     isInbounds: function(entity) {
@@ -46,6 +49,10 @@ const entityManager = {
 
     addMushroomProjectile: function(proj) {
         this.mushroomProjectiles.push(proj);
+    },
+
+    addParticleSystem: function(system) {
+        this.particleSystems.push(system);
     },
 
     setupGame: function() {
@@ -88,6 +95,7 @@ const entityManager = {
                         projectile.disabled = true;
                         mushroom.hit(projectile.damage);
                         if (mushroom.health <= 0) {
+                            this.addParticleSystem(new ExplosionParticleSystem(mushroom.position.x, mushroom.position.y, mushroom.colors));
                             mushroom.dead = true;
                         }
                     }
@@ -135,7 +143,7 @@ const entityManager = {
         this.gnome.display();
         this.gnomeProjectiles.forEach(projectile => projectile.display());
         this.mushroomProjectiles.forEach(projectile => projectile.display());
-
+        this.particleSystems.forEach(system => system.update());
         this.detectCollisions();
 
         if (gp5.frameCount % 120 === 0) {

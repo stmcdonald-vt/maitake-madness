@@ -13,7 +13,7 @@ export default class Gnome extends Character {
     #moveY = 0;
     #poisoned = false;
     #poisonTimer = 0;
-    #poisonDamage = 0.01;
+    #poisonDamage = 0.02;
 
     /**
      * 
@@ -32,6 +32,7 @@ export default class Gnome extends Character {
         this.weapons = [new Pistol(), new Shotgun(), new Sniper()];
         this.currentWeapon = 1;
         this.damageTakenMultiplier = 1;
+        this.regenRate = 0;
     }
 
     inflictPoison(time) {
@@ -43,6 +44,10 @@ export default class Gnome extends Character {
         inputManager.registerClickHoldFunction(() => {
             this.shoot();
         })
+    }
+
+    heal(amount) {
+        this.health = gp5.min(this.health + amount, this.startHealth);
     }
 
     get moveSpeed() {
@@ -108,6 +113,9 @@ export default class Gnome extends Character {
             if (this.#poisonTimer < 0) {
                 this.#poisoned = false;
             }
+        }
+        if (this.regenRate) {
+            this.heal(this.regenRate);
         }
     }
 

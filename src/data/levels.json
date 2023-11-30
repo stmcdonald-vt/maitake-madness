@@ -85,7 +85,7 @@
         ],
         "relics": [
             {
-                "type": "defense",
+                "type": "health",
                 "location": [400, 400]
             }
         ],
@@ -112,15 +112,15 @@
                 "location": [125, 125]
             },
             {
-                "type": "defense",
+                "type": "speed",
                 "location": [675, 675]
             },
             {
-                "type": "defense",
+                "type": "power",
                 "location": [125, 675]
             },
             {
-                "type": "defense",
+                "type": "health",
                 "location": [675, 125]
             }
         ],

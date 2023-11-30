@@ -12,6 +12,7 @@ import ChanterelleMushroom from "../entities/mushrooms/chanterelleMushroom";
 import MaitakeMushroom from "../entities/mushrooms/maitakeMushroom";
 import FadingParticleSystem from "../particleSystems/fadingParticleSystem";
 import ExplosionParticleSystem from "../particleSystems/expolosionParticleSystem";
+import HealthRelic from "../entities/relics/healthRelic";
 
 // Handles input 
 const entityManager = {
@@ -66,7 +67,8 @@ const entityManager = {
         const relicMap = {
             power: PowerRelic,
             speed: SpeedRelic,
-            defense: DefenseRelic
+            defense: DefenseRelic,
+            health: HealthRelic
         }
 
         level.relics.forEach(relic => {

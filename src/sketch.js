@@ -90,6 +90,7 @@ let sketch = function(p) {
             spore: p.loadImage('assets/spore.png'),
             shotgun: p.loadImage('assets/shotgun.png'),
             pistol: p.loadImage('assets/pistol.png'),
+            sniper: p.loadImage('assets/sniper.png'),
             levelScreenshots: [
                 p.loadImage('assets/level-screenshots/plains.png'),
                 p.loadImage('assets/level-screenshots/maitake.png')

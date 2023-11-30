@@ -9,6 +9,7 @@ export default class Mushroom extends Character {
         this.velocity = gp5.createVector(0, 0);
         this.dead = false;
         this.contactDamagePerFrame = 0.1;
+        this.colors = [gp5.color(31, 15, 2)]; // default to a brown color
     }
 
     get topLeft() {

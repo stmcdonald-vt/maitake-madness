@@ -560,11 +560,11 @@
 	    constructor() {
 	        const spread = 0;
 	        const pellets = 1;
-	        const spacing = 30;
+	        const spacing = 60;
 	        const range = 700;
 	        const damage = 20;
 	        const decay = 0.005;
-	        const image = game$1.assets.pistol;
+	        const image = game$1.assets.sniper;
 	        const cooldown = 50;
 	        const speed = 10;
 	        super(spread, pellets, spacing, range, damage, decay, image, cooldown, speed);
@@ -814,6 +814,7 @@
 	        this.velocity = gp5$1.createVector(0, 0);
 	        this.dead = false;
 	        this.contactDamagePerFrame = 0.1;
+	        this.colors = [gp5$1.color(31, 15, 2)]; // default to a brown color
 	    }
 
 	    get topLeft() {
@@ -869,6 +870,7 @@
 	        this.hopDelta = .75;
 	        this.chaseSpeed = 1.5;
 	        this.contactDamagePerFrame = 0.1;
+	        this.colors = [gp5$1.color(20, 10, 1), gp5$1.color(143, 107, 74), gp5$1.color(0,0,0)];
 	    }
 
 	    get topLeft() {
@@ -944,6 +946,7 @@
 	        this.health = 10 * game$1.enemyHealthMultiplier();
 	        this.target = entityManager$1.gnome;
 	        this.shotDamage = 2.5;
+	        this.colors = [gp5$1.color(23, 13, 2), gp5$1.color(0, 0, 0)];
 	    }
 	    
 	    shoot() {
@@ -1515,6 +1518,7 @@
 	        this.shotDistance = 100;
 	        this.shotDecayPerFrame = 0.1;
 	        this.maxCooldown = 100;
+	        this.colors = [gp5$1.color(227, 176, 7), gp5$1.color(247, 241, 220)];
 	    }
 
 
@@ -1664,6 +1668,108 @@
 	        }
 	}
 
+	class Particle {
+	    constructor(x, y, velocity, color=gp5$1.color('gray'), ttl=240, size=2) {
+	        this.position = gp5$1.createVector(x, y);
+	        this.velocity = velocity;
+	        this.initialTtl = ttl;
+	        this.ttl = ttl;
+	        this.size = size;
+	        this.color = color;
+	    }
+
+	    get opacity() {
+	        // Fading effect is based on the ratio of current ttl to initial ttl
+	        return this.ttl/this.initialTtl * 255;
+	    }
+
+	    display(){
+	        this.color.setAlpha(this.opacity);
+	        gp5$1.push();
+	        gp5$1.noStroke();
+	        gp5$1.fill(this.color);
+	        gp5$1.circle(this.position.x, this.position.y, this.size);
+	        gp5$1.pop();
+	        this.ttl--;
+	        this.position.add(this.velocity);
+	    }
+	}
+
+	class ParticleSystem {
+	    constructor(x, y) {
+	        this.position = gp5$1.createVector(x, y);
+	        this.particles = [];
+	        this.targetParticleCount = 50;
+	        this.particlesPerFrame = 3;
+	        this.velocity = gp5$1.createVector(0, 2);
+	        this.spreadMin = -15;
+	        this.spreadMax = 15;
+	    }
+
+	    // helper function for spreading out the positions
+	    spread(value) {
+	        return value + gp5$1.random(this.spreadMin, this.spreadMax);
+	    }
+
+	    emitParticles() {
+	        for (let i = 0; i < this.particlesPerFrame; i++) {
+	            this.particles.push(new Particle(this.spread(this.position.x), this.spread(this.position.y), this.particleVelocity));
+	        }
+	    }
+
+	    displayParticles() {
+	        // Iterate over the particle array backward. Splicing out elements can lead to index mismatch
+	        for (let i = this.particles.length - 1; i >= 0; i--) {
+	            const particle = this.particles[i];
+	            if (particle.ttl > 0) {
+	                particle.display();
+	            } else {
+	                this.particles.splice(i, 1); // particle is dead, remove
+	            }
+	        }
+	    }
+
+	    update() {
+	        if (entityManager$1.isInbounds(this)) { // stop emitting when leaving the play area
+	            this.emitParticles();
+	        }
+	        this.displayParticles();
+	        this.position.add(this.velocity);
+	    }
+	}
+
+	class ExplosionParticleSystem extends ParticleSystem {
+
+	    constructor(x, y, colors) {
+	        super(x, y);
+	        this.particleTtl = 60;
+	        this.particleSize = 5;
+	        this.colors = colors;
+	        this.populateParticles();
+	    }
+
+	    get particleVelocity() { // Particle velocity converted to polar for circular shape
+	        const cartVelocity = gp5$1.createVector(gp5$1.random(0, gp5$1.TWO_PI), gp5$1.random(-0.5, 0.5));
+	        return (gp5$1.createVector(cartVelocity.y*gp5$1.cos(cartVelocity.x), cartVelocity.y*gp5$1.sin(cartVelocity.x))).mult(2);
+	    }
+
+	    get particleColor() { // randomly assign red or black rgb values
+	        return gp5$1.random(this.colors);
+	    }
+
+	    populateParticles() { // pre-populate all particles
+	        for (let i = 0; i < this.targetParticleCount; i++) {
+	            this.particles.push(new Particle(this.position.x, this.position.y, this.particleVelocity, this.particleColor, this.particleTtl, this.particleSize));
+	        }
+	    }
+
+	    update() {
+	        if (this.particles.length > 0) {
+	            this.displayParticles(); // Explosions don't refill particles, so stop once all are dead
+	        }
+	    }
+	}
+
 	// Handles input 
 	const entityManager = {
 	    initialize: function() {
@@ -1672,6 +1778,7 @@
 	        this.gnomeProjectiles = [];
 	        this.mushroomProjectiles = [];
 	        this.relics = [];
+	        this.particleSystems = [];
 	    },
 
 	    isInbounds: function(entity) {
@@ -1699,6 +1806,10 @@
 
 	    addMushroomProjectile: function(proj) {
 	        this.mushroomProjectiles.push(proj);
+	    },
+
+	    addParticleSystem: function(system) {
+	        this.particleSystems.push(system);
 	    },
 
 	    setupGame: function() {
@@ -1741,6 +1852,7 @@
 	                        projectile.disabled = true;
 	                        mushroom.hit(projectile.damage);
 	                        if (mushroom.health <= 0) {
+	                            this.addParticleSystem(new ExplosionParticleSystem(mushroom.position.x, mushroom.position.y, mushroom.colors));
 	                            mushroom.dead = true;
 	                        }
 	                    }
@@ -1788,7 +1900,7 @@
 	        this.gnome.display();
 	        this.gnomeProjectiles.forEach(projectile => projectile.display());
 	        this.mushroomProjectiles.forEach(projectile => projectile.display());
-
+	        this.particleSystems.forEach(system => system.update());
 	        this.detectCollisions();
 
 	        if (gp5$1.frameCount % 120 === 0) {
@@ -2689,6 +2801,7 @@
 	            spore: p.loadImage('assets/spore.png'),
 	            shotgun: p.loadImage('assets/shotgun.png'),
 	            pistol: p.loadImage('assets/pistol.png'),
+	            sniper: p.loadImage('assets/sniper.png'),
 	            levelScreenshots: [
 	                p.loadImage('assets/level-screenshots/plains.png'),
 	                p.loadImage('assets/level-screenshots/maitake.png')

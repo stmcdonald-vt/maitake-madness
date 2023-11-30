@@ -29,6 +29,15 @@ const inputManager = {
         this.clickFunctions.forEach(func => func());
     },
 
+    onScroll: function(e) {
+        if (e.deltaY > 0) {
+            this.player.nextWeapon();
+        } else {
+            this.player.prevWeapon();
+        }
+        return false;
+    },
+
     mouseInsideBounds: function (lowX, highX, lowY, highY) {
         return gp5.mouseX > lowX
             && gp5.mouseX < highX

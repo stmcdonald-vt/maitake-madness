@@ -8,6 +8,7 @@ export default class Mushroom extends Character {
         super();
         this.velocity = gp5.createVector(0, 0);
         this.dead = false;
+        this.contactDamagePerFrame = 0.1;
     }
 
     get topLeft() {

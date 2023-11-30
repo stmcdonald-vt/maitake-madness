@@ -6,6 +6,7 @@ import inputManager from '../managers/inputManager';
 import Pistol from '../weapons/pistol';
 import Shotgun from '../weapons/shotgun';
 import Character from './character';
+import Sniper from '../weapons/sniper';
 
 export default class Gnome extends Character {
     #moveX = 0;
@@ -28,7 +29,7 @@ export default class Gnome extends Character {
         this.startHealth = 20;
         this.health = 20;
         this._topLeftVector = gp5.createVector(0, 0);
-        this.weapons = [new Pistol(), new Shotgun()];
+        this.weapons = [new Pistol(), new Shotgun(), new Sniper()];
         this.currentWeapon = 1;
         this.damageTakenMultiplier = 1;
     }
@@ -68,6 +69,14 @@ export default class Gnome extends Character {
         const value = this.moveSpeed * direction;
         if (this.position.y + value < gp5.height && this.position.y + value > 0) { // check bounds before moving
             this.#moveY = direction;
+        }
+    }
+
+    prevWeapon() {
+        if (this.currentWeapon <= 0) {
+            this.currentWeapon = this.weapons.length - 1;
+        } else {
+            this.currentWeapon--;
         }
     }
 

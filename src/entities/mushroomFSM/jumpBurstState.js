@@ -11,10 +11,11 @@ export default class JumpBurstState {
         this.jumpCooldown = 0;
         this.maxCooldown = 60;
         this.fired = true;
+        this.offset = false;
     }
 
     shotBurst() {
-        for (let i = 0; i < gp5.TWO_PI; i += constants.EIGHTH_PI) {
+        for (let i = this.offset ? constants.SIXTEENTH_PI : 0; i < gp5.TWO_PI; i += constants.EIGHTH_PI) {
             this.shootFunction(i);
         }
     }
@@ -42,6 +43,7 @@ export default class JumpBurstState {
                     this.jumpingUp = true;
                     this.jumpCooldown = this.maxCooldown;
                     this.fired = false;
+                    this.offset = !this.offset;
                     this.enemy.changeState();
                 }
             }

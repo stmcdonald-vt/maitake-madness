@@ -34,6 +34,10 @@ let sketch = function(p) {
         inputManager.keyMap[event.keyCode] = {pressed: false}
     }
 
+    p.mouseWheel = function(event) {
+        inputManager.onScroll(event);
+    }
+
     // Pre-load assets
     p.preload = function() {
         assets = {
@@ -87,8 +91,8 @@ let sketch = function(p) {
             shotgun: p.loadImage('assets/shotgun.png'),
             pistol: p.loadImage('assets/pistol.png'),
             levelScreenshots: [
-                p.loadImage('assets/plains.png'),
-                p.loadImage('assets/plains.png')
+                p.loadImage('assets/level-screenshots/plains.png'),
+                p.loadImage('assets/level-screenshots/maitake.png')
             ]
 
         };
@@ -148,6 +152,7 @@ export default gp5;
 export const constants = {
     FOURTH_PI: gp5.HALF_PI / 2,
     EIGHTH_PI: gp5.HALF_PI / 4,
+    SIXTEENTH_PI: gp5.HALF_PI / 8,
     THREE_FOURTHS_PI: (gp5.HALF_PI / 2) * 3,
     TILEMAP_BLOCK_SIZE: 32,
     DECORATION_BLOCK_SIZE: 32

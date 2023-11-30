@@ -63,7 +63,7 @@ export default class LevelSelectMenu extends Menu{
 
         this.items = [
             new LevelPreview(previewPosition, this.levelPreviewImage, gp5.width * 0.6, gp5.width * 0.6),
-            new Tutorial(descriptionPosition, gp5.width * 0.9, gp5.height * 0.1, this.descriptionText),
+            new Tutorial(descriptionPosition, gp5.width * 0.9, gp5.height * 0.1, () => this.descriptionText),
             new ConfirmLevelMenuItem(buttonPosition),
             new Button(backButtonPosition, backButtonAction, backButtonHeight, backButtonWidth, undefined, backButtonDisplay),
             new Button(forwardButtonPosition, forwardButtonAction, forwardButtonHeight, forwardButtonWidth, undefined, forwardButtonDisplay),
@@ -79,7 +79,6 @@ export default class LevelSelectMenu extends Menu{
 
     updateLevel() {
         this.items[0].image = this.levelPreviewImage;
-        this.items[1].tutorialText = this.descriptionText;
     }
 
     get descriptionText() {

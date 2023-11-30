@@ -23,6 +23,8 @@ class ButtonMushroom extends Mushroom {
         this.dead = false;
         this._topLeftVector = gp5.createVector(0, 0);
         this.hopDelta = .75;
+        this.chaseSpeed = 1.5;
+        this.contactDamagePerFrame = 0.1;
     }
 
     get topLeft() {

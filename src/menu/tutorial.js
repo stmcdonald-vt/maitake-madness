@@ -9,11 +9,11 @@ class Tutorial {
      * @param {number} width 
      * @param {number} height 
      */
-    constructor(position, width, height, text) {
+    constructor(position, width, height, textFunction) {
         this.width = width;
         this.height = height;
         this.position = position;
-        this.tutorialText = text;
+        this.tutorialText = textFunction;
     }
 
     display() {
@@ -24,7 +24,7 @@ class Tutorial {
         gp5.textSize(20);
         gp5.textWrap(gp5.WORD);
         gp5.fill('white');
-        gp5.text(this.tutorialText, this.position.x, this.position.y, this.width, this.height);
+        gp5.text(this.tutorialText(), this.position.x, this.position.y, this.width, this.height);
         gp5.pop();
     }
 }

@@ -121,7 +121,7 @@ const entityManager = {
 
         this.mushrooms.forEach(mushroom => {
             if (!mushroom.dead && collisionDetector.spriteCollision(this.gnome.topLeft, this.gnome.image, mushroom.topLeft, mushroom.image)) {
-                this.gnome.hit(0.5);
+                this.gnome.hit(mushroom.contactDamagePerFrame);
                 if (this.gnome.health <= 0) {
                     game.setLoss();
                 }
@@ -132,9 +132,9 @@ const entityManager = {
     update: function() {
         this.relics.forEach(relic => relic.display());
         this.mushrooms.forEach(mushroom => mushroom.display());
-        this.gnome.display();
-        this.gnomeProjectiles.forEach(projectile => projectile.display());
-        this.mushroomProjectiles.forEach(projectile => projectile.display());
+        // this.gnome.display();
+        // this.gnomeProjectiles.forEach(projectile => projectile.display());
+        // this.mushroomProjectiles.forEach(projectile => projectile.display());
 
         this.detectCollisions();
 

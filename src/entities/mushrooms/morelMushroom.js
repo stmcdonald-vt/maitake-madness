@@ -25,10 +25,11 @@ class MorelMushroom extends Mushroom{
         this.dead = false;
         this.health = 10 * game.enemyHealthMultiplier();
         this.target = entityManager.gnome;
+        this.shotDamage = 2.5;
     }
     
     shoot() {
-        entityManager.addMushroomProjectile(new Bullet(this.position.x, this.position.y, this.shootAngle));
+        entityManager.addMushroomProjectile(new Bullet(this.position.x, this.position.y, this.shootAngle, undefined, undefined, this.shotDamage));
     }
 
     get distanceToTarget() {

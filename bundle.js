@@ -275,6 +275,15 @@
 	        this.clickFunctions.forEach(func => func());
 	    },
 
+	    onScroll: function(e) {
+	        if (e.deltaY > 0) {
+	            this.player.nextWeapon();
+	        } else {
+	            this.player.prevWeapon();
+	        }
+	        return false;
+	    },
+
 	    mouseInsideBounds: function (lowX, highX, lowY, highY) {
 	        return gp5$1.mouseX > lowX
 	            && gp5$1.mouseX < highX
@@ -547,6 +556,23 @@
 	    }
 	}
 
+	class Sniper extends Gun {
+	    constructor() {
+	        const spread = 0;
+	        const pellets = 1;
+	        const spacing = 30;
+	        const range = 700;
+	        const damage = 20;
+	        const decay = 0.005;
+	        const image = game$1.assets.pistol;
+	        const cooldown = 50;
+	        const speed = 10;
+	        super(spread, pellets, spacing, range, damage, decay, image, cooldown, speed);
+	        this.ammo = 10;
+	        this.name = "Sniper";
+	    }
+	}
+
 	class Gnome extends Character {
 	    #moveX = 0;
 	    #moveY = 0;
@@ -568,7 +594,7 @@
 	        this.startHealth = 20;
 	        this.health = 20;
 	        this._topLeftVector = gp5$1.createVector(0, 0);
-	        this.weapons = [new Pistol(), new Shotgun()];
+	        this.weapons = [new Pistol(), new Shotgun(), new Sniper()];
 	        this.currentWeapon = 1;
 	        this.damageTakenMultiplier = 1;
 	    }
@@ -608,6 +634,14 @@
 	        const value = this.moveSpeed * direction;
 	        if (this.position.y + value < gp5$1.height && this.position.y + value > 0) { // check bounds before moving
 	            this.#moveY = direction;
+	        }
+	    }
+
+	    prevWeapon() {
+	        if (this.currentWeapon <= 0) {
+	            this.currentWeapon = this.weapons.length - 1;
+	        } else {
+	            this.currentWeapon--;
 	        }
 	    }
 
@@ -713,6 +747,7 @@
 	    execute() {
 	        this.step.set(this.player.position.x - this.enemy.position.x, this.player.position.y - this.enemy.position.y);
 	        this.step.normalize();
+	        this.step.mult(this.enemy.chaseSpeed || 1);
 	        this.enemy.velocity = this.step;
 	        this.enemy.target = this.player;
 	        this.enemy.changeState();
@@ -778,6 +813,7 @@
 	        super();
 	        this.velocity = gp5$1.createVector(0, 0);
 	        this.dead = false;
+	        this.contactDamagePerFrame = 0.1;
 	    }
 
 	    get topLeft() {
@@ -831,6 +867,8 @@
 	        this.dead = false;
 	        this._topLeftVector = gp5$1.createVector(0, 0);
 	        this.hopDelta = .75;
+	        this.chaseSpeed = 1.5;
+	        this.contactDamagePerFrame = 0.1;
 	    }
 
 	    get topLeft() {
@@ -905,10 +943,11 @@
 	        this.dead = false;
 	        this.health = 10 * game$1.enemyHealthMultiplier();
 	        this.target = entityManager$1.gnome;
+	        this.shotDamage = 2.5;
 	    }
 	    
 	    shoot() {
-	        entityManager$1.addMushroomProjectile(new Bullet(this.position.x, this.position.y, this.shootAngle));
+	        entityManager$1.addMushroomProjectile(new Bullet(this.position.x, this.position.y, this.shootAngle, undefined, undefined, this.shotDamage));
 	    }
 
 	    get distanceToTarget() {
@@ -1032,10 +1071,44 @@
 		{
 			waves: [
 				{
-					count: 1
+					count: 8,
+					button: [
+						[
+							0,
+							400
+						],
+						[
+							400,
+							0
+						],
+						[
+							400,
+							800
+						],
+						[
+							800,
+							400
+						],
+						[
+							0,
+							-400
+						],
+						[
+							-400,
+							0
+						],
+						[
+							-400,
+							-800
+						],
+						[
+							-800,
+							-400
+						]
+					]
 				},
 				{
-					count: 6,
+					count: 4,
 					morel: [
 						[
 							0,
@@ -1053,21 +1126,11 @@
 							800,
 							400
 						]
-					],
-					chanterelle: [
-						[
-							800,
-							800
-						],
-						[
-							0,
-							0
-						]
 					]
 				},
 				{
 					count: 4,
-					button: [
+					chanterelle: [
 						[
 							0,
 							400
@@ -1124,6 +1187,86 @@
 							400
 						]
 					]
+				},
+				{
+					count: 6,
+					morel: [
+						[
+							0,
+							400
+						],
+						[
+							400,
+							0
+						],
+						[
+							400,
+							800
+						],
+						[
+							800,
+							400
+						]
+					],
+					chanterelle: [
+						[
+							800,
+							800
+						],
+						[
+							0,
+							0
+						]
+					]
+				},
+				{
+					count: 12,
+					morel: [
+						[
+							0,
+							400
+						],
+						[
+							400,
+							0
+						]
+					],
+					chanterelle: [
+						[
+							400,
+							800
+						],
+						[
+							800,
+							400
+						]
+					],
+					button: [
+						[
+							900,
+							400
+						],
+						[
+							1000,
+							400
+						],
+						[
+							1100,
+							400
+						],
+						[
+							1200,
+							400
+						],
+						[
+							1300,
+							400
+						],
+						[
+							1400,
+							400
+						]
+					]
 				}
 			],
 			relics: [
@@ -1136,7 +1279,7 @@
 				}
 			],
 			name: "The Plains",
-			description: "Protect the magic stump from destructive forces of angry mushrooms in an open field."
+			description: "A cherished magic stump is under assault by hordes of mushrooms! Use every weapon at your disposal to eliminate them."
 		},
 		{
 			waves: [
@@ -1194,8 +1337,8 @@
 					]
 				}
 			],
-			name: "The Plains 2",
-			description: "Protect the magic stump from destructive forces of angry mushrooms in an open field. 2"
+			name: "Maitake Madness",
+			description: "A giant maitake is threatening to destroy four of your precious gnome relics! Destroy it before it can cause any more damage. Stay alert, button mushrooms have been spotted nearby!"
 		}
 	];
 
@@ -1428,10 +1571,11 @@
 	        this.jumpCooldown = 0;
 	        this.maxCooldown = 60;
 	        this.fired = true;
+	        this.offset = false;
 	    }
 
 	    shotBurst() {
-	        for (let i = 0; i < gp5$1.TWO_PI; i += constants.EIGHTH_PI) {
+	        for (let i = this.offset ? constants.SIXTEENTH_PI : 0; i < gp5$1.TWO_PI; i += constants.EIGHTH_PI) {
 	            this.shootFunction(i);
 	        }
 	    }
@@ -1459,6 +1603,7 @@
 	                    this.jumpingUp = true;
 	                    this.jumpCooldown = this.maxCooldown;
 	                    this.fired = false;
+	                    this.offset = !this.offset;
 	                    this.enemy.changeState();
 	                }
 	            }
@@ -1629,7 +1774,7 @@
 
 	        this.mushrooms.forEach(mushroom => {
 	            if (!mushroom.dead && CollisionDetector.spriteCollision(this.gnome.topLeft, this.gnome.image, mushroom.topLeft, mushroom.image)) {
-	                this.gnome.hit(0.5);
+	                this.gnome.hit(mushroom.contactDamagePerFrame);
 	                if (this.gnome.health <= 0) {
 	                    game$1.setLoss();
 	                }
@@ -1640,9 +1785,9 @@
 	    update: function() {
 	        this.relics.forEach(relic => relic.display());
 	        this.mushrooms.forEach(mushroom => mushroom.display());
-	        this.gnome.display();
-	        this.gnomeProjectiles.forEach(projectile => projectile.display());
-	        this.mushroomProjectiles.forEach(projectile => projectile.display());
+	        // this.gnome.display();
+	        // this.gnomeProjectiles.forEach(projectile => projectile.display());
+	        // this.mushroomProjectiles.forEach(projectile => projectile.display());
 
 	        this.detectCollisions();
 
@@ -1884,11 +2029,11 @@
 	     * @param {number} width 
 	     * @param {number} height 
 	     */
-	    constructor(position, width, height, text) {
+	    constructor(position, width, height, textFunction) {
 	        this.width = width;
 	        this.height = height;
 	        this.position = position;
-	        this.tutorialText = text;
+	        this.tutorialText = textFunction;
 	    }
 
 	    display() {
@@ -1899,7 +2044,7 @@
 	        gp5$1.textSize(20);
 	        gp5$1.textWrap(gp5$1.WORD);
 	        gp5$1.fill('white');
-	        gp5$1.text(this.tutorialText, this.position.x, this.position.y, this.width, this.height);
+	        gp5$1.text(this.tutorialText(), this.position.x, this.position.y, this.width, this.height);
 	        gp5$1.pop();
 	    }
 	}
@@ -1928,7 +2073,7 @@
 	            gp5$1.pop();
 	        };
 
-	        const tutorialText = `As Gerome the Gnome, you are tasked with protecting gnomish relics from fungal aggressors. You will have plenty of weaponry at your disposal that you can switch between using the 'Q' key. You will use ${game$1.state.MOVEMENT_SCHEME ? 'the ARROW KEYS' : 'WASD'} to control Gerome. 
+	        const tutorialText = () => `As Gerome the Gnome, you are tasked with protecting gnomish relics from fungal aggressors. You will have plenty of weaponry at your disposal that you can switch between using the 'Q' key. You will use ${game$1.state.MOVEMENT_SCHEME ? 'the ARROW KEYS' : 'WASD'} to control Gerome. 
             
             You will use your mouse to aim and left click to shoot your weapon. It is highly recommended to use a mouse for aiming rather than a laptop touchpad.`;
 
@@ -1939,6 +2084,10 @@
 	            new Tutorial(tutorialPosition, gp5$1.width * 0.9, gp5$1.height * 0.3, tutorialText),
 	            new GnomeChaseAnimation(animationPosition)
 	        ];
+	    }
+
+	    get tutorialText() {
+	        
 	    }
 
 	    reset() {
@@ -2038,7 +2187,7 @@
 
 	        this.items = [
 	            new LevelPreview(previewPosition, this.levelPreviewImage, gp5$1.width * 0.6, gp5$1.width * 0.6),
-	            new Tutorial(descriptionPosition, gp5$1.width * 0.9, gp5$1.height * 0.1, this.descriptionText),
+	            new Tutorial(descriptionPosition, gp5$1.width * 0.9, gp5$1.height * 0.1, () => this.descriptionText),
 	            new ConfirmLevelMenuItem(buttonPosition),
 	            new Button(backButtonPosition, backButtonAction, backButtonHeight, backButtonWidth, undefined, backButtonDisplay),
 	            new Button(forwardButtonPosition, forwardButtonAction, forwardButtonHeight, forwardButtonWidth, undefined, forwardButtonDisplay),
@@ -2054,7 +2203,6 @@
 
 	    updateLevel() {
 	        this.items[0].image = this.levelPreviewImage;
-	        this.items[1].tutorialText = this.descriptionText;
 	    }
 
 	    get descriptionText() {
@@ -2090,6 +2238,36 @@
 	    }
 	}
 
+	class BuffHud {
+	    constructor(x, y) {
+	        this.x = x;
+	        this.y = y;
+	    }
+
+	    get text() {
+	        const gnome = entityManager$1.gnome;
+	        if (gnome.speedMultiplier > 1) {
+	            return 'Speed ↑';
+	        }
+	        if (gnome.damageTakenMultiplier < 1) {
+	            return 'Defense ↑';
+	        }
+	        if (gnome.gun.damageMultiplier > 1) {
+	            return 'Damage ↑';
+	        }
+	        if (gnome.regenRate > 0) {
+	            return 'Regenerating ↑'
+	        }
+	    }
+
+	    display() {
+	        gp5$1.push();
+	        gp5$1.fill('black');
+	        gp5$1.text(this.text, this.x, this.y);
+	        gp5$1.pop();
+	    }
+	}
+
 	class EnemyCountHud {
 	    constructor(x, y) {
 	        this.x = x;
@@ -2109,7 +2287,7 @@
 	    constructor(x, y) {
 	        this.x = x;
 	        this.y = y;
-	        this.healthBar = new HealthBar(this.x + 85, this.y - 17, entityManager$1.gnome);
+	        this.healthBar = new HealthBar(this.x + 90, this.y - 17, entityManager$1.gnome);
 	    }
 
 	    display() {
@@ -2157,12 +2335,13 @@
 	        this.components = [
 	            new WaveHud(790, 25),
 	            new EnemyCountHud(790, 55),
+	            new BuffHud(0, 730),
 	            new HealthHud(0, 760),
 	            new WeaponHud(0, 790),
 	        ];
 	    },
 	    display: function() {
-	        this.components.forEach(comp => comp.display());
+	        // this.components.forEach(comp => comp.display());
 	    }
 	};
 
@@ -2194,7 +2373,6 @@
 	            case 1:
 	                entityManager$1.update();
 	                inputManager.processInputs();
-	                hudManager.display();
 	                break;
 	            case 2:
 	                endStateManager.showMessageCenter(`You Win!`);
@@ -2456,6 +2634,10 @@
 	        inputManager.keyMap[event.keyCode] = {pressed: false};
 	    };
 
+	    p.mouseWheel = function(event) {
+	        inputManager.onScroll(event);
+	    };
+
 	    // Pre-load assets
 	    p.preload = function() {
 	        assets = {
@@ -2509,8 +2691,8 @@
 	            shotgun: p.loadImage('assets/shotgun.png'),
 	            pistol: p.loadImage('assets/pistol.png'),
 	            levelScreenshots: [
-	                p.loadImage('assets/plains.png'),
-	                p.loadImage('assets/plains.png')
+	                p.loadImage('assets/level-screenshots/plains.png'),
+	                p.loadImage('assets/level-screenshots/maitake.png')
 	            ]
 
 	        };
@@ -2570,6 +2752,7 @@
 	const constants = {
 	    FOURTH_PI: gp5.HALF_PI / 2,
 	    EIGHTH_PI: gp5.HALF_PI / 4,
+	    SIXTEENTH_PI: gp5.HALF_PI / 8,
 	    THREE_FOURTHS_PI: (gp5.HALF_PI / 2) * 3,
 	    TILEMAP_BLOCK_SIZE: 32,
 	    DECORATION_BLOCK_SIZE: 32

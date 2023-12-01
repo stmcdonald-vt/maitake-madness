@@ -947,6 +947,24 @@
 	    }
 	}
 
+	class Pellet extends Projectile{
+	    constructor(x, y, heading, speed=6, distance=400, damage=3, decayPerFrame=0.01, poison=false, poisonFrames=120) {
+	        super();
+	        this.position = gp5$1.createVector(x, y);
+	        this.speed = speed;
+	        this.velocity = gp5$1.createVector(speed, 0);
+	        this.velocity.setHeading(heading);
+	        this.heading = heading;
+	        this.distance = distance;
+	        this.damage = damage;
+	        this.decayPerFrame = decayPerFrame;
+	        this.disabled = false;
+	        this.image = game$1.assets.pellet;
+	        this.poison = poison;
+	        this.poisonFrames = poisonFrames;
+	    }
+	}
+
 	// Button mushroom. He feels nothing but emptiness.
 	class MorelMushroom extends Mushroom{
 	    /**
@@ -971,7 +989,7 @@
 	    }
 	    
 	    shoot() {
-	        entityManager$1.addMushroomProjectile(new Bullet(this.position.x, this.position.y, this.shootAngle, undefined, undefined, this.shotDamage));
+	        entityManager$1.addMushroomProjectile(new Pellet(this.position.x, this.position.y, this.shootAngle, undefined, undefined, this.shotDamage));
 	    }
 
 	    get distanceToTarget() {
@@ -1380,7 +1398,7 @@
 				}
 			],
 			name: "The Plains",
-			description: "A cherished magic stump is under assault by hordes of mushrooms! Use every weapon at your disposal to eliminate them."
+			description: "A cherished gnomish statue is under assault by hordes of mushrooms! Use every weapon at your disposal to eliminate them."
 		},
 		{
 			waves: [
@@ -1498,7 +1516,7 @@
 	        gp5$1.push();
 	        gp5$1.noStroke();
 	        gp5$1.fill(this.auraColor);
-	        gp5$1.circle(0, 0, this.image.width + this.auraExtension + 20);
+	        gp5$1.circle(0, 0, this.image.width + this.auraExtension + 50);
 	        gp5$1.pop();
 	    }
 
@@ -1613,8 +1631,8 @@
 	        this.target = entityManager$1.gnome;
 	        this.shotSpeed = 3;
 	        this.shotDamage = 1;
-	        this.shotDistance = 100;
-	        this.shotDecayPerFrame = 0.1;
+	        this.shotDistance = 150;
+	        this.shotDecayPerFrame = 0.075;
 	        this.maxCooldown = 100;
 	        this.colors = [gp5$1.color(227, 176, 7), gp5$1.color(247, 241, 220)];
 	    }
@@ -1634,7 +1652,7 @@
 	    changeState() {
 	        switch (this.currentState) {
 	            case 0:
-	                if (this.distanceToTarget < 50) {
+	                if (this.distanceToTarget < 75) {
 	                    this.currentState = 2;
 	                } else if (entityManager$1.distanceToPlayer(this) < 200) {
 	                    this.currentState = 1;
@@ -1643,13 +1661,13 @@
 	            case 1:
 	                if (entityManager$1.distanceToPlayer(this) < 100 && entityManager$1.isInbounds(this)) {
 	                    this.currentState = 2; // switch to shooting when within range of player and inbounds
-	                } else if (entityManager$1.distanceToPlayer(this) > 200) {
+	                } else if (entityManager$1.distanceToPlayer(this) > 250) {
 	                    this.currentState = 0;
 	                }
 	                break;
 	            case 2:
 	                if ((this.target === entityManager$1.gnome && this.distanceToTarget > 100)
-	                    || (this.target !== entityManager$1.gnome && entityManager$1.distanceToPlayer(this) < 100)
+	                    || (this.target !== entityManager$1.gnome && entityManager$1.distanceToPlayer(this) < 150)
 	                    || !entityManager$1.isInbounds(this)) {
 	                    this.currentState = 1; // Switch back to chase if gnome moves out of range or the gnome gets close while shooting relic.
 	                }
@@ -1742,7 +1760,7 @@
 	        }
 	        
 	        shootBullet(angle=this.shootAngle) {
-	            entityManager$1.addMushroomProjectile(new Bullet(this.position.x, this.position.y, angle, undefined, 500));
+	            entityManager$1.addMushroomProjectile(new Pellet(this.position.x, this.position.y, angle, undefined, 500));
 	        }
 
 	        shootSpore(angle=this.shootAngle) {
@@ -2519,7 +2537,7 @@
 	    constructor(x, y) {
 	        this.x = x;
 	        this.y = y;
-	        this.healthBar = new HealthBar(this.x + 90, this.y - 17, entityManager$1.gnome);
+	        this.healthBar = new HealthBar(this.x + 75, this.y - 17, entityManager$1.gnome);
 	    }
 
 	    display() {
@@ -2993,6 +3011,7 @@
 	            },
 	            bullet: p.loadImage('assets/bullet.png'),
 	            spore: p.loadImage('assets/spore.png'),
+	            pellet: p.loadImage('assets/pellet.png'),
 	            shotgun: p.loadImage('assets/shotgun.png'),
 	            pistol: p.loadImage('assets/pistol.png'),
 	            sniper: p.loadImage('assets/sniper.png'),
@@ -3018,6 +3037,7 @@
 	            ...Object.values(assets.relics),
 	            assets.morel,
 	            assets.bullet,
+	            assets.pellet,
 	            assets.spore,
 	            assets.button,
 	            assets.chanterelle,

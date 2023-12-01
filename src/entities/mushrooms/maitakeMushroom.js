@@ -6,6 +6,7 @@ import gp5 from "../../sketch";
 import Bullet from "../projectiles/bullet";
 import Spore from "../projectiles/spore";
 import JumpBurstState from "../mushroomFSM/jumpBurstState";
+import Pellet from "../projectiles/pellet";
 
 export default class MaitakeMushroom extends Mushroom{
         /**
@@ -34,7 +35,7 @@ export default class MaitakeMushroom extends Mushroom{
         }
         
         shootBullet(angle=this.shootAngle) {
-            entityManager.addMushroomProjectile(new Bullet(this.position.x, this.position.y, angle, undefined, 500));
+            entityManager.addMushroomProjectile(new Pellet(this.position.x, this.position.y, angle, undefined, 500));
         }
 
         shootSpore(angle=this.shootAngle) {

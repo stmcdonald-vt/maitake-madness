@@ -108,6 +108,7 @@ let sketch = function(p) {
     p.setup = function() {
         p.createCanvas(800, 800);
         p.textSize(p.width / 32); // default text size
+        p.frameRate(60);
 
         game.p5 = p;
         [
@@ -143,6 +144,7 @@ let sketch = function(p) {
                 break;
         }
         game.update();
+        console.log(p.frameRate());
     };
   };
 

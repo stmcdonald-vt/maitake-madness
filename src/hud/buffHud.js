@@ -10,16 +10,16 @@ export default class BuffHud {
     get text() {
         const gnome = entityManager.gnome;
         if (gnome.speedMultiplier > 1) {
-            return 'Speed ↑';
+            return 'Speed +';
         }
         if (gnome.damageTakenMultiplier < 1) {
-            return 'Defense ↑';
+            return 'Defense +';
         }
         if (gnome.gun.damageMultiplier > 1) {
-            return 'Damage ↑';
+            return 'Damage +';
         }
         if (gnome.regenRate > 0) {
-            return 'Regenerating ↑'
+            return 'Regenerating +'
         }
     }
 

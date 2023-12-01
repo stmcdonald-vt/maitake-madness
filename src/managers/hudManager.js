@@ -9,9 +9,9 @@ const hudManager = {
         this.components = [
             new WaveHud(790, 25),
             new EnemyCountHud(790, 55),
-            new BuffHud(0, 730),
-            new HealthHud(0, 760),
-            new WeaponHud(0, 790),
+            new BuffHud(10, 730),
+            new HealthHud(10, 760),
+            new WeaponHud(10, 790),
         ]
     },
     display: function() {

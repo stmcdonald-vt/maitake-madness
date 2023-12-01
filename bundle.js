@@ -394,7 +394,7 @@
 	            gp5$1.rect(item.position.x,  item.position.y, this.buttonWidth, this.buttonHeight);
 	            gp5$1.fill(this.textColor || 'black');
 	            gp5$1.textAlign(gp5$1.CENTER);
-	            gp5$1.text(item.text, item.position.x, item.position.y);
+	            gp5$1.text(item.text, item.position.x, item.position.y + 0.25 * gp5$1.textAscent());
 	            gp5$1.pop();
 	        });
 	        gp5$1.pop();
@@ -575,7 +575,7 @@
 	        const pellets = 1;
 	        const spacing = 60;
 	        const range = 700;
-	        const damage = 20;
+	        const damage = 12;
 	        const decay = 0.005;
 	        const image = game$1.assets.sniper;
 	        const cooldown = 50;
@@ -1958,7 +1958,6 @@
 	        wave.chanterelle?.forEach(coord => this.mushrooms.push(new ChanterelleMushroom(gp5$1.createVector(coord[0], coord[1]))));
 	        wave.maitake?.forEach(coord => this.mushrooms.push(new MaitakeMushroom(gp5$1.createVector(coord[0], coord[1]))));
 	        wave.dummy?.forEach(coord => this.mushrooms.push(new MaitakeMushroom(gp5$1.createVector(coord[0], coord[1]), true)));
-
 	    },
 
 	    distanceToPlayer: function(entity) {
@@ -2101,7 +2100,7 @@
 	        // Also display author text which doesn't warrant a component
 	        gp5$1.push();
 	        gp5$1.fill('white');
-	        gp5$1.text('Built by: Sean McDonald', 0, gp5$1.height * 0.95);
+	        gp5$1.text('Built by: Sean McDonald', 10, gp5$1.height * 0.95);
 	        gp5$1.pop();
 	    }
 	}
@@ -2213,7 +2212,7 @@
 	        gp5$1.rect(this.position.x,  this.position.y , this.width, this.height);
 	        gp5$1.fill('white');
 	        gp5$1.textAlign(gp5$1.CENTER);
-	        gp5$1.text(this.text, this.position.x + this.width / 2, this.position.y + this.height / 2);
+	        gp5$1.text(this.text, this.position.x + this.width / 2, this.position.y + this.height / 2 + 0.25 * gp5$1.textAscent());
 	        gp5$1.pop();
 	    }
 	}
@@ -2274,10 +2273,10 @@
 	        gp5$1.noStroke();
 	        gp5$1.fill('rgba(0,0,0,0.4)'); // Transparent square behind for readability
 	        gp5$1.rect(this.position.x -5, this.position.y - 5, this.width, this.height);
-	        gp5$1.textSize(20);
+	        gp5$1.textSize(24);
 	        gp5$1.textWrap(gp5$1.WORD);
 	        gp5$1.fill('white');
-	        gp5$1.text(this.tutorialText(), this.position.x, this.position.y, this.width, this.height);
+	        gp5$1.text(this.tutorialText(), this.position.x + 10, this.position.y + 20, this.width, this.height);
 	        gp5$1.pop();
 	    }
 	}
@@ -2480,16 +2479,16 @@
 	    get text() {
 	        const gnome = entityManager$1.gnome;
 	        if (gnome.speedMultiplier > 1) {
-	            return 'Speed ↑';
+	            return 'Speed +';
 	        }
 	        if (gnome.damageTakenMultiplier < 1) {
-	            return 'Defense ↑';
+	            return 'Defense +';
 	        }
 	        if (gnome.gun.damageMultiplier > 1) {
-	            return 'Damage ↑';
+	            return 'Damage +';
 	        }
 	        if (gnome.regenRate > 0) {
-	            return 'Regenerating ↑'
+	            return 'Regenerating +'
 	        }
 	    }
 
@@ -2558,7 +2557,7 @@
 	        const gun = entityManager$1.gnome.gun;
 	        gp5$1.push();
 	        gp5$1.fill('black');
-	        gp5$1.text(`${gun.name}: ${gun.ammo === Infinity ? "∞" : gun.ammo}`, this.x, this.y);
+	        gp5$1.text(`${gun.name}: ${gun.ammo === Infinity ? "Infinite" : gun.ammo}`, this.x, this.y);
 	        gp5$1.pop();
 	    }
 	}
@@ -2568,9 +2567,9 @@
 	        this.components = [
 	            new WaveHud(790, 25),
 	            new EnemyCountHud(790, 55),
-	            new BuffHud(0, 730),
-	            new HealthHud(0, 760),
-	            new WeaponHud(0, 790),
+	            new BuffHud(10, 730),
+	            new HealthHud(10, 760),
+	            new WeaponHud(10, 790),
 	        ];
 	    },
 	    display: function() {
@@ -2580,7 +2579,7 @@
 
 	const endStateManager = {
 	    initialize: function () {
-	        this.homeButton = new Button(gp5$1.createVector(360, 425), this.goHome, undefined, undefined, 'Home');
+	        this.homeButton = new Button(gp5$1.createVector(365, 425), this.goHome, undefined, undefined, 'Home');
 	    },
 	    showMessageCenter: function(message) {
 	        gp5$1.push();
@@ -2956,7 +2955,8 @@
 	            chanterelle: p.loadImage('assets/chanterelle.png'),
 	            maitake: p.loadImage('assets/maitake.png'),
 	            fonts: {
-	                oldForest: p.loadFont('assets/TheOldForest.ttf')
+	                oldForest: p.loadFont('assets/TheOldForest.ttf'),
+	                default: p.loadFont('assets/ComicKhazi.ttf'),
 	            },
 	            tiles: {
 	                plainGrass: p.loadImage('assets/tiles/plain_grass.png'),
@@ -2997,7 +2997,7 @@
 	            pistol: p.loadImage('assets/pistol.png'),
 	            sniper: p.loadImage('assets/sniper.png'),
 	            levelScreenshots: [
-	                p.loadImage('assets/level-screenshots/plains.png'),
+	                p.loadImage('assets/level-screenshots/range.png'),
 	                p.loadImage('assets/level-screenshots/plains.png'),
 	                p.loadImage('assets/level-screenshots/maitake.png')
 	            ]
@@ -3010,6 +3010,7 @@
 	        p.createCanvas(800, 800);
 	        p.textSize(p.width / 32); // default text size
 	        p.frameRate(60);
+	        p.textFont(assets.fonts.default);
 
 	        game$1.p5 = p;
 	        [

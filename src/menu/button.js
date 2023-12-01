@@ -44,7 +44,7 @@ class Button {
         gp5.rect(this.position.x,  this.position.y , this.width, this.height);
         gp5.fill('white');
         gp5.textAlign(gp5.CENTER);
-        gp5.text(this.text, this.position.x + this.width / 2, this.position.y + this.height / 2);
+        gp5.text(this.text, this.position.x + this.width / 2, this.position.y + this.height / 2 + 0.25 * gp5.textAscent());
         gp5.pop();
     }
 }

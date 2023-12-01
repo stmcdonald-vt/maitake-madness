@@ -67,7 +67,7 @@ class PickerMenuItem {
             gp5.rect(item.position.x,  item.position.y, this.buttonWidth, this.buttonHeight);
             gp5.fill(this.textColor || 'black');
             gp5.textAlign(gp5.CENTER);
-            gp5.text(item.text, item.position.x, item.position.y);
+            gp5.text(item.text, item.position.x, item.position.y + 0.25 * gp5.textAscent());
             gp5.pop();
         })
         gp5.pop();

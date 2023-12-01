@@ -4,7 +4,7 @@ import gp5 from "../sketch";
 
 const endStateManager = {
     initialize: function () {
-        this.homeButton = new Button(gp5.createVector(360, 425), this.goHome, undefined, undefined, 'Home');
+        this.homeButton = new Button(gp5.createVector(365, 425), this.goHome, undefined, undefined, 'Home');
     },
     showMessageCenter: function(message) {
         gp5.push();

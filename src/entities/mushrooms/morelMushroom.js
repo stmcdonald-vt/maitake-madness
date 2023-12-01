@@ -3,9 +3,9 @@ import gp5, { constants } from "../../sketch";
 import ChaseState from "../mushroomFSM/chaseState";
 import entityManager from "../../managers/entityManager";
 import ShootState from "../mushroomFSM/shootState";
-import Bullet from "../projectiles/bullet";
 import Mushroom from "./mushroom";
 import ChaseRelicState from "../mushroomFSM/chaseRelicState";
+import Pellet from "../projectiles/pellet";
 // Button mushroom. He feels nothing but emptiness.
 class MorelMushroom extends Mushroom{
     /**
@@ -30,7 +30,7 @@ class MorelMushroom extends Mushroom{
     }
     
     shoot() {
-        entityManager.addMushroomProjectile(new Bullet(this.position.x, this.position.y, this.shootAngle, undefined, undefined, this.shotDamage));
+        entityManager.addMushroomProjectile(new Pellet(this.position.x, this.position.y, this.shootAngle, undefined, undefined, this.shotDamage));
     }
 
     get distanceToTarget() {

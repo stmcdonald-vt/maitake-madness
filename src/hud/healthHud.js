@@ -5,7 +5,7 @@ export default class HealthHud {
     constructor(x, y) {
         this.x = x;
         this.y = y;
-        this.healthBar = new HealthBar(this.x + 90, this.y - 17, entityManager.gnome);
+        this.healthBar = new HealthBar(this.x + 75, this.y - 17, entityManager.gnome);
     }
 
     display() {

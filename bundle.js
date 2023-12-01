@@ -3009,6 +3009,7 @@
 	    p.setup = function() {
 	        p.createCanvas(800, 800);
 	        p.textSize(p.width / 32); // default text size
+	        p.frameRate(60);
 
 	        game$1.p5 = p;
 	        [
@@ -3044,6 +3045,7 @@
 	                break;
 	        }
 	        game$1.update();
+	        console.log(p.frameRate());
 	    };
 	  };
 

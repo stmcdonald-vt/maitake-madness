@@ -97,6 +97,7 @@ let sketch = function(p) {
             sniper: p.loadImage('assets/sniper.png'),
             levelScreenshots: [
                 p.loadImage('assets/level-screenshots/plains.png'),
+                p.loadImage('assets/level-screenshots/plains.png'),
                 p.loadImage('assets/level-screenshots/maitake.png')
             ]
 
@@ -136,16 +137,10 @@ let sketch = function(p) {
                 p.cursor(p.CROSS);
                 tilemapManager.display();
                 break;
-            case 2:
-                p.cursor(p.ARROW);
-                tilemapManager.display();
-                break;
-            case 3:
-                p.cursor(p.ARROW);
-                tilemapManager.display();
-                break;
             default:
-                p.background('gray');
+                p.cursor(p.ARROW);
+                tilemapManager.display();
+                break;
         }
         game.update();
     };

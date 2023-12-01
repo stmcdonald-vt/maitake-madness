@@ -61,11 +61,24 @@ const inputManager = {
         if (game.state.MOVEMENT_SCHEME === 0 ? this.keyMap[83]?.pressed : this.keyMap[40]?.pressed) { // S or arrow moves player down
             this.player.moveY(1);
         }
+
+        // Controls that should only activate once on press
         if (this.keyMap[81]?.pressed && !this.keyMap[81]?.triggered) { // Q to cycle weapons
             this.player.nextWeapon();
             this.keyMap[81].triggered = true;
         }
-        if (this.keyMap['click']?.pressed) { // Q to cycle weapons
+        if (this.keyMap[27]?.pressed && !this.keyMap[27]?.triggered) {
+            console.log(game.state.GAME_STATE);
+            if (game.state.GAME_STATE === 1) {
+                game.pause();
+            } else if (game.state.GAME_STATE === 4) {
+                game.unpause();
+            }
+            this.keyMap[27].triggered = true;
+        }
+
+        // Allow 
+        if (this.keyMap['click']?.pressed) {
             this.clickHoldFunctions.forEach(func => func());
         }
     }

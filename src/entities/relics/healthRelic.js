@@ -7,7 +7,7 @@ export default class HealthRelic extends Relic {
     constructor(position) {
         super(position);
         this.image = game.assets.relics.statue;
-        this.auraColor = gp5.color(255, 255, 0, 30)
+        this.auraColor = gp5.color(0, 255, 0, 30)
         this.initialize();
     }
 

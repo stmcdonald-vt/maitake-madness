@@ -307,11 +307,24 @@
 	        if (game$1.state.MOVEMENT_SCHEME === 0 ? this.keyMap[83]?.pressed : this.keyMap[40]?.pressed) { // S or arrow moves player down
 	            this.player.moveY(1);
 	        }
+
+	        // Controls that should only activate once on press
 	        if (this.keyMap[81]?.pressed && !this.keyMap[81]?.triggered) { // Q to cycle weapons
 	            this.player.nextWeapon();
 	            this.keyMap[81].triggered = true;
 	        }
-	        if (this.keyMap['click']?.pressed) { // Q to cycle weapons
+	        if (this.keyMap[27]?.pressed && !this.keyMap[27]?.triggered) {
+	            console.log(game$1.state.GAME_STATE);
+	            if (game$1.state.GAME_STATE === 1) {
+	                game$1.pause();
+	            } else if (game$1.state.GAME_STATE === 4) {
+	                game$1.unpause();
+	            }
+	            this.keyMap[27].triggered = true;
+	        }
+
+	        // Allow 
+	        if (this.keyMap['click']?.pressed) {
 	            this.clickHoldFunctions.forEach(func => func());
 	        }
 	    }
@@ -1082,8 +1095,53 @@
 		{
 			waves: [
 				{
-					count: 8,
-					button: [
+					count: 1,
+					dummy: [
+						[
+							400,
+							400
+						]
+					]
+				}
+			],
+			relics: [
+				{
+					type: "defense",
+					location: [
+						125,
+						125
+					]
+				},
+				{
+					type: "speed",
+					location: [
+						675,
+						675
+					]
+				},
+				{
+					type: "power",
+					location: [
+						125,
+						675
+					]
+				},
+				{
+					type: "health",
+					location: [
+						675,
+						125
+					]
+				}
+			],
+			name: "The Firing Range",
+			description: "Hone your skills with your arsenal of weapons and get to know the powers that our gnomish relics can bestow upon you."
+		},
+		{
+			waves: [
+				{
+					count: 12,
+					morel: [
 						[
 							0,
 							400
@@ -1091,7 +1149,9 @@
 						[
 							400,
 							0
-						],
+						]
+					],
+					chanterelle: [
 						[
 							400,
 							800
@@ -1099,22 +1159,32 @@
 						[
 							800,
 							400
+						]
+					],
+					button: [
+						[
+							900,
+							400
 						],
 						[
-							0,
-							-400
+							1000,
+							400
 						],
 						[
-							-400,
-							0
+							1100,
+							400
 						],
 						[
-							-400,
-							-800
+							1200,
+							400
 						],
 						[
-							-800,
-							-400
+							1300,
+							400
+						],
+						[
+							1400,
+							400
 						]
 					]
 				},
@@ -1157,6 +1227,75 @@
 						[
 							800,
 							400
+						]
+					]
+				},
+				{
+					count: 16,
+					button: [
+						[
+							0,
+							400
+						],
+						[
+							400,
+							0
+						],
+						[
+							400,
+							800
+						],
+						[
+							800,
+							400
+						],
+						[
+							0,
+							-400
+						],
+						[
+							-400,
+							0
+						],
+						[
+							-400,
+							-800
+						],
+						[
+							-800,
+							-400
+						],
+						[
+							0,
+							200
+						],
+						[
+							200,
+							0
+						],
+						[
+							200,
+							400
+						],
+						[
+							400,
+							200
+						],
+						[
+							400,
+							-200
+						],
+						[
+							1000,
+							0
+						],
+						[
+							1000,
+							-400
+						],
+						[
+							1000,
+							1000
 						]
 					]
 				},
@@ -1227,55 +1366,6 @@
 						[
 							0,
 							0
-						]
-					]
-				},
-				{
-					count: 12,
-					morel: [
-						[
-							0,
-							400
-						],
-						[
-							400,
-							0
-						]
-					],
-					chanterelle: [
-						[
-							400,
-							800
-						],
-						[
-							800,
-							400
-						]
-					],
-					button: [
-						[
-							900,
-							400
-						],
-						[
-							1000,
-							400
-						],
-						[
-							1100,
-							400
-						],
-						[
-							1200,
-							400
-						],
-						[
-							1300,
-							400
-						],
-						[
-							1400,
-							400
 						]
 					]
 				}
@@ -1629,9 +1719,10 @@
 	        /**
 	         * @param {p5.Vector} position 
 	         */
-	        constructor(position) {
+	        constructor(position, dummy=false) {
 	            super();
 	            this.position = position;
+	            this.dummy = dummy;
 	            this.image = game$1.assets.maitake;
 	            this.states = [
 	                new ShootState(this, () => this.shootBullet()),
@@ -1670,9 +1761,11 @@
 	        }
 	    
 	        update() {
-	            super.update();
-	            this.shootCooldown--;
-	            this.stateTimer--;
+	            if (!this.dummy) {
+	                super.update();
+	                this.shootCooldown--;
+	                this.stateTimer--;
+	            }
 	        }
 	}
 
@@ -1782,7 +1875,7 @@
 	    constructor(position) {
 	        super(position);
 	        this.image = game$1.assets.relics.statue;
-	        this.auraColor = gp5$1.color(255, 255, 0, 30);
+	        this.auraColor = gp5$1.color(0, 255, 0, 30);
 	        this.initialize();
 	    }
 
@@ -1864,6 +1957,8 @@
 	        wave.button?.forEach(coord => this.mushrooms.push(new ButtonMushroom(gp5$1.createVector(coord[0], coord[1]))));
 	        wave.chanterelle?.forEach(coord => this.mushrooms.push(new ChanterelleMushroom(gp5$1.createVector(coord[0], coord[1]))));
 	        wave.maitake?.forEach(coord => this.mushrooms.push(new MaitakeMushroom(gp5$1.createVector(coord[0], coord[1]))));
+	        wave.dummy?.forEach(coord => this.mushrooms.push(new MaitakeMushroom(gp5$1.createVector(coord[0], coord[1]), true)));
+
 	    },
 
 	    distanceToPlayer: function(entity) {
@@ -2211,7 +2306,7 @@
 	            gp5$1.pop();
 	        };
 
-	        const tutorialText = () => `As Gerome the Gnome, you are tasked with protecting gnomish relics from fungal aggressors. You will have plenty of weaponry at your disposal that you can switch between using the 'Q' key. You will use ${game$1.state.MOVEMENT_SCHEME ? 'the ARROW KEYS' : 'WASD'} to control Gerome. 
+	        const tutorialText = () => `As Gerome the Gnome, you are tasked with protecting gnomish relics from fungal aggressors. You will have plenty of weaponry at your disposal that you can switch between using the 'Q' key or your scroll wheel. You will use ${game$1.state.MOVEMENT_SCHEME ? 'the ARROW KEYS' : 'WASD'} to control Gerome. Press ESC to toggle the pause menu if you need to take a breather or return to the home menu. 
             
             You will use your mouse to aim and left click to shoot your weapon. It is highly recommended to use a mouse for aiming rather than a laptop touchpad.`;
 
@@ -2219,7 +2314,7 @@
 	            new DifficultyMenuItem(game$1.p5.createVector(optionsPosition.x, optionsPosition.y)),
 	            new ControlMenuItem(game$1.p5.createVector(optionsPosition.x, optionsPosition.y + 100)),
 	            new Button(backButtonPosition, backButtonAction, backButtonHeight, backButtonWidth, undefined, backButtonDisplay),
-	            new Tutorial(tutorialPosition, gp5$1.width * 0.9, gp5$1.height * 0.3, tutorialText),
+	            new Tutorial(tutorialPosition, gp5$1.width * 0.9, gp5$1.height * 0.35, tutorialText),
 	            new GnomeChaseAnimation(animationPosition)
 	        ];
 	    }
@@ -2521,6 +2616,11 @@
 	                endStateManager.showMessageCenter(`You Lose...`);
 	                endStateManager.homeButton.display();
 	                break;
+	            case 4:
+	                endStateManager.homeButton.display();
+	                inputManager.processInputs();
+	                entityManager$1.gnome.registerClickListeners();
+	                break;
 	        }
 	    },
 	    advanceWave: function() {
@@ -2562,8 +2662,16 @@
 	        this.state.LEVEL = 0;
 	        this.state.WAVE = 0;
 	    },
+	    pause: function () {
+	        game.state.GAME_STATE = 4;
+	        endStateManager.homeButton.registerClickListeners();
+	    },
+	    unpause: function () {
+	        game.state.GAME_STATE = 1;
+	        inputManager.clearClickFunctions();
+	    },
 	    state: {
-	        GAME_STATE: 0, // 0: Start screen, 1: Game, 2: Win, 3: Loss
+	        GAME_STATE: 0, // 0: Start screen, 1: Game, 2: Win, 3: Loss 4: Pause
 	        DIMENSION_MULTIPLIER: 1,
 	        DIFFICULTY: 1,
 	        MOVEMENT_SCHEME: 0,
@@ -2577,6 +2685,62 @@
 	// Handles tilemapping 
 	const tilemapManager = {
 	    maps: [
+	        {
+	            base: [
+	                'ddddddddddddddddddddddddd',
+	                'ddddddddddddddddddddddddd',
+	                'ddddddddddddddddddddddddd',
+	                'ddddddddddddddddddddddddd',
+	                'ddddddddddddddddddddddddd',
+	                'ddddddddddddddddddddddddd',
+	                'ddddddddddddddddddddddddd',
+	                'ddddddddddddddddddddddddd',
+	                'ddddddddddddddddddddddddd',
+	                'ddddddddddddddddddddddddd',
+	                'ddddddddddddddddddddddddd',
+	                'ddddddddddddddddddddddddd',
+	                'ddddddddddddddddddddddddd',
+	                'ddddddddddddddddddddddddd',
+	                'ddddddddddddddddddddddddd',
+	                'ddddddddddddddddddddddddd',
+	                'ddddddddddddddddddddddddd',
+	                'ddddddddddddddddddddddddd',
+	                'ddddddddddddddddddddddddd',
+	                'ddddddddddddddddddddddddd',
+	                'ddddddddddddddddddddddddd',
+	                'ddddddddddddddddddddddddd',
+	                'ddddddddddddddddddddddddd',
+	                'ddddddddddddddddddddddddd',
+	                'ddddddddddddddddddddddddd' 
+	            ],
+	            decoration: [
+	                '-------------------------',
+	                '-------------------------',
+	                '-------------------------',
+	                '-------------------------',
+	                '-------------------------',
+	                '-------------------------',
+	                '-------------------------',
+	                '-------------------------',
+	                '-------------------------',
+	                '-------------------------',
+	                '-------------------------',
+	                '-------------------------',
+	                '-------------------------',
+	                '-------------------------',
+	                '-------------------------',
+	                '-------------------------',
+	                '-------------------------',
+	                '-------------------------',
+	                '-------------------------',
+	                '-------------------------',
+	                '-------------------------',
+	                '-------------------------',
+	                '-------------------------',
+	                '-------------------------',
+	                '-------------------------',
+	            ]
+	        },
 	        {
 	            base: [
 	                'ggggggggggWdddEgggggggggg',
@@ -2834,6 +2998,7 @@
 	            sniper: p.loadImage('assets/sniper.png'),
 	            levelScreenshots: [
 	                p.loadImage('assets/level-screenshots/plains.png'),
+	                p.loadImage('assets/level-screenshots/plains.png'),
 	                p.loadImage('assets/level-screenshots/maitake.png')
 	            ]
 
@@ -2873,16 +3038,10 @@
 	                p.cursor(p.CROSS);
 	                tilemapManager.display();
 	                break;
-	            case 2:
-	                p.cursor(p.ARROW);
-	                tilemapManager.display();
-	                break;
-	            case 3:
-	                p.cursor(p.ARROW);
-	                tilemapManager.display();
-	                break;
 	            default:
-	                p.background('gray');
+	                p.cursor(p.ARROW);
+	                tilemapManager.display();
+	                break;
 	        }
 	        game$1.update();
 	    };

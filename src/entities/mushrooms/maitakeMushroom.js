@@ -11,9 +11,10 @@ export default class MaitakeMushroom extends Mushroom{
         /**
          * @param {p5.Vector} position 
          */
-        constructor(position) {
+        constructor(position, dummy=false) {
             super();
             this.position = position;
+            this.dummy = dummy;
             this.image = game.assets.maitake;
             this.states = [
                 new ShootState(this, () => this.shootBullet()),
@@ -52,8 +53,10 @@ export default class MaitakeMushroom extends Mushroom{
         }
     
         update() {
-            super.update();
-            this.shootCooldown--;
-            this.stateTimer--;
+            if (!this.dummy) {
+                super.update();
+                this.shootCooldown--;
+                this.stateTimer--;
+            }
         }
 }

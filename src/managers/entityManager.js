@@ -83,6 +83,8 @@ const entityManager = {
         wave.button?.forEach(coord => this.mushrooms.push(new ButtonMushroom(gp5.createVector(coord[0], coord[1]))));
         wave.chanterelle?.forEach(coord => this.mushrooms.push(new ChanterelleMushroom(gp5.createVector(coord[0], coord[1]))));
         wave.maitake?.forEach(coord => this.mushrooms.push(new MaitakeMushroom(gp5.createVector(coord[0], coord[1]))));
+        wave.dummy?.forEach(coord => this.mushrooms.push(new MaitakeMushroom(gp5.createVector(coord[0], coord[1]), true)));
+
     },
 
     distanceToPlayer: function(entity) {

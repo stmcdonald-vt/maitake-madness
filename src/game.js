@@ -27,6 +27,11 @@ const game = {
                 endStateManager.showMessageCenter(`You Lose...`);
                 endStateManager.homeButton.display();
                 break;
+            case 4:
+                endStateManager.homeButton.display();
+                inputManager.processInputs();
+                entityManager.gnome.registerClickListeners();
+                break;
         }
     },
     advanceWave: function() {
@@ -68,8 +73,16 @@ const game = {
         this.state.LEVEL = 0;
         this.state.WAVE = 0;
     },
+    pause: function () {
+        game.state.GAME_STATE = 4;
+        endStateManager.homeButton.registerClickListeners();
+    },
+    unpause: function () {
+        game.state.GAME_STATE = 1;
+        inputManager.clearClickFunctions();
+    },
     state: {
-        GAME_STATE: 0, // 0: Start screen, 1: Game, 2: Win, 3: Loss
+        GAME_STATE: 0, // 0: Start screen, 1: Game, 2: Win, 3: Loss 4: Pause
         DIMENSION_MULTIPLIER: 1,
         DIFFICULTY: 1,
         MOVEMENT_SCHEME: 0,

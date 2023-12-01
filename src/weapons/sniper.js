@@ -7,7 +7,7 @@ export default class Sniper extends Gun {
         const pellets = 1;
         const spacing = 60;
         const range = 700;
-        const damage = 20;
+        const damage = 12;
         const decay = 0.005;
         const image = game.assets.sniper;
         const cooldown = 50;

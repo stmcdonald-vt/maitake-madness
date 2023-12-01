@@ -28,8 +28,8 @@ class ChanterelleMushroom extends Mushroom{
         this.target = entityManager.gnome;
         this.shotSpeed = 3;
         this.shotDamage = 1;
-        this.shotDistance = 100;
-        this.shotDecayPerFrame = 0.1;
+        this.shotDistance = 150;
+        this.shotDecayPerFrame = 0.075;
         this.maxCooldown = 100;
         this.colors = [gp5.color(227, 176, 7), gp5.color(247, 241, 220)]
     }
@@ -49,7 +49,7 @@ class ChanterelleMushroom extends Mushroom{
     changeState() {
         switch (this.currentState) {
             case 0:
-                if (this.distanceToTarget < 50) {
+                if (this.distanceToTarget < 75) {
                     this.currentState = 2;
                 } else if (entityManager.distanceToPlayer(this) < 200) {
                     this.currentState = 1
@@ -58,13 +58,13 @@ class ChanterelleMushroom extends Mushroom{
             case 1:
                 if (entityManager.distanceToPlayer(this) < 100 && entityManager.isInbounds(this)) {
                     this.currentState = 2; // switch to shooting when within range of player and inbounds
-                } else if (entityManager.distanceToPlayer(this) > 200) {
+                } else if (entityManager.distanceToPlayer(this) > 250) {
                     this.currentState = 0;
                 }
                 break;
             case 2:
                 if ((this.target === entityManager.gnome && this.distanceToTarget > 100)
-                    || (this.target !== entityManager.gnome && entityManager.distanceToPlayer(this) < 100)
+                    || (this.target !== entityManager.gnome && entityManager.distanceToPlayer(this) < 150)
                     || !entityManager.isInbounds(this)) {
                     this.currentState = 1; // Switch back to chase if gnome moves out of range or the gnome gets close while shooting relic.
                 }

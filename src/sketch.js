@@ -55,7 +55,8 @@ let sketch = function(p) {
             chanterelle: p.loadImage('assets/chanterelle.png'),
             maitake: p.loadImage('assets/maitake.png'),
             fonts: {
-                oldForest: p.loadFont('assets/TheOldForest.ttf')
+                oldForest: p.loadFont('assets/TheOldForest.ttf'),
+                default: p.loadFont('assets/ComicKhazi.ttf'),
             },
             tiles: {
                 plainGrass: p.loadImage('assets/tiles/plain_grass.png'),
@@ -96,7 +97,7 @@ let sketch = function(p) {
             pistol: p.loadImage('assets/pistol.png'),
             sniper: p.loadImage('assets/sniper.png'),
             levelScreenshots: [
-                p.loadImage('assets/level-screenshots/plains.png'),
+                p.loadImage('assets/level-screenshots/range.png'),
                 p.loadImage('assets/level-screenshots/plains.png'),
                 p.loadImage('assets/level-screenshots/maitake.png')
             ]
@@ -109,6 +110,7 @@ let sketch = function(p) {
         p.createCanvas(800, 800);
         p.textSize(p.width / 32); // default text size
         p.frameRate(60);
+        p.textFont(assets.fonts.default);
 
         game.p5 = p;
         [

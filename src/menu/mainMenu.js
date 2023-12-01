@@ -26,7 +26,7 @@ class MainMenu extends Menu {
         // Also display author text which doesn't warrant a component
         gp5.push();
         gp5.fill('white');
-        gp5.text('Built by: Sean McDonald', 0, gp5.height * 0.95);
+        gp5.text('Built by: Sean McDonald', 10, gp5.height * 0.95);
         gp5.pop();
     }
 }

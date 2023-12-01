@@ -11,7 +11,7 @@ export default class WeaponHud {
         const gun = entityManager.gnome.gun;
         gp5.push();
         gp5.fill('black');
-        gp5.text(`${gun.name}: ${gun.ammo === Infinity ? "∞" : gun.ammo}`, this.x, this.y);
+        gp5.text(`${gun.name}: ${gun.ammo === Infinity ? "Infinite" : gun.ammo}`, this.x, this.y);
         gp5.pop();
     }
 }

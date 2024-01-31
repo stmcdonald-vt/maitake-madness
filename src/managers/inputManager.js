@@ -68,7 +68,6 @@ const inputManager = {
             this.keyMap[81].triggered = true;
         }
         if (this.keyMap[27]?.pressed && !this.keyMap[27]?.triggered) {
-            console.log(game.state.GAME_STATE);
             if (game.state.GAME_STATE === 1) {
                 game.pause();
             } else if (game.state.GAME_STATE === 4) {

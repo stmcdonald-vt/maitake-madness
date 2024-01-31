@@ -148,7 +148,6 @@ let sketch = function(p) {
                 break;
         }
         game.update();
-        console.log(p.frameRate());
     };
   };
 
